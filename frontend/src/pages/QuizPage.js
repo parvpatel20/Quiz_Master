@@ -327,7 +327,8 @@ const QuizPage = () => {
               <li className="flex items-center">
                 <BsQuestionCircleFill className="text-blue-400 text-2xl mr-3" />
                 <span>
-                  Number of Questions : <strong>{quizData?.questions.length}</strong>
+                  Number of Questions :{" "}
+                  <strong>{quizData?.questions.length}</strong>
                 </span>
               </li>
               <li className="flex items-center">
@@ -344,13 +345,23 @@ const QuizPage = () => {
               </li>
               <li className="flex items-center">
                 <AiOutlineSwap className="text-orange-400 text-2xl mr-3" />
-                <span className="font-semibold">Free navigation between questions</span>
+                <span className="font-semibold">
+                  Free navigation between questions
+                </span>
               </li>
               <li className="flex items-center">
-              <img src="../../assets/red_mark.png" alt="Red Mark" className="w-6 h-6 mr-3" />
-                <span className="font-semibold mr-4">Unanswered</span>   
-              <img src="../../assets/green_mark.png" alt="Green Mark" className="w-6 h-6 mr-3" />
-                <span className="font-semibold">Answered</span> 
+                <img
+                  src="../../assets/red_mark.png"
+                  alt="Red Mark"
+                  className="w-6 h-6 mr-3"
+                />
+                <span className="font-semibold mr-4">Unanswered</span>
+                <img
+                  src="../../assets/green_mark.png"
+                  alt="Green Mark"
+                  className="w-6 h-6 mr-3"
+                />
+                <span className="font-semibold">Answered</span>
               </li>
               <li className="flex items-center">
                 <FaCheckCircle className="text-yellow-500 text-2xl mr-3" />
@@ -438,7 +449,9 @@ const QuizPage = () => {
                         : "bg-red-500"
                     }`}
                     style={{
-                      width: `${(timeLeft / (quizData?.totalTime * 60)) * 100}%`,
+                      width: `${
+                        (timeLeft / (quizData?.totalTime * 60)) * 100
+                      }%`,
                     }}
                   ></div>
                 </div>
@@ -465,7 +478,7 @@ const QuizPage = () => {
                       (option, idx) => (
                         <label
                           key={idx}
-                          className="block cursor-pointer transition duration-300 hover:bg-[#ff5e00] hover:text-[#ffffff] p-4 rounded-lg"
+                          className="block cursor-pointer transition duration-300 hover:bg-[#ff5e00] hover:text-[#ffffff] p-4 rounded-lg flex justify-start items-center"
                         >
                           <input
                             type={
@@ -488,8 +501,11 @@ const QuizPage = () => {
                                 quizData?.format
                               )
                             }
-                            className="mr-3"
+                            className="hidden peer"
                           />
+                          <span
+                            className={`inline-block w-4 h-4 mr-3 rounded-full border-2 border-[#ffffff] peer-checked:bg-[#008000] peer-checked:border-[#008000] transition duration-300 flex justify-center items-center`}
+                          ></span>
                           {option}
                         </label>
                       )
@@ -500,7 +516,7 @@ const QuizPage = () => {
                       {["True", "False"].map((option, idx) => (
                         <label
                           key={idx}
-                          className="block cursor-pointer transition duration-300 hover:bg-[#ff5e00] hover:text-[#ffffff] p-4 rounded-lg"
+                          className="block cursor-pointer transition duration-300 hover:bg-[#ff5e00] hover:text-[#ffffff] p-4 rounded-lg flex justify-start items-center"
                         >
                           <input
                             type="radio"
@@ -517,8 +533,11 @@ const QuizPage = () => {
                                 "True/False"
                               )
                             }
-                            className="mr-3"
+                            className="hidden peer"
                           />
+                          <span
+                            className={`inline-block w-4 h-4 mr-3 rounded-full border-2 border-[#ffffff] peer-checked:bg-[#008000] peer-checked:border-[#008000] transition duration-300 flex justify-center items-center`}
+                          ></span>
                           {option}
                         </label>
                       ))}
@@ -557,7 +576,7 @@ const QuizPage = () => {
 
                 <button
                   onClick={() => clearOptions(currentQuestionIndex)}
-                  className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition duration-300"
+                  className="px-4 py-2 bg-red-500 text-[#ffffff] text-lg font-semibold rounded-full shadow-lg hover:bg-red-600 transform transition duration-300"
                 >
                   Clear Options
                 </button>
