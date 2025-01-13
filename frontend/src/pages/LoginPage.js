@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md"; // Import visibility icons
 import { useNavigate } from "react-router-dom"; // Import navigate from react-router-dom
 import Popup from "../components/Popup"; // Import Popup component
+import ResponsiveBackground from "../components/ResponsiveBackground"; // Import ResponsiveBackground component
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
@@ -78,7 +79,8 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0F1A36] via-[#2C4A75] to-[#0A1C36] text-[#ffffff] flex justify-center items-center">
+    <div className="min-h-screen relative z-10 text-[#ffffff] flex justify-center items-center">
+      <ResponsiveBackground />
       <div className="w-full max-w-md p-10 bg-gradient-to-r from-[#112D4E] to-[#0F1A36] rounded-3xl shadow-lg">
         <h2 className="text-4xl text-center font-extrabold mb-6 bg-gradient-to-r from-[#FF9100] via-[#FFD700] to-[#FF9100] bg-clip-text text-transparent drop-shadow-lg mb-8 leading-normal">
           Login

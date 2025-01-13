@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import Popup from "../components/Popup";
+import ResponsiveBackground from "../components/ResponsiveBackground";
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
@@ -113,7 +114,8 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0F1A36] via-[#2C4A75] to-[#0A1C36] text-[#ffffff] flex justify-center items-center px-4 py-8">
+    <div className="min-h-screen relative z-10 text-[#ffffff] flex justify-center items-center px-4 py-8">
+      <ResponsiveBackground />
       <div className="w-full max-w-5xl bg-gradient-to-br from-[#0A1C36] to-[#112D4E] rounded-3xl shadow-lg flex overflow-hidden">
         {/* Left Side: Logo and Branding */}
         <div className="hidden lg:flex flex-col justify-center items-center w-2/5 bg-[#000e3dfb] p-6">
