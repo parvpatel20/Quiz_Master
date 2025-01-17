@@ -3,6 +3,7 @@ import HeaderAfterSignup from "../components/HeaderAfterSignup";
 import { FiEdit } from "react-icons/fi";
 import Popupupdate from "../components/Popupupdate";
 import Loading from "../components/Loading";
+import QuizHistory from "../components/QuizHistory";
 
 const ProfilePage = () => {
   const [user, setUser] = useState(null);
@@ -89,12 +90,12 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFFFFF] text-white">
+    <div className="h-screen bg-[#FFFFFF] text-white overflow-y-auto scrollbar-hide">
       <Loading isLoading={loading} />
       <HeaderAfterSignup />
-      <div className="min-h-screen mx-auto grid grid-cols-1 md:grid-cols-4 gap-0.5">
+      <div className="h-screen mx-auto grid grid-cols-1 md:grid-cols-4 gap-0.5 overflow-y-auto scrollbar-hide">
         {/* Sidebar */}
-        <div className="col-span-1 bg-gradient-to-r from-[#112D4E] to-[#0F1A36] p-6 shadow-xl relative">
+        <div className="col-span-1 bg-gradient-to-r from-[#112D4E] to-[#0F1A36] p-6 shadow-xl relative overflow-y-auto scrollbar-hide">
           <div className="absolute top-4 right-4">
             <div
               className="relative group"
@@ -195,7 +196,7 @@ const ProfilePage = () => {
         </div>
 
         {/* Main Content */}
-        <div className="col-span-3 bg-gradient-to-br from-[#0F1A36] via-[#2C4A75] to-[#0A1C36] p-10 shadow-lg">
+        <div className="col-span-3 bg-gradient-to-br from-[#0F1A36] via-[#2C4A75] to-[#0A1C36] p-10 shadow-lg overflow-y-auto scrollbar-hide">
           {/* Stats Section */}
           <section className="mb-6">
             <h2 className="text-3xl font-extrabold text-[#FF9100] mb-4">
@@ -238,83 +239,8 @@ const ProfilePage = () => {
           </section>
 
           {/* Quiz History */}
-          <section>
-            <h2 className="text-3xl font-extrabold text-[#FF9100] mt-10 mb-4">
-              Quiz History
-            </h2>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm border-collapse">
-                <thead>
-                  <tr className="bg-[#1F3C64] text-white text-xl font-bold">
-                    <th className="border-b border-[#FF5E00] p-3 text-left">
-                      Subject
-                    </th>
-                    <th className="border-b border-[#FF5E00] p-3 text-left">
-                      Topic
-                    </th>
-                    <th className="border-b border-[#FF5E00] p-3 text-left">
-                      Score
-                    </th>
-                    <th className="border-b border-[#FF5E00] p-3 text-left">
-                      Date
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {sortedQuizzes.length === 0 ? (
-                    <tr>
-                      <td
-                        colSpan={4} // Adjust this based on the number of columns in your table
-                        className="p-3 text-center font-semibold text-gray-400"
-                      >
-                        No quizzes taken yet.
-                      </td>
-                    </tr>
-                  ) : (
-                    sortedQuizzes.map((outerquiz, index) => (
-                      <tr
-                        key={index}
-                        className={`${
-                          index % 2 === 0 ? "bg-[#1A2E48]" : "bg-[#1F3C64]"
-                        }`}
-                      >
-                        <td className="p-3 font-semibol[0]d">
-                          {outerquiz.quiz.subject}
-                        </td>
-                        <td className="p-3 font-semibold">
-                          {outerquiz.quiz.topic}
-                        </td>
-                        <td
-                          className={`p-3 ${
-                            outerquiz.score >= 90
-                              ? "text-green-400"
-                              : outerquiz.score >= 70
-                              ? "text-yellow-400"
-                              : "text-red-400"
-                          }`}
-                        >
-                          {outerquiz.score}%
-                        </td>
-                        <td className="p-3 font-semibold">{`${new Date(
-                          outerquiz.quizDate
-                        )
-                          .getDate()
-                          .toString()
-                          .padStart(2, "0")}/${(
-                          new Date(outerquiz.quizDate).getMonth() + 1
-                        )
-                          .toString()
-                          .padStart(2, "0")}/${new Date(outerquiz.quizDate)
-                          .getFullYear()
-                          .toString()
-                          .slice(-2)}`}</td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </section>
+
+          <QuizHistory quizzes={sortedQuizzes} />
         </div>
       </div>
     </div>

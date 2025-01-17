@@ -80,7 +80,7 @@ const QuizSearchPageBeforeSignup = () => {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0F1A36] via-[#2C4A75] to-[#0A1C36] text-white">
+    <div className="h-screen bg-gradient-to-br from-[#0F1A36] via-[#2C4A75] to-[#0A1C36] text-white scrollbar-hide">
       <Loading isLoading={loading} />
       <Header />
       <div className="max-w-screen mx-auto p-6">

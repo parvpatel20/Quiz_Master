@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+import plugin from 'tailwindcss/plugin';
 
 export const content = [
   "./src/**/*.{js,jsx,ts,tsx}",
@@ -16,5 +17,21 @@ export const theme = {
     },
   },
 };
-export const plugins = [];
+export const plugins = [
+  plugin(function({ addUtilities, theme, e }) {
+    addUtilities(
+      {
+        '.scrollbar-hide': {
+          overflow: 'scroll', // Allow scrolling
+          '-ms-overflow-style': 'none', // For Internet Explorer
+          'scrollbar-width': 'none', // For Firefox
+        },
+        '.scrollbar-hide::-webkit-scrollbar': {
+          display: 'none', // Hide the scrollbar in Webkit browsers
+        },
+      },
+      ['responsive', 'hover'] // You can make these responsive and interactive if needed
+    );
+  }),
+];
 

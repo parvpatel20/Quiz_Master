@@ -68,7 +68,7 @@ const HomePage = () => {
   console.log(isLoggedIn);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0F1A36] via-[#2C4A75] to-[#0A1C36] text-[#ffffff] font-sans">
+    <div className="h-screen bg-gradient-to-br from-[#0F1A36] via-[#2C4A75] to-[#0A1C36] text-[#ffffff] font-sans scrollbar-hide">
       <Loading isLoading={isLoggedIn === null} />
 
       {isLoggedIn ? <HeaderAfterSignup /> : <Header />}

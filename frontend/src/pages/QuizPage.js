@@ -385,7 +385,7 @@ const QuizPage = () => {
         {quizStarted && (
           <div className="flex">
             {/* Sidebar for Question Navigation */}
-            <div className="w-1/4 min-h-screen p-6 shadow-2xl">
+            <div className="w-1/4 h-screen p-6 shadow-2xl overflow-y-auto scrollbar-hide">
               <h2 className="text-xl font-bold text-[#ff9100] mb-6 text-center border-b border-[#ff9100] pb-2">
                 All Questions
               </h2>
@@ -424,7 +424,7 @@ const QuizPage = () => {
             </div>
 
             {/* Main Quiz Content */}
-            <div className="w-3/4 p-8">
+            <div className="w-3/4 p-8 h-screen overflow-y-auto scrollbar-hide">
               {/* Timer */}
               <div className="flex justify-between items-center mb-6 bg-[#f3f3f3] p-4 rounded-lg shadow-md">
                 {/* Timer Section */}
@@ -651,9 +651,9 @@ const QuizPage = () => {
         )}
 
         {showResultPage && (
-          <div>
+          <div className="h-screen overflow-y-auto scrollbar-hide">
             <HeaderAfterSignup />
-            <div className="min-h-screen bg-gradient-to-br from-[#1F3C64] via-[#23395D] to-[#1D2951] text-white py-12">
+            <div className="h-screen bg-gradient-to-br from-[#1F3C64] via-[#23395D] to-[#1D2951] text-white py-12 overflow-y-auto scrollbar-hide">
               <h2 className="text-5xl font-bold text-[#FFFFFF] mb-8 text-center tracking-wide">
                 🏆 Congratulations!
               </h2>
@@ -672,11 +672,24 @@ const QuizPage = () => {
                 </div>
               </div>
 
-              <div className="text-center mb-8">
+              <div className="text-center mb-8 px-10">
                 <p className="text-lg text-[#FFFFFF]">
                   {calculateScore() >= quizData?.questions.length * 0.8 ? (
                     <>
-                      Amazing! 🎉 You've completed the quiz with flying colors!
+                      Amazing! 🎉 You've completed the quiz with flying colors! 
+                      Keep up the good work and aim for even higher scores!🚀
+                      Amazing! 🎉 You've completed the quiz with flying colors! 
+                      Keep up the good work and aim for even higher scores!🚀
+                      Amazing! 🎉 You've completed the quiz with flying colors! 
+                      Keep up the good work and aim for even higher scores!🚀
+                      Amazing! 🎉 You've completed the quiz with flying colors! 
+                      Keep up the good work and aim for even higher scores!🚀
+                      Amazing! 🎉 You've completed the quiz with flying colors! 
+                      Keep up the good work and aim for even higher scores!🚀
+                      Amazing! 🎉 You've completed the quiz with flying colors! 
+                      Keep up the good work and aim for even higher scores!🚀
+                      Amazing! 🎉 You've completed the quiz with flying colors! 
+                      Keep up the good work and aim for even higher scores!🚀
                     </>
                   ) : calculateScore() >= quizData?.questions.length * 0.5 ? (
                     <>
