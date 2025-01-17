@@ -82,7 +82,7 @@ const Leaderboard = () => {
         {/* Dropdown for selecting the standard */}
         <div className="mb-6 flex justify-center">
           <select
-            className="py-2 px-4 rounded-lg shadow-md text-[#3F72AF] bg-white font-semibold"
+            className="py-3 px-6 rounded-lg shadow-lg text-[#ffffff] bg-[#000e3dfb] font-bold transition-all duration-300 ease-in-out"
             value={selectedStandard}
             onChange={(e) => setSelectedStandard(e.target.value)}
           >
@@ -106,24 +106,29 @@ const Leaderboard = () => {
           </select>
         </div>
 
-        {/* Search bar for searching username */}
         <div className="mb-6 flex justify-center">
           <input
             type="text"
             placeholder="Search by username"
-            className="py-2 px-4 rounded-lg shadow-md text-[#3F72AF] bg-white font-semibold"
+            className="py-3 px-6 rounded-lg shadow-lg text-[#ffffff] bg-[#000e3dfb] font-bold transition-all duration-300 ease-in-out"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
 
         {!selectedStandard && (
-          <p className="text-center text-[#FF7F00] font-semibold text-lg">
+          <p className="text-center text-[#FF7F00] font-bold text-lg">
             Please select a class to view the leaderboard
           </p>
         )}
 
-        {selectedStandard && (
+{selectedStandard && filteredLeaderboard.length === 0 && (
+          <p className="text-center text-[#FF7F00] font-bold text-lg">
+            User not found
+          </p>
+        )}
+
+        {selectedStandard && filteredLeaderboard.length > 0 && (
           <div className="bg-white rounded-xl shadow-2xl overflow-hidden">
             <table className="w-full text-left">
               {/* Table Header */}
