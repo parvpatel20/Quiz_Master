@@ -106,15 +106,17 @@ const Leaderboard = () => {
           </select>
         </div>
 
-        <div className="mb-6 flex justify-center">
-          <input
-            type="text"
-            placeholder="Search by username"
-            className="py-3 px-6 rounded-lg shadow-lg text-[#ffffff] bg-[#000e3dfb] font-bold transition-all duration-300 ease-in-out"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
+        {selectedStandard && (
+          <div className="mb-6 flex justify-center">
+            <input
+              type="text"
+              placeholder="Search by username"
+              className="py-3 px-6 rounded-lg shadow-lg text-[#ffffff] bg-[#000e3dfb] font-bold transition-all duration-300 ease-in-out"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+        )}
 
         {!selectedStandard && (
           <p className="text-center text-[#FF7F00] font-bold text-lg">
@@ -122,7 +124,7 @@ const Leaderboard = () => {
           </p>
         )}
 
-{selectedStandard && filteredLeaderboard.length === 0 && (
+        {selectedStandard && filteredLeaderboard.length === 0 && (
           <p className="text-center text-[#FF7F00] font-bold text-lg">
             User not found
           </p>
