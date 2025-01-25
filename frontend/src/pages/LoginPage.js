@@ -30,7 +30,7 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission behavior
     try {
-      const response = await fetch("http://localhost:5000/api/login", {
+      const response = await fetch("https://quiz-master-backend-1a1s.onrender.com/api/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

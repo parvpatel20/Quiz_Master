@@ -44,7 +44,7 @@ const Popup_update = ({ isOpen, closePopup, fieldType, updateUser }) => {
 
     try {
       const response = await fetch(
-        "http://localhost:5000/api/change-password",
+        "https://quiz-master-backend-1a1s.onrender.com/api/change-password",
         {
           method: "PATCH",
           headers: {
@@ -89,7 +89,7 @@ const Popup_update = ({ isOpen, closePopup, fieldType, updateUser }) => {
 
     try {
       const response = await fetch(
-        "http://localhost:5000/api/profile-picture",
+        "https://quiz-master-backend-1a1s.onrender.com/api/profile-picture",
         {
           method: "PATCH",
           body: formData,
@@ -124,7 +124,7 @@ const Popup_update = ({ isOpen, closePopup, fieldType, updateUser }) => {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/profile", {
+      const response = await fetch("https://quiz-master-backend-1a1s.onrender.com/api/profile", {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

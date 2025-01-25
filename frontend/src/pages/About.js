@@ -12,7 +12,7 @@ const About = () => {
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/check-login-status", {
+        const response = await fetch("https://quiz-master-backend-1a1s.onrender.com/api/check-login-status", {
           method: "GET",
           credentials: "include", // Include cookies if using them for authentication
         });

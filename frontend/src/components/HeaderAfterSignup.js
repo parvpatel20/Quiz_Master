@@ -7,7 +7,7 @@ const HeaderAfterSignup = () => {
 
   const handleLogout = async () => {
     try {
-      await fetch("http://localhost:5000/api/logout", {
+      await fetch("https://quiz-master-backend-1a1s.onrender.com/api/logout", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -24,7 +24,7 @@ const HeaderAfterSignup = () => {
   const handleQuizClick = async () => {
     try {
       // Trigger the GET request without processing the response data
-      await fetch("http://localhost:5000/api/quiz-search", {
+      await fetch("https://quiz-master-backend-1a1s.onrender.com/api/quiz-search", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

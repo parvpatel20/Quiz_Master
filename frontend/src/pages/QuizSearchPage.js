@@ -33,7 +33,7 @@ const QuizSearchPage = () => {
 
   const fetchQuizData = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/quiz-search", {
+      const response = await fetch("https://quiz-master-backend-1a1s.onrender.com/api/quiz-search", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -89,7 +89,7 @@ const QuizSearchPage = () => {
       // Fetch the quiz data
 
       const response = await fetch(
-        `http://localhost:5000/api/quiz-page/${userid}/${quizId}`,
+        `https://quiz-master-backend-1a1s.onrender.com/api/quiz-page/${userid}/${quizId}`,
         {
           method: "GET",
           headers: {

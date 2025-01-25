@@ -24,7 +24,7 @@ const QuizPage = () => {
     const fetchQuiz = async () => {
       try {
 
-        const response = await fetch(`http://localhost:5000/api/quiz-page/${userid}/${quizid}`, {
+        const response = await fetch(`https://quiz-master-backend-1a1s.onrender.com/api/quiz-page/${userid}/${quizid}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -84,7 +84,7 @@ const QuizPage = () => {
   const handleupdateQuizHistory = async (userId, quizId, score) => {
     try {
   
-      const response = await fetch(`http://localhost:5000/api/quiz-page/${userId}/${quizId}`, {
+      const response = await fetch(`https://quiz-master-backend-1a1s.onrender.com/api/quiz-page/${userId}/${quizId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

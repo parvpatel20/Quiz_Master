@@ -13,7 +13,7 @@ const Leaderboard = () => {
 
   const fetchLeaderboardData = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/leaderboard", {
+      const response = await fetch("https://quiz-master-backend-1a1s.onrender.com/api/leaderboard", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

@@ -32,7 +32,7 @@ const QuizSearchPageBeforeSignup = () => {
   const fetchQuizData = async () => {
     try {
       const response = await fetch(
-        "http://localhost:5000/api/quiz-search-before-signup",
+        "https://quiz-master-backend-1a1s.onrender.com/api/quiz-search-before-signup",
         {
           method: "GET",
           headers: {

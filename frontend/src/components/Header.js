@@ -5,7 +5,7 @@ const Header = () => {
   const handleQuizClick = async () => {
     try {
       // Trigger the GET request without processing the response data
-      await fetch('http://localhost:5000/api/quiz-search-before-signup', {
+      await fetch('https://quiz-master-backend-1a1s.onrender.com/api/quiz-search-before-signup', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

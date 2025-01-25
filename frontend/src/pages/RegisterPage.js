@@ -65,7 +65,7 @@ const RegisterPage = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/register", {
+      const response = await fetch("https://quiz-master-backend-1a1s.onrender.com/api/register", {
         method: "POST",
         body: formDataToSend,
       });
