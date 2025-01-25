@@ -6,7 +6,7 @@ import userRouter from './routes/user.routes.js'
 const app = express()
 
 app.use(cors({
-    origin: 'https://quiz-master-frontend-4.onrender.com', // Frontend URL
+    origin: 'https://quiz-master-frontend-4.onrender.com || http://localhost:3000', // Frontend URL
     credentials: true, // Allow credentials (cookies)
 }))
 
