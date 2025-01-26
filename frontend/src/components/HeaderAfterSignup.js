@@ -7,7 +7,7 @@ const HeaderAfterSignup = () => {
 
   const handleLogout = async () => {
     try {
-      await fetch("https://quiz-master-backend-1a1s.onrender.com/api/logout", {
+      const response = await fetch("https://quiz-master-backend-1a1s.onrender.com/api/logout", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -16,6 +16,7 @@ const HeaderAfterSignup = () => {
       });
 
       console.log("in handle logout");
+      console.log(response);
       window.location.href = "/"; // Redirect to the home page
     } catch (error) {
       console.error("Error during logout:", error);
