@@ -14,7 +14,8 @@ const HeaderAfterSignup = () => {
         },
         credentials: 'include', // Include credentials for the request
       });
-  
+
+      console.log("in handle logout");
       window.location.href = "/"; // Redirect to the home page
     } catch (error) {
       console.error("Error during logout:", error);
