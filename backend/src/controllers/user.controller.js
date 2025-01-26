@@ -179,12 +179,14 @@ const logoutUser = asyncHandler(async (req, res) => {
   try {
     // Check if the user exists
     const user = await User.findById(req.user._id);
+    console.log(user);
+    
     if (!user) {
       return res
         .status(404)
         .json(new ApiResponse(404, {}, "User not found"));
     }
-
+    
     // Update user document by removing the refreshToken field
     await User.findByIdAndUpdate(
       req.user._id,
@@ -203,6 +205,8 @@ const logoutUser = asyncHandler(async (req, res) => {
       httpOnly: true,
       secure: true,
     };
+
+    console.log("here")
 
     // Clear cookies and send a response
     return res
