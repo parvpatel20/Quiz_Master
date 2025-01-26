@@ -617,7 +617,7 @@ const checkForLogin = asyncHandler(async (req, res) => {
   
   const token = req.cookies?.accessToken;
 
-  // console.log(req.cookies);
+  console.log(req.cookies);
 
   if (!token) {
       return res.status(200).json({
