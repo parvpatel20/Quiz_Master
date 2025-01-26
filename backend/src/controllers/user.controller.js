@@ -178,7 +178,7 @@ const logoutUser = asyncHandler(async (req, res) => {
 
   try {
     // Check if the user exists
-    const user = await User.findById(req.user._id);
+    const user = await User.findById(req.user?._id);
     console.log(user);
     
     if (!user) {
@@ -189,7 +189,7 @@ const logoutUser = asyncHandler(async (req, res) => {
     
     // Update user document by removing the refreshToken field
     await User.findByIdAndUpdate(
-      req.user._id,
+      req.user?._id,
       {
         $unset: {
           refreshToken: 1, // This removes the field from the document
