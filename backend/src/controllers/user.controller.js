@@ -176,28 +176,50 @@ const loginUser = asyncHandler(async (req, res) => {
 
 const logoutUser = asyncHandler(async (req, res) => {
 
-  await User.findByIdAndUpdate(
-    req.user._id,
-    {
-      $unset: {
-        refreshToken: 1, // this removes the field from document
-      },
-    },
-    {
-      new: true,
+  try {
+    // Check if the user exists
+    const user = await User.findById(req.user._id);
+    console.log(user);
+    
+    if (!user) {
+      return res
+        .status(404)
+        .json(new ApiResponse(404, {}, "User not found"));
     }
-  );
+    
+    // Update user document by removing the refreshToken field
+    await User.findByIdAndUpdate(
+      req.user._id,
+      {
+        $unset: {
+          refreshToken: 1, // This removes the field from the document
+        },
+      },
+      {
+        new: true,
+      }
+    );
 
-  const options = {
-    httpOnly: true,
-    secure: true,
-  };
+    // Options for clearing cookies
+    const options = {
+      httpOnly: true,
+      secure: true,
+    };
 
-  return res
-    .status(200)
-    .clearCookie("accessToken", options)
-    .clearCookie("refreshToken", options)
-    .json(new ApiResponse(200, {}, "User logged Out"));
+    console.log("here")
+
+    // Clear cookies and send a response
+    return res
+      .status(200)
+      .clearCookie("accessToken", options)
+      .clearCookie("refreshToken", options)
+      .json(new ApiResponse(200, {}, "User logged out successfully"));
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json(new ApiResponse(500, {}, "Internal Server Error"));
+  }
 });
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
