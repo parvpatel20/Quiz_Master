@@ -650,7 +650,7 @@ const checkForLogin = asyncHandler(async (req, res) => {
 
   else{
       return res.status(200).json({
-          isLoggedIn: false
+          isLoggedIn: true
       })
   }
 
