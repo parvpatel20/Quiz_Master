@@ -229,9 +229,9 @@ const Popup_update = ({ isOpen, closePopup, fieldType, updateUser }) => {
                 className="absolute inset-y-0 right-3 pt-2 flex items-center text-[#FFFFFF] hover:text-[#FF5E00] focus:outline-none"
               >
                 {showPasswordcurrent ? (
-                  <MdVisibilityOff className="w-5 h-5" />
-                ) : (
                   <MdVisibility className="w-5 h-5" />
+                ) : (
+                  <MdVisibilityOff className="w-5 h-5" />
                 )}
               </button>
             </div>
@@ -254,9 +254,9 @@ const Popup_update = ({ isOpen, closePopup, fieldType, updateUser }) => {
                 className="absolute inset-y-0 right-3 pt-2 flex items-center text-[#FFFFFF] hover:text-[#FF5E00] focus:outline-none"
               >
                 {showPasswordnew ? (
-                  <MdVisibilityOff className="w-5 h-5" />
-                ) : (
                   <MdVisibility className="w-5 h-5" />
+                ) : (
+                  <MdVisibilityOff className="w-5 h-5" />
                 )}
               </button>
             </div>

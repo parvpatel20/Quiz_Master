@@ -126,9 +126,9 @@ const LoginPage = () => {
                 className="absolute inset-y-0 right-3 flex items-center text-[#ff9100] hover:text-[#ff5e00] focus:outline-none"
               >
                 {showPassword ? (
-                  <MdVisibilityOff className="w-6 h-6" />
-                ) : (
                   <MdVisibility className="w-6 h-6" />
+                ) : (
+                  <MdVisibilityOff className="w-6 h-6" />
                 )}
               </button>
             </div>
