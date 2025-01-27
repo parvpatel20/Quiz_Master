@@ -30,7 +30,7 @@ const HomePage = () => {
           }
         );
 
-        console.log("check login ok");
+        // console.log("check login ok");
 
         if (response.ok) {
           const data = await response.json();
@@ -47,7 +47,7 @@ const HomePage = () => {
     checkLoginStatus();
   }, []);
 
-  console.log(isLoggedIn);
+  // console.log(isLoggedIn);
 
   // Intersection Observer hooks for each section
   const { ref: heroRef, inView: heroInView } = useInView({
@@ -65,7 +65,7 @@ const HomePage = () => {
     threshold: 0.1,
   });
 
-  console.log(isLoggedIn);
+  // console.log(isLoggedIn);
 
   return (
     <div className="h-screen bg-gradient-to-br from-[#0F1A36] via-[#2C4A75] to-[#0A1C36] text-[#ffffff] font-sans scrollbar-hide">

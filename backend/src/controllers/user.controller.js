@@ -179,7 +179,7 @@ const logoutUser = asyncHandler(async (req, res) => {
   try {
     // Check if the user exists
     const user = await User.findById(req.user?._id);
-    console.log(user);
+    // console.log(user);
     
     if (!user) {
       return res
@@ -207,7 +207,7 @@ const logoutUser = asyncHandler(async (req, res) => {
       sameSite: "None",
     };
 
-    console.log("here")
+    // console.log("here")
 
     // Clear cookies and send a response
     return res
