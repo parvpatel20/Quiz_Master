@@ -14,13 +14,16 @@ const ProfilePage = () => {
 
   const fetchProfileData = async () => {
     try {
-      const response = await fetch("https://quiz-master-backend-1a1s.onrender.com/api/profile", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      });
+      const response = await fetch(
+        "https://quiz-master-backend-1a1s.onrender.com/api/profile",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to fetch profile data.");
@@ -131,15 +134,6 @@ const ProfilePage = () => {
             </div>
           </div>
 
-          {/* Popup Component */}
-          <Popupupdate
-            isOpen={isPopupOpen}
-            closePopup={handleClosePopup}
-            fieldType={currentField} // Pass the field being edited to the popup
-            updateUser={(updatedField, newValue) =>
-              handleUserUpdate(updatedField, newValue)
-            }
-          />
           <div className="flex flex-col items-center space-y-6 p-2 m-2">
             {/* Profile Picture Section */}
             <div className="relative w-32 h-32">
@@ -243,6 +237,16 @@ const ProfilePage = () => {
           <QuizHistory quizzes={sortedQuizzes} />
         </div>
       </div>
+
+      {/* Popup Component */}
+      <Popupupdate
+        isOpen={isPopupOpen}
+        closePopup={handleClosePopup}
+        fieldType={currentField} // Pass the field being edited to the popup
+        updateUser={(updatedField, newValue) =>
+          handleUserUpdate(updatedField, newValue)
+        }
+      />
     </div>
   );
 };
