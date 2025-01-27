@@ -63,7 +63,7 @@ const registerUser = asyncHandler(async (req, res) => {
   if (existedUser) {
     throw new ApiError(409, "User with email or username already exists");
   }
-  // console.log(req.files);
+  console.log(req.files);
 
   let profilePictureLocalPath;
   if (
@@ -75,6 +75,8 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   const profilePicture = await uploadOnCloudinary(profilePictureLocalPath);
+
+  console.log(profilePicture);
 
   // create user object - create entry in db.
   const user = await User.create({
