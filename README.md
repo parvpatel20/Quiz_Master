@@ -2,6 +2,9 @@
 
 Welcome to **QuizMaster**, a simple and fun platform made to help users learn better. This project brings together useful features and different types of quizzes to make learning exciting.
 
+- Website link : https://quiz-master-k432.onrender.com
+- Backend api : https://quiz-master-backend-1a1s.onrender.com
+
 ---
 
 ## Features
