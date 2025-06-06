@@ -66,13 +66,12 @@ const registerUser = asyncHandler(async (req, res) => {
   // console.log(req.files);
 
   let profilePictureLocalPath;
-  if (
-    req.file.path
-  ) {
-    profilePictureLocalPath = req.file.path;
-  }
+let profilePicture;
 
-  const profilePicture = await uploadOnCloudinary(profilePictureLocalPath);
+if (req.file && req.file.path) {
+  profilePictureLocalPath = req.file.path;
+  profilePicture = await uploadOnCloudinary(profilePictureLocalPath);
+}
 
   // console.log(profilePicture);
 
