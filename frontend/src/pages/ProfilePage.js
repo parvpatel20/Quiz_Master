@@ -138,7 +138,11 @@ const ProfilePage = () => {
             {/* Profile Picture Section */}
             <div className="relative w-32 h-32">
               <img
-                src={user?.profilePicture || "https://via.placeholder.com/150"}
+                src={
+                  user?.profilePicture?.trim()
+                    ? user.profilePicture
+                    : "../../assets/logo_half.png"
+                }
                 alt="Profile"
                 className="w-full h-full rounded-full border-4 border-[#FF9100] object-cover"
               />
