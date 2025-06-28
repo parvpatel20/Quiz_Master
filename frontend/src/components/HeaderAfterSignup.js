@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { User, LogOut, Zap } from "lucide-react";
 import { NavLink } from "react-router-dom";
+import {Link} from "react-router-dom";
 
 const HeaderAfterSignup = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
