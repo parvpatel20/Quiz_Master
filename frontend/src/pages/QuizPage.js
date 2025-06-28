@@ -1,13 +1,27 @@
+
 import React, { useState, useEffect } from "react";
-import HeaderAfterSignup from "../components/HeaderAfterSignup";
 import { useParams } from "react-router-dom";
-import { FaClipboardList, FaCheckCircle} from "react-icons/fa";
-import { AiOutlineFieldTime, AiOutlineCheck, AiOutlineSwap} from "react-icons/ai";
-import { BsQuestionCircleFill } from "react-icons/bs";
+import { 
+  Clock, 
+  CheckCircle, 
+  XCircle, 
+  RotateCcw, 
+  Play, 
+  Trophy, 
+  Target, 
+  BookOpen, 
+  Users, 
+  ChevronLeft, 
+  ChevronRight,
+  Award,
+  Zap,
+  Star,
+  Sparkles
+} from "lucide-react";
+import HeaderAfterSignup from "../components/HeaderAfterSignup";
 import Loading from "../components/Loading";
 
 const QuizPage = () => {
-  
   const { userid, quizid } = useParams();
   const [quizData, setQuizData] = useState(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -20,7 +34,7 @@ const QuizPage = () => {
   const [isTimeout, setIsTimeout] = useState(false); // NEW: Track timeout state
   const [loading, setLoading] = useState(true); // NEW: Track loading state
 
-  useEffect(() => {
+   useEffect(() => {
     const fetchQuiz = async () => {
       try {
 
@@ -73,14 +87,14 @@ const QuizPage = () => {
       submitQuiz();
     }
     return () => clearInterval(timer);
-  }, [quizStarted, timeLeft]); 
+  }, [quizStarted, timeLeft]);
 
   const clearOptions = (questionIndex) => {
     const updatedAnswers = [...selectedAnswers];
-    updatedAnswers[questionIndex] = null; // Reset the answer for the current question
+    updatedAnswers[questionIndex] = null;
     setSelectedAnswers(updatedAnswers);
   };
-  
+
   const handleupdateQuizHistory = async (userId, quizId, score) => {
     try {
   
@@ -114,9 +128,9 @@ const QuizPage = () => {
     switch (quizFormat.toLowerCase()) {
       case "mcq-single":
         if (updatedAnswers[questionIndex]?.[0] === option) {
-          updatedAnswers[questionIndex] = null; // Deselect and mark as unanswered
+          updatedAnswers[questionIndex] = null;
         } else {
-          updatedAnswers[questionIndex] = [option]; // Store as an array for consistency
+          updatedAnswers[questionIndex] = [option];
         }
         break;
   
@@ -126,7 +140,7 @@ const QuizPage = () => {
             (answer) => answer !== option
           );
           if (updatedAnswers[questionIndex].length === 0) {
-            updatedAnswers[questionIndex] = null; // Mark as unanswered if empty
+            updatedAnswers[questionIndex] = null;
           }
         } else {
           updatedAnswers[questionIndex] = [
@@ -138,17 +152,17 @@ const QuizPage = () => {
   
       case "true/false":
         if (updatedAnswers[questionIndex]?.[0] === option) {
-          updatedAnswers[questionIndex] = null; // Deselect and mark as unanswered
+          updatedAnswers[questionIndex] = null;
         } else {
-          updatedAnswers[questionIndex] = [option]; // Store as an array for consistency
+          updatedAnswers[questionIndex] = [option];
         }
         break;
   
       case "fill-in-the-blank":
         if (option.trim() === "") {
-          updatedAnswers[questionIndex] = null; // Mark as unanswered if the text area is empty
+          updatedAnswers[questionIndex] = null;
         } else {
-          updatedAnswers[questionIndex] = [option.trim()]; // Store the text answer as an array
+          updatedAnswers[questionIndex] = [option.trim()];
         }
         break;
   
@@ -159,7 +173,6 @@ const QuizPage = () => {
   
     setSelectedAnswers(updatedAnswers);
   };
-  
 
   const navigateToQuestion = (index) => {
     setCurrentQuestionIndex(index);
@@ -200,6 +213,16 @@ const QuizPage = () => {
         return 'Fill in the Blank';
       default:
         return 'Unknown Format';
+    }
+  };
+
+  const getFormatIcon = (format) => {
+    switch (format?.toLowerCase()) {
+      case 'mcq-single': return <Award className="w-6 h-6 text-white" />;
+      case 'mcq-multiple': return <Users className="w-6 h-6 text-white" />;
+      case 'true/false': return <Zap className="w-6 h-6 text-white" />;
+      case 'fill-in-the-blank': return <BookOpen className="w-6 h-6 text-white" />;
+      default: return <Users className="w-6 h-6 text-[#FF9100]" />;
     }
   };
 
@@ -290,8 +313,7 @@ const QuizPage = () => {
   };
 
   const getMissedQuestionsCount = () => {
-    return quizData?.questions.filter((_, index) => !selectedAnswers[index])
-      .length;
+    return quizData?.questions.filter((_, index) => !selectedAnswers[index]).length;
   };
 
   useEffect(() => {
@@ -300,440 +322,598 @@ const QuizPage = () => {
     }
   }, [showResultPage, userid, quizid, parseFloat(((calculateScore() / quizData?.questions.length) * 100).toFixed(2))]); 
 
+  const formatTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${minutes}:${String(secs).padStart(2, "0")}`;
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0F1A36] via-[#2C4A75] to-[#0A1C36] text-[#1D2951]">
+    <div className="min-h-screen bg-gradient-to-br from-[#0F1A36] via-[#2C4A75] to-[#0A1C36] text-white relative overflow-hidden">
+      {/* Animated background elements */}
+      <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-r from-[#FF9100]/20 to-[#FFD700]/20 rounded-full blur-3xl animate-pulse"></div>
+      <div className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-r from-[#2C4A75]/30 to-[#FF9100]/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
       <Loading isLoading={loading} />
-      <div className="min-h-screen shadow-lg">
+      <div className="relative z-10">
         {/* Instructions Page */}
         {!quizStarted && !quizSubmitted && (
-          <div className="p-8">
-            {/* Title */}
-            <h2 className="text-4xl font-extrabold text-[#FFFFFF] mb-6 text-center tracking-wide uppercase shadow-sm">
-              Quiz Instructions
-            </h2>
+          <div className="min-h-screen flex items-center justify-center p-6">
+            <div className="max-w-4xl w-full">
+              {/* Hero Section */}
+              <div className="text-center mb-12">
+                <div className="relative inline-block mb-6">
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#FF9100] to-[#FFD700] rounded-full blur-2xl opacity-60 animate-pulse"></div>
+                  <div className="relative p-4 bg-gradient-to-r from-[#FF9100] to-[#FFD700] rounded-full">
+                    <BookOpen className="w-12 h-12 text-white" />
+                  </div>
+                </div>
+                
+                <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-[#FF9100] via-[#FFD700] to-[#FF6B35] bg-clip-text text-transparent">
+                  {quizData?.quizName || "Quiz Instructions"}
+                </h1>
+                
+                <div className="w-20 h-1 bg-gradient-to-r from-[#FF9100] to-[#FFD700] mx-auto rounded-full"></div>
+              </div>
 
-            {/* Divider */}
-            <div className="w-full h-1 bg-[#FF7F00] mx-auto mb-6 "></div>
+              {/* Instructions Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+                <div className="bg-gradient-to-br from-[#1a2845]/90 via-[#2d3f5f]/80 to-[#0f1729]/90 backdrop-blur-lg p-6 rounded-3xl border border-[#FF9100]/30 shadow-2xl">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="p-3 bg-gradient-to-r from-[#FF9100] to-[#FFD700] rounded-xl">
+                      <Clock className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-[#FF9100]">Time Limit</h3>
+                      <p className="text-white text-xl font-semibold">{quizData?.totalTime} Minutes</p>
+                    </div>
+                  </div>
+                </div>
 
-            {/* Instructions List */}
-            <ul className="text-xl space-y-6 mb-8 text-[#FFFFFF] pl-6 leading-relaxed">
-              <li className="flex items-center">
-                <AiOutlineFieldTime className="text-yellow-400 text-2xl mr-3" />
-                <span>
-                  Total Time : <strong>{quizData?.totalTime} Minutes</strong>
-                </span>
-              </li>
-              <li className="flex items-center">
-                <BsQuestionCircleFill className="text-blue-400 text-2xl mr-3" />
-                <span>
-                  Number of Questions :{" "}
-                  <strong>{quizData?.questions.length}</strong>
-                </span>
-              </li>
-              <li className="flex items-center">
-                <FaClipboardList className="text-green-400 text-2xl mr-3" />
-                <span>
-                  Format : <strong>{getFormatName(quizData?.format)}</strong>
-                </span>
-              </li>
-              <li className="flex items-center">
-                <AiOutlineCheck className="text-green-500 text-2xl mr-3" />
-                <span>
-                  <strong>No negative marking</strong>
-                </span>
-              </li>
-              <li className="flex items-center">
-                <AiOutlineSwap className="text-orange-400 text-2xl mr-3" />
-                <span className="font-semibold">
-                  Free navigation between questions
-                </span>
-              </li>
-              <li className="flex items-center">
-                <img
-                  src="../../assets/red_mark.png"
-                  alt="Red Mark"
-                  className="w-6 h-6 mr-3"
-                />
-                <span className="font-semibold mr-4">Unanswered</span>
-                <img
-                  src="../../assets/green_mark.png"
-                  alt="Green Mark"
-                  className="w-6 h-6 mr-3"
-                />
-                <span className="font-semibold">Answered</span>
-              </li>
-              <li className="flex items-center">
-                <FaCheckCircle className="text-yellow-500 text-2xl mr-3" />
-                <span>
-                  Maximum Marks : <strong>{quizData?.questions.length}</strong>
-                </span>
-              </li>
-            </ul>
+                <div className="bg-gradient-to-br from-[#1a2845]/90 via-[#2d3f5f]/80 to-[#0f1729]/90 backdrop-blur-lg p-6 rounded-3xl border border-[#FF9100]/30 shadow-2xl">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="p-3 bg-gradient-to-r from-[#FF9100] to-[#FFD700] rounded-xl">
+                      <Target className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-[#FF9100]">Questions</h3>
+                      <p className="text-white text-xl font-semibold">{quizData?.questions.length} Total</p>
+                    </div>
+                  </div>
+                </div>
 
-            {/* Animated Button */}
-            <button
-              onClick={startQuiz}
-              className="bg-[#FF7F00] hover:bg-[#FF9100] text-white font-medium py-3 px-8 rounded-full w-50% mt-6 transition-all duration-300 shadow-lg transform hover:scale-105 hover:shadow-2xl mx-auto block"
-            >
-              Start Quiz
-            </button>
+                <div className="bg-gradient-to-br from-[#1a2845]/90 via-[#2d3f5f]/80 to-[#0f1729]/90 backdrop-blur-lg p-6 rounded-3xl border border-[#FF9100]/30 shadow-2xl">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="p-3 bg-gradient-to-r from-[#FF9100] to-[#FFD700] rounded-xl">
+                      {getFormatIcon(quizData?.format)}
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-[#FF9100]">Format</h3>
+                      <p className="text-white text-lg font-semibold">{getFormatName(quizData?.format)}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-br from-[#1a2845]/90 via-[#2d3f5f]/80 to-[#0f1729]/90 backdrop-blur-lg p-6 rounded-3xl border border-[#FF9100]/30 shadow-2xl">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="p-3 bg-gradient-to-r from-[#FF9100] to-[#FFD700] rounded-xl">
+                      <Trophy className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-[#FF9100]">Max Marks</h3>
+                      <p className="text-white text-xl font-semibold">{quizData?.questions.length}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Additional Instructions */}
+              <div className="bg-gradient-to-br from-[#1a2845]/90 via-[#2d3f5f]/80 to-[#0f1729]/90 backdrop-blur-lg p-8 rounded-3xl border border-[#FF9100]/30 shadow-2xl mb-8">
+                <h3 className="text-xl font-bold text-[#FF9100] mb-6 text-center">Quiz Guidelines</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                  <div className="flex items-center gap-3">
+                    <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" />
+                    <span>No negative marking</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" />
+                    <span>Free navigation between questions</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-4 h-4 bg-green-500 rounded-sm flex-shrink-0"></div>
+                    <span>Answered questions</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-4 h-4 bg-red-500 rounded-sm flex-shrink-0"></div>
+                    <span>Unanswered questions</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Start Button */}
+              <div className="text-center">
+                <button
+                  onClick={startQuiz}
+                  className="group relative px-12 py-4 bg-gradient-to-r from-[#FF9100] to-[#FFD700] text-white font-bold text-lg rounded-2xl shadow-2xl hover:shadow-[#FF9100]/50 transition-all duration-300 hover:scale-105"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#FFD700] to-[#FF9100] rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="relative flex items-center gap-3">
+                    <Play className="w-6 h-6" />
+                    Start Quiz
+                  </div>
+                </button>
+              </div>
+            </div>
           </div>
         )}
 
-        {/* Quiz Timer and Question */}
+        {/* Quiz Interface */}
         {quizStarted && (
-          <div className="flex">
+          <div className="min-h-screen flex">
             {/* Sidebar for Question Navigation */}
-            <div className="w-1/4 h-screen p-6 shadow-2xl overflow-y-auto scrollbar-hide">
-              <h2 className="text-xl font-bold text-[#ff9100] mb-6 text-center border-b border-[#ff9100] pb-2">
-                All Questions
-              </h2>
-              <div
-                className="grid grid-cols-4 gap-3"
-                style={{
-                  gridTemplateColumns: `repeat(auto-fill, minmax(60px, 1fr))`,
-                }}
-              >
-                {quizData?.questions.map((_, index) => (
-                  <button
-                    key={index}
-                    className={`relative w-16 h-16 transform transition-transform hover:scale-110 group ${
-                      selectedAnswers[index] ? "bg-green-500" : "bg-red-500"
-                    }`}
-                    onClick={() => navigateToQuestion(index)}
-                    style={{
-                      clipPath: "polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)", // Diamond Shape
-                    }}
-                  >
-                    {/* Text inside the button */}
-                    <span className="absolute inset-0 flex items-center justify-center font-medium text-white transition-opacity duration-300">
-                      {index + 1}
-                    </span>
-
-                    {/* Hover Effect */}
-                    <span
-                      className={`absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg`}
+            <div className="w-80 bg-gradient-to-b from-[#1a2845]/95 via-[#2d3f5f]/90 to-[#0f1729]/95 backdrop-blur-lg border-r border-[#FF9100]/30 p-6">
+              <div className="mb-8">
+                <div className="text-center mb-6">
+                  <h2 className="text-lg font-bold text-[#FF9100] mb-2">Quiz Progress</h2>
+                  <div className="w-16 h-1 bg-gradient-to-r from-[#FF9100] to-[#FFD700] mx-auto rounded-full"></div>
+                </div>
+                
+                {/* Timer Display */}
+                <div className="bg-gradient-to-r from-[#FF9100]/20 to-[#FFD700]/20 backdrop-blur-sm p-4 rounded-2xl border border-[#FF9100]/30 mb-6">
+                  <div className="flex items-center justify-center gap-3 mb-3">
+                    <Clock className="w-5 h-5 text-[#FF9100]" />
+                    <span className="text-lg font-bold text-white">{formatTime(timeLeft)}</span>
+                  </div>
+                  <div className="w-full bg-gray-700 h-2 rounded-full overflow-hidden">
+                    <div
+                      className={`h-full transition-all duration-1000 ${
+                        timeLeft > 120 ? "bg-green-500" : timeLeft > 60 ? "bg-yellow-500" : "bg-red-500"
+                      }`}
                       style={{
-                        clipPath: "polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)",
+                        width: `${(timeLeft / (quizData?.totalTime * 60)) * 100}%`,
                       }}
-                    ></span>
-                  </button>
-                ))}
+                    ></div>
+                  </div>
+                </div>
+
+                {/* Question Progress */}
+                <div className="text-center mb-6">
+                  <div className="inline-block px-4 py-2 bg-gradient-to-r from-[#FF9100] to-[#FFD700] rounded-full text-white font-semibold">
+                    Question {currentQuestionIndex + 1} of {quizData?.questions.length}
+                  </div>
+                </div>
+              </div>
+
+              {/* Question Grid */}
+              <div>
+                <h3 className="text-sm font-semibold text-gray-300 mb-4 text-center">All Questions</h3>
+                <div className="grid grid-cols-5 gap-3">
+                  {quizData?.questions.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => navigateToQuestion(index)}
+                      className={`w-12 h-12 rounded-xl font-semibold transition-all duration-300 border-2 ${
+                        currentQuestionIndex === index
+                          ? "bg-gradient-to-r from-[#FF9100] to-[#FFD700] text-white border-[#FF9100] shadow-lg scale-110"
+                          : selectedAnswers[index]
+                          ? "bg-green-500 text-white border-green-400 hover:scale-105"
+                          : "bg-red-500/80 text-white border-red-400 hover:scale-105"
+                      }`}
+                    >
+                      {index + 1}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
 
             {/* Main Quiz Content */}
-            <div className="w-3/4 p-8 h-screen overflow-y-auto scrollbar-hide">
-              {/* Timer */}
-              <div className="flex justify-between items-center mb-6 bg-[#f3f3f3] p-4 rounded-lg shadow-md">
-                {/* Timer Section */}
-                <div className="flex items-center space-x-4">
-                  <div className="relative w-10 h-10 flex items-center justify-center">
-                    {/* Time Left */}
-                    <span className="absolute inset-0 flex items-center justify-center font-bold text-[#1f3064] text-lg">
-                      {Math.floor(timeLeft / 60)}:
-                      {String(timeLeft % 60).padStart(2, "0")}
-                    </span>
+            <div className="flex-1 p-8">
+              {/* Question Content */}
+              <div className="max-w-4xl mx-auto">
+                <div className="bg-gradient-to-br from-[#1a2845]/95 via-[#2d3f5f]/90 to-[#0f1729]/95 backdrop-blur-lg p-8 rounded-3xl border border-[#FF9100]/30 shadow-2xl mb-8">
+                  <div className="mb-6">
+                    <div className="flex items-center gap-4 mb-4">
+                      <div className="p-3 bg-gradient-to-r from-[#FF9100] to-[#FFD700] rounded-xl">
+                        <Target className="w-6 h-6 text-white" />
+                      </div>
+                      <div>
+                        <h2 className="text-xl font-bold text-[#FF9100]">
+                          Question {currentQuestionIndex + 1}
+                        </h2>
+                        <div className="w-12 h-0.5 bg-gradient-to-r from-[#FF9100] to-[#FFD700] rounded-full"></div>
+                      </div>
+                    </div>
+                    
+                    <p className="text-lg text-white leading-relaxed">
+                      {quizData?.questions[currentQuestionIndex]?.questionText}
+                    </p>
+                  </div>
+
+                  {/* Answer Options */}
+                  <div className="space-y-4">
+                    {quizData?.format === "MCQ-Single" || quizData?.format === "MCQ-Multiple" ? (
+                      quizData?.questions[currentQuestionIndex]?.options.map((option, idx) => (
+                        <label
+                          key={idx}
+                          className={`block cursor-pointer p-4 rounded-2xl border-2 transition-all duration-300 hover:scale-[1.02] ${
+                            selectedAnswers[currentQuestionIndex]?.includes(option)
+                              ? "bg-gradient-to-r from-[#FF9100]/20 to-[#FFD700]/20 border-[#FF9100] text-white"
+                              : "bg-[#1a2845]/60 border-gray-600 text-gray-300 hover:border-[#FF9100]/50 hover:bg-[#FF9100]/10"
+                          }`}
+                        >
+                          <div className="flex items-center gap-4">
+                            <input
+                              type={quizData?.format === "MCQ-Single" ? "radio" : "checkbox"}
+                              name={`question-${currentQuestionIndex}`}
+                              value={option}
+                              checked={selectedAnswers[currentQuestionIndex]?.includes(option) || false}
+                              onChange={() => handleOptionChange(option, currentQuestionIndex, quizData?.format)}
+                              className="w-5 h-5 text-[#FF9100] bg-transparent border-2 border-gray-400 rounded focus:ring-[#FF9100] focus:ring-2"
+                            />
+                            <span className="text-lg font-medium">{option}</span>
+                          </div>
+                        </label>
+                      ))
+                    ) : quizData?.format === "True/False" ? (
+                      ["True", "False"].map((option, idx) => (
+                        <label
+                          key={idx}
+                          className={`block cursor-pointer p-4 rounded-2xl border-2 transition-all duration-300 hover:scale-[1.02] ${
+                            selectedAnswers[currentQuestionIndex]?.[0] === option
+                              ? "bg-gradient-to-r from-[#FF9100]/20 to-[#FFD700]/20 border-[#FF9100] text-white"
+                              : "bg-[#1a2845]/60 border-gray-600 text-gray-300 hover:border-[#FF9100]/50 hover:bg-[#FF9100]/10"
+                          }`}
+                        >
+                          <div className="flex items-center gap-4">
+                            <input
+                              type="radio"
+                              name={`question-${currentQuestionIndex}`}
+                              value={option}
+                              checked={selectedAnswers[currentQuestionIndex]?.[0] === option}
+                              onChange={() => handleOptionChange(option, currentQuestionIndex, "True/False")}
+                              className="w-5 h-5 text-[#FF9100] bg-transparent border-2 border-gray-400 rounded focus:ring-[#FF9100] focus:ring-2"
+                            />
+                            <span className="text-base font-medium">{option}</span>
+                          </div>
+                        </label>
+                      ))
+                    ) : quizData?.format === "Fill-in-the-Blank" ? (
+                      <textarea
+                        value={selectedAnswers[currentQuestionIndex]?.[0] || ""}
+                        onChange={(e) => handleOptionChange(e.target.value, currentQuestionIndex, "Fill-in-the-blank")}
+                        placeholder="Type your answer here..."
+                        className="w-full p-6 bg-[#1a2845]/80 backdrop-blur-sm rounded-2xl text-white border-2 border-[#FF9100]/40 focus:ring-4 focus:ring-[#FF9100]/30 focus:border-[#FF9100] transition-all duration-300 resize-none h-32"
+                      />
+                    ) : null}
                   </div>
                 </div>
 
-                {/* Progress Bar */}
-                <div className="w-full bg-gray-200 h-3 rounded-lg overflow-hidden ml-6">
-                  <div
-                    className={`h-full transition-all duration-500 ${
-                      timeLeft > 120
-                        ? "bg-green-500"
-                        : timeLeft > 60
-                        ? "bg-yellow-500"
-                        : "bg-red-500"
+                {/* Navigation Controls */}
+                <div className="flex items-center justify-between gap-4">
+                  <button
+                    onClick={() => navigateToQuestion(currentQuestionIndex - 1)}
+                    disabled={currentQuestionIndex === 0}
+                    className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-semibold transition-all duration-300 ${
+                      currentQuestionIndex === 0
+                        ? "bg-gray-600 text-gray-400 cursor-not-allowed"
+                        : "bg-gradient-to-r from-[#FF9100] to-[#FFD700] text-white hover:shadow-lg hover:scale-105"
                     }`}
-                    style={{
-                      width: `${
-                        (timeLeft / (quizData?.totalTime * 60)) * 100
-                      }%`,
-                    }}
-                  ></div>
+                  >
+                    <ChevronLeft className="w-5 h-5" />
+                    Previous
+                  </button>
+
+                  <button
+                    onClick={() => clearOptions(currentQuestionIndex)}
+                    className="flex items-center gap-2 px-6 py-3 bg-red-500 text-white rounded-2xl font-semibold hover:bg-red-600 hover:scale-105 transition-all duration-300"
+                  >
+                    <RotateCcw className="w-5 h-5" />
+                    Clear
+                  </button>
+
+                  <button
+                    onClick={() => navigateToQuestion(currentQuestionIndex + 1)}
+                    disabled={currentQuestionIndex === quizData?.questions.length - 1}
+                    className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-semibold transition-all duration-300 ${
+                      currentQuestionIndex === quizData?.questions.length - 1
+                        ? "bg-gray-600 text-gray-400 cursor-not-allowed"
+                        : "bg-gradient-to-r from-[#FF9100] to-[#FFD700] text-white hover:shadow-lg hover:scale-105"
+                    }`}
+                  >
+                    Next
+                    <ChevronRight className="w-5 h-5" />
+                  </button>
                 </div>
 
-                {/* Question Number */}
-                <span className="bg-[#1f3064] text-white px-4 ml-4 py-2 rounded-full text-sm font-medium shadow-md text-center">
-                  Question {currentQuestionIndex + 1}/
-                  {quizData?.questions.length}
-                </span>
-              </div>
-
-              {/* Question */}
-              <div className="bg-gradient-to-r from-[#112D4E] to-[#0F1A36] text-[#ffffff] p-6 rounded-lg mb-6">
-                <h2 className="text-2xl font-bold text-[#ff9100] mb-4">
-                  {quizData?.questions[currentQuestionIndex].questionText}
-                </h2>
-
-                {/* Render different question types */}
-                <div className="space-y-4">
-                  {quizData?.format === "MCQ-Single" ||
-                  quizData?.format === "MCQ-Multiple" ? (
-                    // MCQ-Single or MCQ-Multiple
-                    quizData?.questions[currentQuestionIndex].options.map(
-                      (option, idx) => (
-                        <label
-                          key={idx}
-                          className="block cursor-pointer transition duration-300 hover:bg-[#ff5e00] hover:text-[#ffffff] p-4 rounded-lg flex justify-start items-center"
-                        >
-                          <input
-                            type={
-                              quizData?.format === "MCQ-Single"
-                                ? "radio"
-                                : "checkbox"
-                            }
-                            name={`question-${currentQuestionIndex}`}
-                            value={option}
-                            checked={
-                              selectedAnswers[currentQuestionIndex]?.includes(
-                                option
-                              ) ||
-                              selectedAnswers[currentQuestionIndex] === option
-                            }
-                            onChange={() =>
-                              handleOptionChange(
-                                option,
-                                currentQuestionIndex,
-                                quizData?.format
-                              )
-                            }
-                            className="hidden peer"
-                          />
-                          <span
-                            className={`inline-block w-4 h-4 mr-3 rounded-full border-2 border-[#ffffff] peer-checked:bg-[#008000] peer-checked:border-[#008000] transition duration-300 flex justify-center items-center`}
-                          ></span>
-                          {option}
-                        </label>
-                      )
-                    )
-                  ) : quizData?.format === "True/False" ? (
-                    // True/False
-                    <div className="space-y-4">
-                      {["True", "False"].map((option, idx) => (
-                        <label
-                          key={idx}
-                          className="block cursor-pointer transition duration-300 hover:bg-[#ff5e00] hover:text-[#ffffff] p-4 rounded-lg flex justify-start items-center"
-                        >
-                          <input
-                            type="radio"
-                            name={`question-${currentQuestionIndex}`}
-                            value={option}
-                            checked={
-                              selectedAnswers[currentQuestionIndex]?.[0] ===
-                              option
-                            }
-                            onChange={() =>
-                              handleOptionChange(
-                                option,
-                                currentQuestionIndex,
-                                "True/False"
-                              )
-                            }
-                            className="hidden peer"
-                          />
-                          <span
-                            className={`inline-block w-4 h-4 mr-3 rounded-full border-2 border-[#ffffff] peer-checked:bg-[#008000] peer-checked:border-[#008000] transition duration-300 flex justify-center items-center`}
-                          ></span>
-                          {option}
-                        </label>
-                      ))}
-                    </div>
-                  ) : quizData?.format === "Fill-in-the-Blank" ? (
-                    // Fill-in-the-blank
-                    <textarea
-                      value={selectedAnswers[currentQuestionIndex] || ""}
-                      onChange={(e) =>
-                        handleOptionChange(
-                          e.target.value,
-                          currentQuestionIndex,
-                          "Fill-in-the-blank"
-                        )
-                      }
-                      placeholder="Type your answer here"
-                      className="w-full p-4 border-2 border-[#ff9100] rounded-lg text-black"
-                    />
-                  ) : null}
+                {/* Submit Button */}
+                <div className="text-center mt-8">
+                  <button
+                    onClick={submitQuiz}
+                    className="px-12 py-4 bg-gradient-to-r from-[#FF9100] to-[#FFD700] text-white font-bold text-lg rounded-2xl shadow-2xl hover:shadow-[#FF9100]/50 transition-all duration-300 hover:scale-105"
+                  >
+                    Submit Quiz
+                  </button>
                 </div>
               </div>
-
-              {/* Navigation Buttons */}
-              <div className="flex justify-between">
-                <button
-                  onClick={() => navigateToQuestion(currentQuestionIndex - 1)}
-                  disabled={currentQuestionIndex === 0}
-                  className={`px-6 py-2 text-[#ffffff] text-lg font-semibold rounded-full shadow-lg hover:scale-105 transform transition duration-300 ${
-                    currentQuestionIndex === 0
-                      ? "bg-gray-400 text-gray-200 cursor-not-allowed"
-                      : "bg-gradient-to-r from-[#FF9100] to-[#FF5E00] text-[#ffffff]"
-                  }`}
-                >
-                  Previous
-                </button>
-
-                <button
-                  onClick={() => clearOptions(currentQuestionIndex)}
-                  className="px-4 py-2 bg-red-500 text-[#ffffff] text-lg font-semibold rounded-full shadow-lg hover:bg-red-600 transform transition duration-300"
-                >
-                  Clear Options
-                </button>
-
-                <button
-                  onClick={() => navigateToQuestion(currentQuestionIndex + 1)}
-                  disabled={
-                    currentQuestionIndex === quizData?.questions.length - 1
-                  }
-                  className={`px-6 py-2 text-[#ffffff] text-lg font-semibold rounded-full shadow-lg hover:scale-105 transform transition duration-300 ${
-                    currentQuestionIndex === quizData?.questions.length - 1
-                      ? "bg-gray-400 text-gray-200 cursor-not-allowed"
-                      : "bg-gradient-to-r from-[#FF9100] to-[#FF5E00] text-[#ffffff]"
-                  }`}
-                >
-                  Next
-                </button>
-              </div>
-
-              {/* Submit Button */}
-              <button
-                onClick={submitQuiz}
-                className="w-full mt-5 px-6 py-2 bg-gradient-to-r from-[#FF9100] to-[#FF5E00] text-[#ffffff] text-lg font-semibold rounded-full shadow-lg hover:scale-105 transform transition duration-300"
-              >
-                Submit Quiz
-              </button>
             </div>
           </div>
         )}
+
 
         {/* Summary Page */}
         {showSummaryPage && !showResultPage && (
-          <div className="p-10 pt-40 mb-10 max-w-3xl mx-auto relative overflow-hidden">
-            <h2 className="text-4xl font-bold text-[#FFFFFF] mb-8 text-center tracking-wide">
-              Quiz Summary
-            </h2>
-
-            <div className="text-lg mb-8 text-[#FFFFFF]">
-              <div className="flex justify-between mb-6">
-                <p className="font-semibold">Attempted Questions:</p>
-                <p>{quizData?.questions.length - getMissedQuestionsCount()}</p>
+          <div className="min-h-screen flex items-center justify-center p-6">
+            <div className="max-w-4xl w-full">
+              {/* Hero Section */}
+              <div className="text-center mb-12">
+                <div className="relative inline-block mb-6">
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#FF9100] to-[#FFD700] rounded-full blur-2xl opacity-60 animate-pulse"></div>
+                  <div className="relative p-4 bg-gradient-to-r from-[#FF9100] to-[#FFD700] rounded-full">
+                    <Target className="w-12 h-12 text-white" />
+                  </div>
+                </div>
+                
+                <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-[#FF9100] via-[#FFD700] to-[#FF6B35] bg-clip-text text-transparent">
+                  Quiz Summary
+                </h1>
+                
+                <div className="w-20 h-1 bg-gradient-to-r from-[#FF9100] to-[#FFD700] mx-auto rounded-full"></div>
               </div>
-              <div className="flex justify-between mb-6">
-                <p className="font-semibold">Unattempted Questions:</p>
-                <p>{getMissedQuestionsCount()}</p>
-              </div>
-            </div>
 
-            <div className="flex justify-center gap-10 mt-20">
-              <button
-                onClick={() => {
-                  setShowSummaryPage(false);
-                  setQuizStarted(true);
-                }}
-                disabled={isTimeout}
-                className={`px-6 py-2 text-[#ffffff] text-lg font-semibold rounded-full shadow-lg hover:scale-105 transform transition duration-300 ${
-                  isTimeout
-                    ? "bg-gray-400 text-gray-200 cursor-not-allowed"
-                    : "bg-gradient-to-r from-[#FF9100] to-[#FF5E00] text-[#ffffff]"
-                }`}
-              >
-                Go Back to Quiz
-              </button>
-              <button
-                onClick={() => setShowResultPage(true)}
-                className="px-6 py-2 bg-gradient-to-r from-[#FF9100] to-[#FF5E00] text-[#ffffff] text-lg font-semibold rounded-full shadow-lg hover:scale-105 transform transition duration-300"
-              >
-                Check Your Score
-              </button>
+              {/* Summary Statistics */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                {/* Attempted Questions Card */}
+                <div className="bg-gradient-to-br from-[#1a2845]/90 via-[#2d3f5f]/80 to-[#0f1729]/90 backdrop-blur-lg p-8 rounded-3xl border border-[#FF9100]/30 shadow-2xl">
+                  <div className="text-center">
+                    <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full mb-4">
+                      <CheckCircle className="w-8 h-8 text-white" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-white mb-2">
+                      {quizData?.questions.length - getMissedQuestionsCount()}
+                    </h3>
+                    <p className="text-[#FF9100] font-semibold text-lg">Attempted Questions</p>
+                    <div className="w-12 h-0.5 bg-gradient-to-r from-green-500 to-emerald-500 mx-auto mt-2 rounded-full"></div>
+                  </div>
+                </div>
+
+                {/* Unattempted Questions Card */}
+                <div className="bg-gradient-to-br from-[#1a2845]/90 via-[#2d3f5f]/80 to-[#0f1729]/90 backdrop-blur-lg p-8 rounded-3xl border border-[#FF9100]/30 shadow-2xl">
+                  <div className="text-center">
+                    <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-red-500 to-rose-500 rounded-full mb-4">
+                      <XCircle className="w-8 h-8 text-white" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-white mb-2">
+                      {getMissedQuestionsCount()}
+                    </h3>
+                    <p className="text-[#FF9100] font-semibold text-lg">Unattempted Questions</p>
+                    <div className="w-12 h-0.5 bg-gradient-to-r from-red-500 to-rose-500 mx-auto mt-2 rounded-full"></div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Progress Visualization */}
+              <div className="bg-gradient-to-br from-[#1a2845]/90 via-[#2d3f5f]/80 to-[#0f1729]/90 backdrop-blur-lg p-8 rounded-3xl border border-[#FF9100]/30 shadow-2xl mb-12">
+                <div className="text-center mb-6">
+                  <h3 className="text-xl font-bold text-[#FF9100] mb-2">Quiz Progress</h3>
+                  <div className="w-16 h-1 bg-gradient-to-r from-[#FF9100] to-[#FFD700] mx-auto rounded-full"></div>
+                </div>
+                
+                <div className="relative">
+                  <div className="flex justify-between text-sm text-gray-300 mb-2">
+                    <span>0</span>
+                    <span className="text-[#FF9100] font-semibold">
+                      {quizData?.questions.length - getMissedQuestionsCount()} / {quizData?.questions.length}
+                    </span>
+                    <span>{quizData?.questions.length}</span>
+                  </div>
+                  <div className="w-full bg-gray-700 h-4 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-[#FF9100] to-[#FFD700] transition-all duration-1000 ease-out"
+                      style={{
+                        width: `${((quizData?.questions.length - getMissedQuestionsCount()) / quizData?.questions.length) * 100}%`,
+                      }}
+                    ></div>
+                  </div>
+                  <div className="text-center mt-4">
+                    <span className="text-2xl font-bold text-white">
+                      {Math.round(((quizData?.questions.length - getMissedQuestionsCount()) / quizData?.questions.length) * 100)}%
+                    </span>
+                    <span className="text-gray-300 ml-2">Complete</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+                <button
+                  onClick={() => {
+                    setShowSummaryPage(false);
+                    setQuizStarted(true);
+                  }}
+                  disabled={isTimeout}
+                  className={`group relative px-8 py-4 rounded-2xl font-bold text-lg transition-all duration-300 ${
+                    isTimeout
+                      ? "bg-gray-600 text-gray-400 cursor-not-allowed"
+                      : "bg-gradient-to-r from-gray-600 to-gray-700 text-white hover:from-gray-500 hover:to-gray-600 hover:scale-105 shadow-lg hover:shadow-gray-500/25"
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <ChevronLeft className="w-5 h-5" />
+                    {isTimeout ? "Time's Up!" : "Back to Quiz"}
+                  </div>
+                </button>
+
+                <button
+                  onClick={() => setShowResultPage(true)}
+                  className="group relative px-8 py-4 bg-gradient-to-r from-[#FF9100] to-[#FFD700] text-white font-bold text-lg rounded-2xl shadow-2xl hover:shadow-[#FF9100]/50 transition-all duration-300 hover:scale-105"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#FFD700] to-[#FF9100] rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="relative flex items-center gap-3">
+                    <Trophy className="w-6 h-6" />
+                    View Results
+                  </div>
+                </button>
+              </div>
+
+              {/* Encouragement Message */}
+              {getMissedQuestionsCount() > 0 && (
+                <div className="mt-8 text-center">
+                  <div className="inline-flex items-center gap-2 px-6 py-3 bg-yellow-500/20 border border-yellow-500/30 rounded-2xl">
+                    <Star className="w-5 h-5 text-yellow-400" />
+                    <span className="text-yellow-100">
+                      You still have {getMissedQuestionsCount()} question{getMissedQuestionsCount() > 1 ? 's' : ''} to complete!
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}
 
+        {/* Results Page */}
         {showResultPage && (
-          <div className="h-screen overflow-y-auto scrollbar-hide">
-            <HeaderAfterSignup />
-            <div className="h-screen bg-gradient-to-br from-[#1F3C64] via-[#23395D] to-[#1D2951] text-white py-12 overflow-y-auto scrollbar-hide">
-              <h2 className="text-5xl font-bold text-[#FFFFFF] mb-8 text-center tracking-wide">
-                🏆 Congratulations!
-              </h2>
+          <div className="min-h-screen flex items-center justify-center p-6">
+            <div className="max-w-5xl w-full">
+              <HeaderAfterSignup />
+              {/* Celebration Header */}
+              <div className="text-center mb-12">
+                <div className="relative inline-block mb-6">
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#FF9100] to-[#FFD700] rounded-full blur-3xl opacity-60 animate-pulse"></div>
+                  <div className="relative p-6 bg-gradient-to-r from-[#FF9100] to-[#FFD700] rounded-full">
+                    <Trophy className="w-16 h-16 text-white" />
+                  </div>
+                </div>
+                
+                <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-[#FF9100] via-[#FFD700] to-[#FF6B35] bg-clip-text text-transparent">
+                  🏆 Congratulations!
+                </h1>
+                
+                <div className="w-24 h-1 bg-gradient-to-r from-[#FF9100] to-[#FFD700] mx-auto rounded-full"></div>
+              </div>
 
-              <div className="relative flex justify-center items-center mb-8">
-                <div className="relative flex flex-col justify-center items-center">
-                  <div className="bg-[#FF7F00] text-[#1D2951] font-extrabold text-6xl w-32 h-32 rounded-full flex items-center justify-center shadow-lg">
+              {/* Score Display */}
+              <div className="text-center mb-12">
+                <div className="relative inline-block">
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#FF9100] to-[#FFD700] rounded-full blur-2xl opacity-40 animate-pulse"></div>
+                  <div className="relative bg-gradient-to-r from-[#FF9100] to-[#FFD700] text-white font-extrabold text-6xl w-40 h-40 rounded-full flex items-center justify-center shadow-2xl border-4 border-white/20">
                     {calculateScore()}
                   </div>
-                  <p className="text-xl text-[#FFFFFF] mt-4">
-                    <span className="font-bold">Your Score</span> out of{" "}
-                    <span className="font-bold">
-                      {quizData?.questions.length}
-                    </span>
+                </div>
+                
+                <div className="mt-6">
+                  <p className="text-2xl text-white font-semibold">
+                    Your Score: <span className="text-[#FF9100]">{calculateScore()}</span> out of{" "}
+                    <span className="text-[#FFD700]">{quizData?.questions.length}</span>
                   </p>
+                  
+                  <div className="mt-4 max-w-md mx-auto">
+                    <div className="w-full bg-gray-700 h-3 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-gradient-to-r from-[#FF9100] to-[#FFD700] transition-all duration-2000 ease-out"
+                        style={{
+                          width: `${(calculateScore() / quizData?.questions.length) * 100}%`,
+                        }}
+                      ></div>
+                    </div>
+                    <p className="text-lg text-gray-300 mt-2">
+                      {Math.round((calculateScore() / quizData?.questions.length) * 100)}% Score
+                    </p>
+                  </div>
                 </div>
               </div>
 
-              <div className="text-center mb-8 px-10">
-                <p className="text-lg text-[#FFFFFF]">
-                  {calculateScore() >= quizData?.questions.length * 0.8 ? (
-                    <>
-                      Amazing! 🎉 You've completed the quiz with flying colors! 
-                      Keep up the good work and aim for even higher scores!🚀
-                      Amazing! 🎉 You've completed the quiz with flying colors! 
-                      Keep up the good work and aim for even higher scores!🚀
-                      Amazing! 🎉 You've completed the quiz with flying colors! 
-                      Keep up the good work and aim for even higher scores!🚀
-                      Amazing! 🎉 You've completed the quiz with flying colors! 
-                      Keep up the good work and aim for even higher scores!🚀
-                      Amazing! 🎉 You've completed the quiz with flying colors! 
-                      Keep up the good work and aim for even higher scores!🚀
-                      Amazing! 🎉 You've completed the quiz with flying colors! 
-                      Keep up the good work and aim for even higher scores!🚀
-                      Amazing! 🎉 You've completed the quiz with flying colors! 
-                      Keep up the good work and aim for even higher scores!🚀
-                    </>
-                  ) : calculateScore() >= quizData?.questions.length * 0.5 ? (
-                    <>
-                      Good job! You've done well, but there’s room for
-                      improvement. 😊
-                    </>
-                  ) : (
-                    <>
-                      Keep it up! You're almost there. Try again and aim for a
-                      better score! 💪
-                    </>
-                  )}
-                </p>
-                <p className="text-lg text-[#FFFFFF] mt-4">
-                  {calculateScore() >= quizData?.questions.length * 0.8 ? (
-                    <>
-                      You're a quiz master! Keep this momentum going for even
-                      greater achievements! 🌟
-                    </>
-                  ) : calculateScore() >= quizData?.questions.length * 0.5 ? (
-                    <>
-                      You’ve got the basics covered, but with more practice,
-                      you’ll reach the top! Keep pushing! 🔥
-                    </>
-                  ) : (
-                    <>
-                      Don’t be discouraged! Take this as a learning opportunity
-                      and try again for an even better score! 📚
-                    </>
-                  )}
-                </p>
+              {/* Performance Message */}
+              <div className="bg-gradient-to-br from-[#1a2845]/90 via-[#2d3f5f]/80 to-[#0f1729]/90 backdrop-blur-lg p-8 rounded-3xl border border-[#FF9100]/30 shadow-2xl mb-12">
+                <div className="text-center">
+                  <div className="mb-6">
+                    {calculateScore() >= quizData?.questions.length * 0.8 ? (
+                      <div className="inline-flex items-center gap-3 px-6 py-3 bg-green-500/20 border border-green-500/30 rounded-2xl">
+                        <Sparkles className="w-6 h-6 text-green-400" />
+                        <span className="text-green-100 font-semibold text-lg">Excellent Performance!</span>
+                      </div>
+                    ) : calculateScore() >= quizData?.questions.length * 0.5 ? (
+                      <div className="inline-flex items-center gap-3 px-6 py-3 bg-yellow-500/20 border border-yellow-500/30 rounded-2xl">
+                        <Star className="w-6 h-6 text-yellow-400" />
+                        <span className="text-yellow-100 font-semibold text-lg">Good Job!</span>
+                      </div>
+                    ) : (
+                      <div className="inline-flex items-center gap-3 px-6 py-3 bg-blue-500/20 border border-blue-500/30 rounded-2xl">
+                        <Zap className="w-6 h-6 text-blue-400" />
+                        <span className="text-blue-100 font-semibold text-lg">Keep Learning!</span>
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <p className="text-lg text-white leading-relaxed">
+                      {calculateScore() >= quizData?.questions.length * 0.8 ? (
+                        "Amazing! 🎉 You've completed the quiz with flying colors! You're a quiz master!"
+                      ) : calculateScore() >= quizData?.questions.length * 0.5 ? (
+                        "Good job! You've done well, but there's room for improvement. Keep pushing! 🔥"
+                      ) : (
+                        "Don't be discouraged! Take this as a learning opportunity and try again for an even better score! 📚"
+                      )}
+                    </p>
+                    
+                    <p className="text-base text-gray-300">
+                      {calculateScore() >= quizData?.questions.length * 0.8 ? (
+                        "Keep this momentum going for even greater achievements! 🌟"
+                      ) : calculateScore() >= quizData?.questions.length * 0.5 ? (
+                        "You've got the basics covered, but with more practice, you'll reach the top!"
+                      ) : (
+                        "Every expert was once a beginner. Practice makes perfect!"
+                      )}
+                    </p>
+                  </div>
+                </div>
               </div>
 
+              {/* Quiz Statistics */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                <div className="bg-gradient-to-br from-[#1a2845]/90 via-[#2d3f5f]/80 to-[#0f1729]/90 backdrop-blur-lg p-6 rounded-2xl border border-green-500/30">
+                  <div className="text-center">
+                    <CheckCircle className="w-8 h-8 text-green-400 mx-auto mb-3" />
+                    <h3 className="text-xl font-bold text-white mb-1">{calculateScore()}</h3>
+                    <p className="text-green-400 text-sm">Correct Answers</p>
+                  </div>
+                </div>
+                
+                <div className="bg-gradient-to-br from-[#1a2845]/90 via-[#2d3f5f]/80 to-[#0f1729]/90 backdrop-blur-lg p-6 rounded-2xl border border-red-500/30">
+                  <div className="text-center">
+                    <XCircle className="w-8 h-8 text-red-400 mx-auto mb-3" />
+                    <h3 className="text-xl font-bold text-white mb-1">{quizData?.questions.length - calculateScore()}</h3>
+                    <p className="text-red-400 text-sm">Incorrect/Skipped</p>
+                  </div>
+                </div>
+                
+                <div className="bg-gradient-to-br from-[#1a2845]/90 via-[#2d3f5f]/80 to-[#0f1729]/90 backdrop-blur-lg p-6 rounded-2xl border border-[#FF9100]/30">
+                  <div className="text-center">
+                    <Clock className="w-8 h-8 text-[#FF9100] mx-auto mb-3" />
+                    <h3 className="text-xl font-bold text-white mb-1">
+                      {formatTime((quizData?.totalTime * 60) - timeLeft)}
+                    </h3>
+                    <p className="text-[#FF9100] text-sm">Time Taken</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Button */}
               <div className="text-center">
                 <button
                   onClick={handleRestartQuiz}
-                  className="px-6 py-2 bg-gradient-to-r from-[#FF9100] to-[#FF5E00] text-[#ffffff] text-lg font-semibold rounded-full shadow-lg hover:scale-105 transform transition duration-300"
+                  className="group relative px-12 py-4 bg-gradient-to-r from-[#FF9100] to-[#FFD700] text-white font-bold text-lg rounded-2xl shadow-2xl hover:shadow-[#FF9100]/50 transition-all duration-300 hover:scale-105"
                 >
-                  Try Again
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#FFD700] to-[#FF9100] rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="relative flex items-center gap-3">
+                    <RotateCcw className="w-6 h-6" />
+                    Try Again
+                  </div>
                 </button>
               </div>
             </div>
           </div>
         )}
+
       </div>
     </div>
   );
