@@ -81,7 +81,7 @@ if (req.file && req.file.path) {
     email,
     password,
     classname,
-    profilePicture: profilePicture?.url || "",
+    profilePicture: profilePicture?.url || "https://res.cloudinary.com/dfamhizhm/image/upload/v1751081474/logo_mr08jt.png",
     bio: req.body.bio || "",
   });
 
