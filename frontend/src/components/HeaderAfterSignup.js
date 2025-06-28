@@ -210,15 +210,15 @@ const HeaderAfterSignup = () => {
                     
                     <div className="relative">
                       {/* Profile Link */}
-                      <a
-                        href="/profile"
-                        className="flex items-center gap-3 px-4 py-3 text-white/90 hover:text-white transition-all duration-300 group/item hover:bg-[#FF9100]/10"
-                      >
+                      <Link
+                to="/profile"
+               className="flex items-center gap-3 px-4 py-3 text-white/90 hover:text-white transition-all duration-300 group/item hover:bg-[#FF9100]/10"
+              >
                         <div className="p-1.5 rounded-lg bg-gradient-to-r from-[#FF9100]/20 to-[#FFD700]/20 group-hover/item:from-[#FF9100]/40 group-hover/item:to-[#FFD700]/40 transition-all duration-300">
                           <User className="w-4 h-4 text-[#FFD700]" />
                         </div>
                         <span className="text-sm font-medium">Profile</span>
-                      </a>
+                      </Link>
 
                       {/* Logout Button */}
                       <button
