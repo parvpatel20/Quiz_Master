@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { ChevronDown, BookOpen, Users, Target, Award, Clock, Filter, Search, Star, Zap, Trophy, Sparkles } from "lucide-react";
+import { ChevronDown, BookOpen, Users, Target, Award, Clock, Filter, Search, Star, Zap, Trophy, Sparkles, Check } from "lucide-react";
 import Header from "../components/Header";
 import Loading from "../components/Loading";
 
@@ -123,52 +123,199 @@ const QuizSearchPageBeforeSignup = () => {
     }
   };
 
-  const SelectField = ({ label, value, onChange, options, disabled, placeholder, icon: Icon, gradient }) => (
-    <div className="relative group">
-      <div className={`relative p-6 rounded-3xl shadow-2xl border transition-all duration-500 ${gradient} border-[#FF9100]/30 backdrop-blur-lg`}>
-        {/* Animated background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#FF9100]/10 via-transparent to-[#FFD700]/10 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-        
-        {/* Floating label with icon */}
-        <div className="relative flex items-center gap-4 mb-6">
-          <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-[#FF9100] to-[#FFD700] rounded-xl blur-sm opacity-60"></div>
-            <div className="relative p-3 bg-gradient-to-r from-[#FF9100] to-[#FFD700] rounded-xl">
-              <Icon className="w-6 h-6 text-white" />
+  const SelectField = ({ 
+  label, 
+  value, 
+  onChange, 
+  options, 
+  disabled = false,
+  placeholder, 
+  icon: Icon,
+  gradient 
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+
+  const selectedOption = options.find(option => option.value === value);
+
+  return (
+    <div className="relative w-full">
+      {/* Label with enhanced styling */}
+      <label className="block text-lg font-bold text-gray-200 mb-3 tracking-wide">
+        <div className="flex items-center gap-2">
+          {Icon && <Icon className="w-6 h-6 text-white/80" />}
+          {label}
+        </div>
+      </label>
+      
+      {/* Enhanced Select Container */}
+      <div className="relative">
+        {/* Main select button with improved design */}
+        <button
+          type="button"
+          disabled={disabled}
+          onClick={() => !disabled && setIsOpen(!isOpen)}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          className={`
+            relative w-full px-4 py-4 text-left
+            ${gradient}
+            border-2 border-white/20
+            rounded-xl
+            shadow-lg shadow-black/20
+            backdrop-blur-sm
+            transition-all duration-300 ease-out
+            ${disabled 
+              ? 'opacity-50 cursor-not-allowed' 
+              : 'hover:border-white/40 hover:shadow-xl hover:shadow-black/30 focus:outline-none focus:border-white/60 focus:shadow-xl focus:shadow-black/40'
+            }
+            ${isOpen ? 'border-white/60 shadow-xl shadow-black/40' : ''}
+            ${isFocused && !disabled ? 'scale-[1.02]' : ''}
+            group
+          `}
+        >
+          {/* Background pattern overlay */}
+          <div className="absolute inset-0 bg-gradient-to-r from-white/5 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          
+          {/* Content container */}
+          <div className="relative flex items-center justify-between">
+            <div className="flex items-center gap-3 flex-1">
+              {/* Icon with enhanced styling */}
+              {Icon && (
+                <div className="flex-shrink-0 p-2 bg-white/20 rounded-lg border border-white/30">
+                  <Icon className="w-5 h-5 text-white/90" />
+                </div>
+              )}
+              
+              {/* Text content */}
+              <div className="flex flex-col min-w-0 flex-1">
+                {selectedOption ? (
+                  <>
+                    <span className="text-white font-medium text-base tracking-wide">
+                      {selectedOption.value}
+                    </span>
+                    {selectedOption.label !== selectedOption.value && (
+                      <span className="text-white/70 text-sm mt-0.5 truncate">
+                        {selectedOption.label.split(' - ')[1] || selectedOption.label}
+                      </span>
+                    )}
+                  </>
+                ) : (
+                  <span className={`font-medium ${disabled ? 'text-white/40' : 'text-white/60'}`}>
+                    {placeholder}
+                  </span>
+                )}
+              </div>
+            </div>
+            
+            {/* Enhanced dropdown arrow */}
+            <div className={`
+              flex-shrink-0 ml-3 p-1.5 rounded-lg 
+              bg-white/20 border border-white/30
+              transition-all duration-300
+              ${isOpen ? 'rotate-180 bg-white/30' : ''}
+            `}>
+              <ChevronDown className="w-4 h-4 text-white/90" />
             </div>
           </div>
-          <div>
-            <h3 className="text-xl font-bold bg-gradient-to-r from-[#FF9100] via-[#FFD700] to-[#FF6B35] bg-clip-text text-transparent">
-              {label}
-            </h3>
-            <div className="w-12 h-0.5 bg-gradient-to-r from-[#FF9100] to-[#FFD700] rounded-full mt-1"></div>
-          </div>
-        </div>
-
-        {/* Custom select */}
-        <div className="relative">
-          <select
-            className="w-full p-4 bg-[#1a2845]/80 backdrop-blur-sm rounded-2xl text-white border-2 border-[#FF9100]/40 focus:ring-4 focus:ring-[#FF9100]/30 focus:border-[#FF9100] transition-all duration-300 appearance-none cursor-pointer text-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed shadow-inner"
-            value={value}
-            onChange={onChange}
-            disabled={disabled}
-          >
-            <option value="" disabled className="text-gray-400">
-              {placeholder}
-            </option>
-            {options.map((option) => (
-              <option key={option.value} value={option.value} className="bg-[#1a2845] text-white">
-                {option.label}
-              </option>
-            ))}
-          </select>
-          <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-            <ChevronDown className="w-6 h-6 text-[#FF9100]" />
-          </div>
-        </div>
+          
+          {/* Bottom accent line */}
+          <div className={`
+            absolute bottom-0 left-4 right-4 h-0.5 
+            bg-gradient-to-r from-white/60 to-white/40
+            transition-all duration-300
+            ${isOpen || isFocused ? 'opacity-100' : 'opacity-0'}
+          `} />
+        </button>
+        
+        {/* Enhanced Dropdown Menu */}
+        {isOpen && !disabled && (
+          <>
+            {/* Backdrop */}
+            <div 
+              className="fixed inset-0 z-10"
+              onClick={() => setIsOpen(false)}
+            />
+            
+            {/* Options container with improved design */}
+            <div className="absolute top-full left-0 right-0 mt-2 z-20">
+              <div className={`
+                ${gradient}
+                border-2 border-white/40
+                rounded-xl
+                shadow-2xl shadow-black/30
+                backdrop-blur-sm
+                overflow-hidden
+                animate-in slide-in-from-top-2 duration-200
+                max-h-64 overflow-y-auto
+              `}>
+                {/* Header accent */}
+                <div className="h-1 bg-gradient-to-r from-white/40 via-white/60 to-white/40" />
+                
+                {options.map((option, index) => (
+                  <button
+                    key={option.value}
+                    onClick={() => {
+                      onChange({ target: { value: option.value } });
+                      setIsOpen(false);
+                    }}
+                    className={`
+                      w-full px-4 py-4 text-left
+                      transition-all duration-200
+                      hover:bg-white/20
+                      focus:bg-white/20 focus:outline-none
+                      ${value === option.value ? 'bg-white/25' : ''}
+                      ${index !== options.length - 1 ? 'border-b border-white/10' : ''}
+                      group
+                    `}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3 flex-1">
+                        {/* Option icon indicator */}
+                        <div className={`
+                          w-2 h-2 rounded-full transition-all duration-200
+                          ${value === option.value 
+                            ? 'bg-white shadow-lg shadow-white/50' 
+                            : 'bg-white/30 group-hover:bg-white/60'
+                          }
+                        `} />
+                        
+                        {/* Option content */}
+                        <div className="flex flex-col min-w-0 flex-1">
+                          <span className={`
+                            font-medium text-base tracking-wide transition-colors duration-200
+                            ${value === option.value ? 'text-white' : 'text-white/90 group-hover:text-white'}
+                          `}>
+                            {option.value}
+                          </span>
+                          {option.label !== option.value && option.label.includes(' - ') && (
+                            <span className={`
+                              text-sm mt-0.5 transition-colors duration-200
+                              ${value === option.value ? 'text-white/80' : 'text-white/70 group-hover:text-white/80'}
+                            `}>
+                              {option.label.split(' - ')[1]}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      
+                      {/* Check icon for selected option */}
+                      {value === option.value && (
+                        <div className="flex-shrink-0 p-1 bg-white/30 rounded-lg">
+                          <Check className="w-4 h-4 text-white" />
+                        </div>
+                      )}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
+};
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0F1A36] via-[#2C4A75] to-[#0A1C36] text-white relative overflow-hidden">
@@ -225,43 +372,94 @@ const QuizSearchPageBeforeSignup = () => {
           {/* Primary Filters with different gradients */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
             <SelectField
-              label="Academic Level"
-              value={selectedClass}
-              onChange={(e) => {
-                setSelectedClass(e.target.value);
-                setSelectedSubject("");
-                setSelectedTopic("");
-              }}
-              options={Object.keys(data).map(cls => ({ value: cls, label: cls }))}
-              placeholder="Select your class level"
-              icon={BookOpen}
-              gradient="bg-gradient-to-br from-[#1a2845]/90 via-[#2d3f5f]/80 to-[#0f1729]/90"
-            />
-
-            <SelectField
-              label="Subject Area"
-              value={selectedSubject}
-              onChange={(e) => {
-                setSelectedSubject(e.target.value);
-                setSelectedTopic("");
-              }}
-              options={selectedClass ? Object.keys(data[selectedClass]).map(subject => ({ value: subject, label: subject })) : []}
-              disabled={!selectedClass}
-              placeholder={selectedClass ? "Choose your subject" : "Select class first"}
-              icon={Target}
-              gradient="bg-gradient-to-br from-[#2d1b45]/90 via-[#3f2d5f]/80 to-[#1a0f29]/90"
-            />
-
-            <SelectField
-              label="Learning Topic"
-              value={selectedTopic}
-              onChange={(e) => setSelectedTopic(e.target.value)}
-              options={selectedSubject ? data[selectedClass][selectedSubject].map(topic => ({ value: topic, label: topic })) : []}
-              disabled={!selectedSubject}
-              placeholder={selectedSubject ? "Pick your topic" : "Select subject first"}
-              icon={Sparkles}
-              gradient="bg-gradient-to-br from-[#451b2d]/90 via-[#5f2d3f]/80 to-[#29101a]/90"
-            />
+                          label="Academic Level"
+                          value={selectedClass}
+                          onChange={(e) => {
+                            setSelectedClass(e.target.value);
+                            setSelectedSubject("");
+                            setSelectedTopic("");
+                          }}
+                          options={[
+                            ...Array.from({ length: 10 }, (_, i) => ({
+                              value: `Class ${i + 1}`,
+                              label: `Class ${i + 1}`,
+                            })),
+                            { value: "Class 11 (Science)", label: "Class 11 (Science)" },
+                            { value: "Class 11 (Commerce)", label: "Class 11 (Commerce)" },
+                            { value: "Class 11 (Arts)", label: "Class 11 (Arts)" },
+                            { value: "Class 12 (Science)", label: "Class 12 (Science)" },
+                            { value: "Class 12 (Commerce)", label: "Class 12 (Commerce)" },
+                            { value: "Class 12 (Arts)", label: "Class 12 (Arts)" },
+                          ]}
+                          placeholder="Select your class level"
+                          icon={BookOpen}
+                          gradient="bg-gradient-to-br from-[#1a2845]/90 via-[#2d3f5f]/80 to-[#0f1729]/90"
+                        />
+            
+                        <SelectField
+                          label="Subject Area"
+                          value={selectedSubject}
+                          onChange={(e) => {
+                            setSelectedSubject(e.target.value);
+                            setSelectedTopic(""); // Reset topic
+                          }}
+                          options={
+                            selectedClass
+                              ? Array.from(
+                                  new Set(
+                                    quizzes
+                                      .filter(
+                                        (quiz) =>
+                                          quiz.class.trim() ===
+                                          selectedClass.replace(/Class\s*/i, "").trim()
+                                      )
+                                      .map((quiz) => quiz.subject.trim())
+                                  )
+                                ).map((subject) => ({
+                                  value: subject,
+                                  label: subject,
+                                }))
+                              : []
+                          }
+                          disabled={!selectedClass}
+                          placeholder={
+                            selectedClass ? "Choose your subject" : "Select class first"
+                          }
+                          icon={Target}
+                          gradient="bg-gradient-to-br from-[#2d1b45]/90 via-[#3f2d5f]/80 to-[#1a0f29]/90"
+                        />
+            
+                        <SelectField
+                          label="Learning Topic"
+                          value={selectedTopic}
+                          onChange={(e) => setSelectedTopic(e.target.value)}
+                          options={
+                            selectedSubject
+                              ? Array.from(
+                                  new Set(
+                                    quizzes
+                                      .filter(
+                                        (quiz) =>
+                                          quiz.class.trim() ===
+                                            selectedClass.replace(/Class\s*/i, "").trim() &&
+                                          quiz.subject.trim().toLowerCase() ===
+                                            selectedSubject.trim().toLowerCase()
+                                      )
+                                      .map((quiz) => quiz.topic.trim())
+                                  )
+                                ).map((topic) => ({
+                                  value: topic,
+                                  label: topic,
+                                }))
+                              : []
+                          }
+                          disabled={!selectedSubject}
+                          placeholder={
+                            selectedSubject ? "Pick your topic" : "Select subject first"
+                          }
+                          icon={Sparkles}
+                          gradient="bg-gradient-to-br from-[#451b2d]/90 via-[#5f2d3f]/80 to-[#29101a]/90"
+                        />
           </div>
 
           {/* Secondary Filters */}
@@ -273,7 +471,7 @@ const QuizSearchPageBeforeSignup = () => {
               options={[
                 { value: "Easy", label: "Easy - Perfect for beginners" },
                 { value: "Medium", label: "Medium - Balanced challenge" },
-                { value: "Hard", label: "Hard - Expert level" }
+                { value: "Hard", label: "Hard - Expert level" },
               ]}
               placeholder="Choose your challenge"
               icon={Trophy}
@@ -288,7 +486,7 @@ const QuizSearchPageBeforeSignup = () => {
                 { value: "MCQ-Single", label: "Multiple Choice (Single)" },
                 { value: "MCQ-Multiple", label: "Multiple Choice (Multiple)" },
                 { value: "True/False", label: "True or False" },
-                { value: "Fill-in-the-Blank", label: "Fill in the Blank" }
+                { value: "Fill-in-the-Blank", label: "Fill in the Blank" },
               ]}
               placeholder="Select quiz style"
               icon={Zap}
