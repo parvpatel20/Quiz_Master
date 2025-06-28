@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
+import { User, Mail, Lock, GraduationCap, FileText, Camera, X, Check, AlertCircle, Sparkles } from "lucide-react";
 
 const Popup_update = ({ isOpen, closePopup, fieldType, updateUser }) => {
   const [newValue, setNewValue] = useState("");
@@ -71,10 +72,6 @@ const Popup_update = ({ isOpen, closePopup, fieldType, updateUser }) => {
         );
       }
     } catch (err) {
-      // you should check if your current pass is ok and still
-      // shoes this error.the issue is anywhere else in sending
-      // patch request.
-
       setError("Invalid Current Password");
     }
   };
@@ -115,6 +112,7 @@ const Popup_update = ({ isOpen, closePopup, fieldType, updateUser }) => {
       setError("Failed to send the request. Please try again.");
     }
   };
+
   // Handle the update action
   const handleUpdate = async () => {
     // Validate based on fieldType
@@ -167,210 +165,358 @@ const Popup_update = ({ isOpen, closePopup, fieldType, updateUser }) => {
       fieldType !== "profilePicture" &&
       newValue.trim() === "");
 
+  // Get field-specific configuration
+  const getFieldConfig = () => {
+    switch (fieldType) {
+      case "username":
+        return {
+          title: "Update Username",
+          icon: <User className="w-7 h-7 text-white" />,
+          gradient: "from-[#FF9100]/20 to-[#FFD700]/20",
+          borderColor: "border-[#FF9100]/30"
+        };
+      case "email":
+        return {
+          title: "Update Email",
+          icon: <Mail className="w-7 h-7 text-white" />,
+          gradient: "from-[#FF9100]/20 to-[#FFD700]/20",
+          borderColor: "border-[#FF9100]/30"
+        };
+      case "password":
+        return {
+          title: "Change Password",
+          icon: <Lock className="w-7 h-7 text-white" />,
+          gradient: "from-[#FF9100]/20 to-[#FFD700]/20",
+          borderColor: "border-[#FF9100]/30"
+        };
+      case "class":
+        return {
+          title: "Update Class",
+          icon: <GraduationCap className="w-7 h-7 text-white" />,
+          gradient: "from-[#FF9100]/20 to-[#FFD700]/20",
+          borderColor: "border-[#FF9100]/30"
+        };
+      case "bio":
+        return {
+          title: "Update Bio",
+          icon: <FileText className="w-7 h-7 text-white" />,
+          gradient: "from-[#FF9100]/20 to-[#FFD700]/20",
+          borderColor: "border-[#FF9100]/30"
+        };
+      case "profilePicture":
+        return {
+          title: "Update Profile Picture",
+          icon: <Camera className="w-7 h-7 text-white" />,
+          gradient: "from-[#FF9100]/20 to-[#FFD700]/20",
+          borderColor: "border-[#FF9100]/30"
+        };
+      default:
+        return {
+          title: "Update Information",
+          icon: <Sparkles className="w-7 h-7 text-white" />,
+          gradient: "from-[#FF9100]/20 to-[#FFD700]/20",
+          borderColor: "border-[#FF9100]/30"
+        };
+    }
+  };
+
+  const fieldConfig = getFieldConfig();
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-70">
-      <div className="bg-[#1D2951] p-8 rounded-2xl shadow-2xl max-w-md w-full">
-        <h2 className="text-3xl font-extrabold mb-6 bg-gradient-to-r from-[#FF9100] via-[#FFD700] to-[#FF9100] bg-clip-text text-transparent drop-shadow-lg text-center">
-          Update Information
-        </h2>
+    <div className="fixed inset-0 flex justify-center items-center z-50 p-4">
+      {/* Backdrop */}
+      <div 
+        className="absolute inset-0 bg-black/80 backdrop-blur-lg"
+        onClick={closePopup}
+      ></div>
+      
+      {/* Floating orbs */}
+      <div className="absolute top-1/4 left-1/4 w-80 h-80 bg-gradient-to-r from-[#FF9100]/20 to-[#FFD700]/20 rounded-full blur-3xl animate-pulse"></div>
+      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-gradient-to-r from-[#FFD700]/20 to-[#FF9100]/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
 
-        {/* Username */}
-        {fieldType === "username" && (
-          <div className="mb-5">
-            <label className="block text-lg font-bold text-[#F9F7F7]">
-              New Username :
-            </label>
-            <input
-              type="text"
-              value={newValue}
-              onChange={(e) => setNewValue(e.target.value)}
-              className="mt-2 p-3 border border-[#DBE2EF] font-bold text-lg rounded-md w-full bg-[#2A3B5C] text-white focus:outline-none focus:ring-2 focus:ring-[#FF9100] focus:border-[#FF9100] transition"
-              placeholder="Enter new username"
-            />
-          </div>
-        )}
+      {/* Modal Content - Ultra modern design */}
+      <div className="relative bg-white/5 backdrop-blur-2xl p-8 rounded-3xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto border border-white/10 transition-all duration-500 scroll-smooth">
+        
+        <button
+          onClick={closePopup}
+          className="absolute top-6 right-6 p-2 rounded-full bg-white/10 backdrop-blur-sm transition-all duration-300 border border-white/20"
+        >
+          <X className="w-5 h-5 text-white transition-transform duration-300" />
+        </button>
 
-        {/* Email */}
-        {fieldType === "email" && (
-          <div className="mb-5">
-            <label className="block text-lg font-bold text-[#F9F7F7]">
-              New Email :
-            </label>
-            <input
-              type="email"
-              value={newValue}
-              onChange={(e) => setNewValue(e.target.value)}
-              className="mt-2 p-3 border border-[#DBE2EF] font-bold text-lg rounded-md w-full bg-[#2A3B5C] text-white focus:outline-none focus:ring-2 focus:ring-[#FF9100] focus:border-[#FF9100] transition"
-              placeholder="Enter your email"
-            />
-          </div>
-        )}
-
-        {/* Password */}
-        {fieldType === "password" && (
-          <div className="mb-5">
-            <label className="block text-lg font-bold text-[#F9F7F7]">
-              Current Password:
-            </label>
-            <div className="relative mt-1">
-              <input
-                type={showPasswordcurrent ? "text" : "password"}
-                value={currentPassword}
-                onChange={(e) => setCurrentPassword(e.target.value)}
-                className="mt-2 p-3 border border-[#DBE2EF] font-bold text-lg rounded-md w-full bg-[#2A3B5C] text-white focus:outline-none focus:ring-2 focus:ring-[#FF9100] focus:border-[#FF9100] transition"
-                placeholder="Enter current password"
-              />
-
-              <button
-                type="button"
-                onClick={togglePasswordVisibilitycurrent}
-                className="absolute inset-y-0 right-3 pt-2 flex items-center text-[#FFFFFF] hover:text-[#FF5E00] focus:outline-none"
-              >
-                {showPasswordcurrent ? (
-                  <MdVisibility className="w-5 h-5" />
-                ) : (
-                  <MdVisibilityOff className="w-5 h-5" />
-                )}
-              </button>
+        {/* Modern Header */}
+        <div className="text-center mb-8">
+          <div className="relative inline-block mb-6">
+            <div className="absolute inset-0 bg-gradient-to-r from-[#FF9100] to-[#FFD700] rounded-2xl blur-lg opacity-70 animate-pulse"></div>
+            <div className="relative p-4 bg-gradient-to-r from-[#FF9100] to-[#FFD700] rounded-2xl shadow-lg">
+              {fieldConfig.icon}
             </div>
+          </div>
+          
+          <h2 className="text-3xl font-bold mb-4 text-white drop-shadow-lg">
+            {fieldConfig.title}
+          </h2>
+          
+          <div className="w-20 h-0.5 bg-gradient-to-r from-[#FF9100] to-[#FFD700] mx-auto rounded-full"></div>
+        </div>
 
-            <label className="block text-lg font-bold text-[#F9F7F7] mt-4">
-              New Password:
-            </label>
-
-            <div className="relative mt-1">
+        {/* Form Fields with modern glassmorphism */}
+        <div className="space-y-6">
+          {/* Username */}
+          {fieldType === "username" && (
+            <div className="space-y-3">
+              <label className="flex items-center gap-3 text-lg font-semibold text-white/90">
+                <User className="w-5 h-5 text-[#FF9100]" />
+                New Username
+              </label>
               <input
-                type={showPasswordnew ? "text" : "password"}
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                className="mt-2 p-3 border border-[#DBE2EF] font-bold text-lg rounded-md w-full bg-[#2A3B5C] text-white focus:outline-none focus:ring-2 focus:ring-[#FF9100] focus:border-[#FF9100] transition"
-                placeholder="Enter new password"
+                type="text"
+                value={newValue}
+                onChange={(e) => setNewValue(e.target.value)}
+                className="w-full p-4 bg-white/10 backdrop-blur-sm rounded-2xl text-white border border-white/20 focus:border-[#FF9100] focus:bg-white/15 transition-all duration-300 text-base placeholder-white/50 shadow-inner"
+                placeholder="Enter new username"
               />
-              <button
-                type="button"
-                onClick={togglePasswordVisibilitynew}
-                className="absolute inset-y-0 right-3 pt-2 flex items-center text-[#FFFFFF] hover:text-[#FF5E00] focus:outline-none"
-              >
-                {showPasswordnew ? (
-                  <MdVisibility className="w-5 h-5" />
-                ) : (
-                  <MdVisibilityOff className="w-5 h-5" />
-                )}
-              </button>
             </div>
+          )}
 
-            <div>
-              <p className="mt-3 text-sm text-[#FF9100]">
-                <strong>Note:</strong> Password must contain at least one
-                special character (@, #, $, _), uppercase letter (A-Z),
-                lowercase letter (a-z), number (0-9), and be between 8 and 16
-                characters long.
+          {/* Email */}
+          {fieldType === "email" && (
+            <div className="space-y-3">
+              <label className="flex items-center gap-3 text-lg font-semibold text-white/90">
+                <Mail className="w-5 h-5 text-[#FF9100]" />
+                New Email
+              </label>
+              <input
+                type="email"
+                value={newValue}
+                onChange={(e) => setNewValue(e.target.value)}
+                className="w-full p-4 bg-white/10 backdrop-blur-sm rounded-2xl text-white border border-white/20 focus:border-[#FF9100] focus:bg-white/15 transition-all duration-300 text-base placeholder-white/50 shadow-inner"
+                placeholder="Enter your email"
+              />
+            </div>
+          )}
+
+          {/* Password */}
+          {fieldType === "password" && (
+            <div className="space-y-6">
+              <div className="space-y-3">
+                <label className="flex items-center gap-3 text-lg font-semibold text-white/90">
+                  <Lock className="w-5 h-5 text-[#FF9100]" />
+                  Current Password
+                </label>
+                <div className="relative">
+                  <input
+                    type={showPasswordcurrent ? "text" : "password"}
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    className="w-full p-4 bg-white/10 backdrop-blur-sm rounded-2xl text-white border border-white/20 focus:border-[#FF9100] focus:bg-white/15 transition-all duration-300 text-base placeholder-white/50 shadow-inner pr-14"
+                    placeholder="Enter current password"
+                  />
+                  <button
+                    type="button"
+                    onClick={togglePasswordVisibilitycurrent}
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white/60 transition-colors p-1"
+                  >
+                    {showPasswordcurrent ? (
+                      <MdVisibilityOff className="w-5 h-5" />
+                    ) : (
+                      <MdVisibility className="w-5 h-5" />
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <label className="flex items-center gap-3 text-lg font-semibold text-white/90">
+                  <Lock className="w-5 h-5 text-[#FF9100]" />
+                  New Password
+                </label>
+                <div className="relative">
+                  <input
+                    type={showPasswordnew ? "text" : "password"}
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    className="w-full p-4 bg-white/10 backdrop-blur-sm rounded-2xl text-white border border-white/20 focus:border-[#FF9100] focus:bg-white/15 transition-all duration-300 text-base placeholder-white/50 shadow-inner pr-14"
+                    placeholder="Enter new password"
+                  />
+                  <button
+                    type="button"
+                    onClick={togglePasswordVisibilitynew}
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white/60 transition-colors p-1"
+                  >
+                    {showPasswordnew ? (
+                      <MdVisibilityOff className="w-5 h-5" />
+                    ) : (
+                      <MdVisibility className="w-5 h-5" />
+                    )}
+                  </button>
+                </div>
+                
+                <div className="p-4 bg-gradient-to-r from-[#FF9100]/10 to-[#FFD700]/10 rounded-2xl border border-[#FF9100]/30 backdrop-blur-sm">
+                  <p className="text-sm text-[#FFD700] leading-relaxed">
+                    <AlertCircle className="w-4 h-4 inline mr-2" />
+                    <strong>Password Requirements:</strong> Must contain at least one special character (@, #, $, _), uppercase letter (A-Z), lowercase letter (a-z), number (0-9), and be between 8-16 characters long.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Class */}
+          {fieldType === "class" && (
+            <div className="space-y-3">
+              <label className="flex items-center gap-3 text-lg font-semibold text-white/90">
+                <GraduationCap className="w-5 h-5 text-[#FF9100]" />
+                Select Class
+              </label>
+              <select
+                value={newValue}
+                onChange={(e) => setNewValue(e.target.value)}
+                className="w-full p-4 bg-white/10 backdrop-blur-sm rounded-2xl text-white border border-white/20 focus:border-[#FF9100] focus:bg-white/15 transition-all duration-300 text-base appearance-none cursor-pointer shadow-inner"
+              >
+                <option value="" disabled className="text-gray-400 bg-gray-800">
+                  Select your class
+                </option>
+                {Array.from({ length: 10 }, (_, i) => (
+                  <option key={i + 1} value={`Class ${i + 1}`} className="bg-gray-800 text-white">
+                    Class {i + 1}
+                  </option>
+                ))}
+                <option value="Class 11 (Science)" className="bg-gray-800 text-white">Class 11 (Science)</option>
+                <option value="Class 11 (Commerce)" className="bg-gray-800 text-white">Class 11 (Commerce)</option>
+                <option value="Class 11 (Arts)" className="bg-gray-800 text-white">Class 11 (Arts)</option>
+                <option value="Class 12 (Science)" className="bg-gray-800 text-white">Class 12 (Science)</option>
+                <option value="Class 12 (Commerce)" className="bg-gray-800 text-white">Class 12 (Commerce)</option>
+                <option value="Class 12 (Arts)" className="bg-gray-800 text-white">Class 12 (Arts)</option>
+              </select>
+            </div>
+          )}
+
+          {/* Bio */}
+          {fieldType === "bio" && (
+            <div className="space-y-3">
+              <label className="flex items-center gap-3 text-lg font-semibold text-white/90">
+                <FileText className="w-5 h-5 text-[#FF9100]" />
+                New Bio
+              </label>
+              <textarea
+                value={newValue}
+                onChange={(e) => setNewValue(e.target.value)}
+                rows={4}
+                className="w-full p-4 bg-white/10 backdrop-blur-sm rounded-2xl text-white border border-white/20 focus:border-[#FF9100] focus:bg-white/15 transition-all duration-300 text-base placeholder-white/50 shadow-inner resize-none"
+                placeholder="Tell us about yourself..."
+              />
+            </div>
+          )}
+
+          {/* Profile Picture */}
+          {fieldType === "profilePicture" && (
+            <div className="space-y-3">
+              <label className="flex items-center gap-3 text-lg font-semibold text-white/90">
+                <Camera className="w-5 h-5 text-[#FF9100]" />
+                New Profile Picture
+              </label>
+              <label className="w-full flex flex-col items-center justify-center p-8 bg-white/10 backdrop-blur-sm rounded-2xl border-2 border-dashed border-white/30 transition-all duration-300 cursor-pointer">
+                <Camera className="w-10 h-10 text-[#FF9100] mb-4 transition-transform duration-300" />
+                <span className="text-base font-medium text-white mb-2">
+                  {file ? file.name : "Click to upload image"}
+                </span>
+                <span className="text-sm text-white/60">
+                  PNG, JPG, GIF up to 10MB
+                </span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+              </label>
+            </div>
+          )}
+        </div>
+
+        {/* Status Messages */}
+        {(error || successMessage) && (
+          <div className={`mt-6 p-4 rounded-2xl border backdrop-blur-sm ${
+            error 
+              ? "bg-red-500/10 border-red-400/30 text-red-300" 
+              : "bg-green-500/10 border-green-400/30 text-green-300"
+          }`}>
+            <div className="flex items-center gap-3">
+              {error ? (
+                <AlertCircle className="w-5 h-5 text-red-400" />
+              ) : (
+                <Check className="w-5 h-5 text-green-400" />
+              )}
+              <p className="text-base font-medium">
+                {error || successMessage}
               </p>
             </div>
           </div>
         )}
 
-        {/* Class */}
-        {fieldType === "class" && (
-          <div className="mb-5">
-            <label className="block text-lg font-bold text-[#F9F7F7]">
-              Select Class :
-            </label>
-            <select
-              value={newValue}
-              onChange={(e) => setNewValue(e.target.value)}
-              className="mt-2 p-3 border border-[#DBE2EF] font-bold text-lg rounded-md w-full bg-[#2A3B5C] text-white focus:outline-none focus:ring-2 focus:ring-[#FF9100] focus:border-[#FF9100] transition"
-            >
-              <option value="" disabled>
-                Select your class
-              </option>
-              {Array.from({ length: 10 }, (_, i) => (
-                <option key={i + 1} value={`Class ${i + 1}`}>
-                  Class {i + 1}
-                </option>
-              ))}
-              <option value="Class 11 (Science)">Class 11 (Science)</option>
-              <option value="Class 11 (Commerce)">Class 11 (Commerce)</option>
-              <option value="Class 11 (Arts)">Class 11 (Arts)</option>
-              <option value="Class 12 (Science)">Class 12 (Science)</option>
-              <option value="Class 12 (Commerce)">Class 12 (Commerce)</option>
-              <option value="Class 12 (Arts)">Class 12 (Arts)</option>
-            </select>
-          </div>
-        )}
-
-        {/* Bio */}
-        {fieldType === "bio" && (
-          <div className="mb-5">
-            <label className="block text-lg font-bold text-[#F9F7F7]">
-              New Bio :
-            </label>
-            <textarea
-              value={newValue}
-              onChange={(e) => setNewValue(e.target.value)}
-              className="mt-2 p-3 border border-[#DBE2EF] font-bold text-lg rounded-md w-full bg-[#2A3B5C] text-white focus:outline-none focus:ring-2 focus:ring-[#FF9100] focus:border-[#FF9100] transition"
-              placeholder="Enter new bio"
-            />
-          </div>
-        )}
-
-        {fieldType === "profilePicture" && (
-          <div className="mb-5">
-            <label className="block text-lg font-bold text-[#F9F7F7]">
-              New Profile Picture :
-            </label>
-            <input
-              id="profile-picture-upload"
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
-              className="w-full mt-1 px-3 py-2 bg-[#000e3dfb] text-[#FFFFFF] border border-[#FF9100] rounded-lg focus:outline-none"
-            />
-          </div>
-        )}
-
-        {(error || successMessage) && (
-          <p
-            className={`text-lg mb-4 px-4 py-2 font-semibold rounded-2xl shadow-lg ${
-              error ? "text-red-500 bg-red-100" : "text-green-500 bg-green-100"
-            }`}
-          >
-            {error || successMessage}
-          </p>
-        )}
-
-        <div className="flex justify-between">
+        {/* Action Buttons */}
+        <div className="flex gap-4 mt-8">
           <button
             onClick={() => {
               if (fieldType === "profilePicture") {
-                handleProfilepicupdate(); // Call the specific function for profile picture
+                handleProfilepicupdate();
               } else if (fieldType === "password") {
-                handlePasswordUpdate(); // Call the specific function for password
+                handlePasswordUpdate();
               } else {
-                handleUpdate(); // Call the general update function
+                handleUpdate();
               }
             }}
-            className={`px-6 py-2 bg-gradient-to-r from-[#FF9100] to-[#FF5E00] text-[#ffffff] text-lg font-semibold rounded-full shadow-lg hover:scale-105 transform transition duration-300 ${
-              isUpdateDisabled ? "opacity-50 cursor-not-allowed" : ""
-            }`}
+            className={`flex-1 px-8 py-4 bg-gradient-to-r from-[#FF9100] to-[#FFD700] text-white text-base font-bold rounded-2xl shadow-xl transform transition-all duration-300 ${
+              isUpdateDisabled 
+                ? "opacity-50 cursor-not-allowed" 
+                : ""
+            } relative overflow-hidden`}
             disabled={isUpdateDisabled}
           >
-            Update
+            <span className="relative flex items-center justify-center gap-2">
+              <Check className="w-5 h-5" />
+              Update
+            </span>
           </button>
 
           <button
             onClick={() => {
-              closePopup(); // Close the popup
-              setNewValue(""); // Clear the input value
+              closePopup();
+              setNewValue("");
             }}
-            className="px-6 py-2 bg-gradient-to-r from-[#FF9100] to-[#FF5E00] text-[#ffffff] text-lg font-semibold rounded-full shadow-lg hover:scale-105 transform transition duration-300"
+            className="flex-1 px-8 py-4 bg-white/10 backdrop-blur-sm text-white text-base font-bold rounded-2xl shadow-xl transform transition-all duration-300 border border-white/20 relative overflow-hidden"
           >
-            Cancel
+            <span className="relative flex items-center justify-center gap-2">
+              <X className="w-5 h-5" />
+              Cancel
+            </span>
           </button>
         </div>
       </div>
+
+      <style jsx>{`
+        /* Custom scrollbar for webkit browsers */
+        .overflow-y-auto::-webkit-scrollbar {
+          width: 6px;
+        }
+        
+        .overflow-y-auto::-webkit-scrollbar-track {
+          background: rgba(255, 255, 255, 0.1);
+          border-radius: 10px;
+        }
+        
+        .overflow-y-auto::-webkit-scrollbar-thumb {
+          background: linear-gradient(to bottom, #FF9100, #FFD700);
+          border-radius: 10px;
+        }
+        
+        .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+          background: linear-gradient(to bottom, #FF9100, #FFD700);
+        }
+      `}</style>
     </div>
   );
 };
