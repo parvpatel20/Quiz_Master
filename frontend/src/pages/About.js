@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Header from "../components/Header";
 import HeaderAfterSignup from "../components/HeaderAfterSignup";
 import Loading from "../components/Loading";
+import Footer from "../components/Footer";
 import {
   Sparkles,
   Users,
@@ -124,7 +125,7 @@ const About = () => {
                 </div>
                 
                 <p className="text-lg text-gray-300 leading-relaxed text-center">
-                  To create a global educational ecosystem where every learner can unlock their full potential through engaging, interactive, and personalized quiz experiences that make learning an adventure.
+                  "To create a global educational ecosystem where every learner can unlock their full potential through engaging, interactive, and personalized quiz experiences that make learning an adventure."
                 </p>
               </div>
             </div>
@@ -148,7 +149,9 @@ const About = () => {
                 </div>
                 
                 <p className="text-lg text-gray-300 leading-relaxed text-center">
-                  To democratize quality education by providing innovative quiz platforms that empower instructors and inspire students, fostering a community of lifelong learners.
+                  
+"To give everyone access to great education by creating quiz platforms that make teaching easier and learning more exciting for students everywhere."
+
                 </p>
               </div>
             </div>
@@ -240,92 +243,7 @@ const About = () => {
             </div>
           </div>
         </section>
-
-        <SectionDivider />
-
-        {/* Spectacular Testimonials Section */}
-        <section className="mb-20">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-4 px-8 py-4 bg-gradient-to-r from-purple-500/20 to-blue-500/20 rounded-full border border-purple-400/30 backdrop-blur-lg mb-6">
-              <Quote className="w-8 h-8 text-purple-400" />
-              <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-                Echoes from Our Community
-              </h2>
-            </div>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed font-light">
-              Discover how Quiz Master is transforming learning experiences worldwide
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-            {/* Student Testimonial */}
-            <div className="group relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 via-blue-500/10 to-pink-500/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              
-              <div className="relative bg-gradient-to-br from-[#0F1A36]/95 via-[#1a2845]/90 to-[#0A1C36]/95 backdrop-blur-lg p-10 rounded-3xl shadow-2xl border border-purple-400/30 transition-all duration-500 h-full flex flex-col">
-                <Quote className="absolute top-6 right-6 w-16 h-16 text-purple-400/20" />
-                
-                <div className="flex-grow">
-                  <p className="text-xl font-light text-gray-200 mb-8 leading-relaxed italic relative">
-                    "Quiz Master helped me improve my skills and gain more confidence. The quizzes are engaging, and the feedback is invaluable! It's like having a personal tutor available 24/7."
-                  </p>
-                </div>
-                
-                <div className="flex items-center gap-6 pt-6 border-t border-purple-400/20">
-                  <div className="relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full blur-sm opacity-60"></div>
-                    <div className="relative w-16 h-16 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center text-xl font-bold text-white">
-                      SL
-                    </div>
-                  </div>
-                  <div>
-                    <h3 className="text-2xl font-bold text-white">Sarah Lee</h3>
-                    <p className="text-purple-400 font-medium text-lg">Computer Science Student</p>
-                    <div className="flex gap-1 mt-2">
-                      {[...Array(5)].map((_, i) => (
-                        <Star key={i} className="w-4 h-4 fill-[#FFD700] text-[#FFD700]" />
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Instructor Testimonial */}
-            <div className="group relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 via-blue-500/10 to-pink-500/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              
-              <div className="relative bg-gradient-to-br from-[#0F1A36]/95 via-[#1a2845]/90 to-[#0A1C36]/95 backdrop-blur-lg p-10 rounded-3xl shadow-2xl border border-purple-400/30 transition-all duration-500 h-full flex flex-col">
-                <Quote className="absolute top-6 right-6 w-16 h-16 text-purple-400/20" />
-                
-                <div className="flex-grow">
-                  <p className="text-xl font-light text-gray-200 mb-8 leading-relaxed italic relative">
-                    "As an instructor, I recommend Quiz Master to my students because it makes learning fun and rewarding. The analytics help me track progress and customize my teaching approach."
-                  </p>
-                </div>
-                
-                <div className="flex items-center gap-6 pt-6 border-t border-purple-400/20">
-                  <div className="relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full blur-sm opacity-60"></div>
-                    <div className="relative w-16 h-16 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-xl font-bold text-white">
-                      JS
-                    </div>
-                  </div>
-                  <div>
-                    <h3 className="text-2xl font-bold text-white">John Smith</h3>
-                    <p className="text-purple-400 font-medium text-lg">Mathematics Instructor</p>
-                    <div className="flex gap-1 mt-2">
-                      {[...Array(5)].map((_, i) => (
-                        <Star key={i} className="w-4 h-4 fill-[#FFD700] text-[#FFD700]" />
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
+        
         <SectionDivider />
 
         {/* Stunning Contact Section */}
@@ -403,11 +321,11 @@ const About = () => {
                     
                     <div className="space-y-3">
                       <a 
-                        href="mailto:quizmaster@gmail.com" 
+                        href="mailto:support@quizmaster.com" 
                         className="flex items-center gap-4 p-4 bg-gradient-to-r from-[#FF9100]/10 to-transparent rounded-xl border border-[#FF9100]/20 hover:border-[#FF9100]/40 transition-all group"
                       >
                         <Mail className="w-5 h-5 text-[#FF9100]" />
-                        <span className="text-lg text-gray-300 group-hover:text-white transition-colors">quizmaster@gmail.com</span>
+                        <span className="text-lg text-gray-300 group-hover:text-white transition-colors">support@quizmaster.com</span>
                       </a>
                       
                       <a 
@@ -425,6 +343,8 @@ const About = () => {
           </div>
         </section>
       </div>
+
+      <Footer isLoggedIn={isLoggedIn} />
 
       <style jsx>{`
         @keyframes gradient-x {
