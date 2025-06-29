@@ -13,10 +13,287 @@ import {
   Sparkles,
   TrendingUp,
   BookOpen,
-  Filter
+  Filter,
+  Check
 } from "lucide-react";
 import HeaderAfterSignup from "../components/HeaderAfterSignup";
 import Loading from "../components/Loading";
+import Footer from "../components/Footer";
+
+const EnhancedClassSelect = ({ selectedStandard, setSelectedStandard }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+
+  const classOptions = [
+    { value: "Class 12 (Science)", label: "Class 12 (Science)" },
+    { value: "Class 12 (Commerce)", label: "Class 12 (Commerce)" },
+    { value: "Class 12 (Arts)", label: "Class 12 (Arts)" },
+    { value: "Class 11 (Science)", label: "Class 11 (Science)" },
+    { value: "Class 11 (Commerce)", label: "Class 11 (Commerce)" },
+    { value: "Class 11 (Arts)", label: "Class 11 (Arts)" },
+    { value: "Class 10", label: "Class 10" },
+    { value: "Class 9", label: "Class 9" },
+    { value: "Class 8", label: "Class 8" },
+    { value: "Class 7", label: "Class 7" },
+    { value: "Class 6", label: "Class 6" },
+    { value: "Class 5", label: "Class 5" },
+    { value: "Class 4", label: "Class 4" },
+    { value: "Class 3", label: "Class 3" },
+    { value: "Class 2", label: "Class 2" },
+    { value: "Class 1", label: "Class 1" }
+  ];
+
+  const selectedOption = classOptions.find(option => option.value === selectedStandard);
+
+  return (
+    <div className={`relative group ${isOpen ? 'z-[999999]' : 'z-10'}`}>
+      <div className="relative p-6 rounded-3xl shadow-2xl border bg-gradient-to-br from-[#1a2845]/90 via-[#2d3f5f]/80 to-[#0f1729]/90 border-[#FF9100]/30 backdrop-blur-lg">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#FF9100]/10 via-transparent to-[#FFD700]/10 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+        
+        {/* Enhanced Header */}
+        <div className="relative flex items-center gap-4 mb-6">
+          <div className="relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-[#FF9100] to-[#FFD700] rounded-xl blur-sm opacity-60"></div>
+            <div className="relative p-3 bg-gradient-to-r from-[#FF9100] to-[#FFD700] rounded-xl">
+              <BookOpen className="w-6 h-6 text-white" />
+            </div>
+          </div>
+          <div>
+            <h3 className="text-xl font-bold bg-gradient-to-r from-[#FF9100] via-[#FFD700] to-[#FF6B35] bg-clip-text text-transparent">
+              Select Class
+            </h3>
+            <div className="w-12 h-0.5 bg-gradient-to-r from-[#FF9100] to-[#FFD700] rounded-full mt-1"></div>
+          </div>
+        </div>
+
+        {/* Enhanced Select Container */}
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => setIsOpen(!isOpen)}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+            className={`
+              relative w-full px-4 py-4 text-left
+              bg-gradient-to-br from-[#1a2845]/90 via-[#2d3f5f]/70 to-[#0f1729]/80
+              border-2 border-[#FF9100]/40
+              rounded-2xl
+              shadow-lg shadow-black/20
+              backdrop-blur-sm
+              transition-all duration-300 ease-out
+              hover:border-[#FF9100]/60 hover:shadow-xl hover:shadow-black/30 
+              focus:outline-none focus:border-[#FF9100] focus:shadow-xl focus:shadow-black/40
+              focus:ring-4 focus:ring-[#FF9100]/30
+              ${isOpen ? 'border-[#FF9100] shadow-xl shadow-black/40 ring-4 ring-[#FF9100]/30' : ''}
+              ${isFocused ? 'scale-[1.01]' : ''}
+              group/select
+            `}
+          >
+            {/* Background pattern overlay */}
+            <div className="absolute inset-0 bg-gradient-to-r from-[#FF9100]/5 to-transparent rounded-2xl opacity-0 group-hover/select:opacity-100 transition-opacity duration-300" />
+            
+            {/* Content container */}
+            <div className="relative flex items-center justify-between">
+              <div className="flex items-center gap-3 flex-1">
+                {/* Enhanced content display */}
+                <div className="flex flex-col min-w-0 flex-1">
+                  {selectedOption ? (
+                    <span className="text-white font-medium text-lg tracking-wide">
+                      {selectedOption.value}
+                    </span>
+                  ) : (
+                    <span className="text-gray-400 font-medium text-lg">
+                      Choose your class level
+                    </span>
+                  )}
+                </div>
+              </div>
+              
+              {/* Enhanced dropdown arrow */}
+              <div className={`
+                flex-shrink-0 ml-3 p-2 rounded-lg 
+                bg-[#FF9100]/20 border border-[#FF9100]/30
+                transition-all duration-300
+                ${isOpen ? 'rotate-180 bg-[#FF9100]/30 border-[#FF9100]/50' : ''}
+              `}>
+                <ChevronDown className="w-5 h-5 text-[#FF9100]" />
+              </div>
+            </div>
+            
+            {/* Bottom accent line */}
+            <div className={`
+              absolute bottom-0 left-4 right-4 h-0.5 
+              bg-gradient-to-r from-[#FF9100]/60 to-[#FFD700]/60
+              transition-all duration-300
+              ${isOpen || isFocused ? 'opacity-100' : 'opacity-0'}
+            `} />
+          </button>
+          
+          {/* Enhanced Dropdown Menu */}
+          {isOpen && (
+            <>
+              {/* Backdrop */}
+              <div 
+                className="fixed inset-0 z-[999998] bg-black/10 backdrop-blur-[1px] rounded-3xl"
+                onClick={() => setIsOpen(false)}
+              />
+              
+              {/* Options container */}
+              <div className="absolute top-full left-0 right-0 mt-2 z-[999999]">
+                <div className={`
+                  bg-gradient-to-br from-[#1a2845]/95 via-[#2d3f5f]/90 to-[#0f1729]/95
+                  border-2 border-[#FF9100]/50
+                  rounded-2xl
+                  shadow-2xl shadow-black/40
+                  backdrop-blur-lg
+                  overflow-hidden
+                  animate-in slide-in-from-top-2 duration-200
+                  max-h-64 overflow-y-auto
+                `}>
+                  {/* Header accent */}
+                  <div className="h-1 bg-gradient-to-r from-[#FF9100]/60 via-[#FFD700]/80 to-[#FF9100]/60" />
+                  
+                  {classOptions.map((option, index) => (
+                    <button
+                      key={option.value}
+                      onClick={() => {
+                        setSelectedStandard(option.value);
+                        setIsOpen(false);
+                      }}
+                      className={`
+                        w-full px-4 py-4 text-left
+                        transition-all duration-200
+                        hover:bg-[#FF9100]/20
+                        focus:bg-[#FF9100]/20 focus:outline-none
+                        ${selectedStandard === option.value ? 'bg-[#FF9100]/25' : ''}
+                        ${index !== classOptions.length - 1 ? 'border-b border-[#FF9100]/10' : ''}
+                        group/option
+                      `}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3 flex-1">
+                          {/* Option indicator */}
+                          <div className={`
+                            w-2 h-2 rounded-full transition-all duration-200
+                            ${selectedStandard === option.value 
+                              ? 'bg-[#FFD700] shadow-lg shadow-[#FFD700]/50' 
+                              : 'bg-[#FF9100]/30 group-hover/option:bg-[#FF9100]/60'
+                            }
+                          `} />
+                          
+                          <span className={`
+                            font-medium text-lg tracking-wide transition-colors duration-200
+                            ${selectedStandard === option.value ? 'text-white' : 'text-white/90 group-hover/option:text-white'}
+                          `}>
+                            {option.value}
+                          </span>
+                        </div>
+                        
+                        {/* Check icon */}
+                        {selectedStandard === option.value && (
+                          <div className="flex-shrink-0 p-1 bg-[#FFD700]/30 rounded-lg">
+                            <Check className="w-4 h-4 text-[#FFD700]" />
+                          </div>
+                        )}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Enhanced Search Input Component
+const EnhancedSearchInput = ({ searchTerm, setSearchTerm }) => {
+  const [isFocused, setIsFocused] = useState(false);
+
+  return (
+    <div className="relative group z-10">
+      <div className="relative p-7 rounded-3xl shadow-2xl border bg-gradient-to-br from-[#2d1b45]/90 via-[#3f2d5f]/80 to-[#1a0f29]/90 border-[#FF9100]/30 backdrop-blur-lg">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#FF9100]/10 via-transparent to-[#FFD700]/10 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+        
+        {/* Enhanced Header */}
+        <div className="relative flex items-center gap-4 mb-6">
+          <div className="relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-[#FF9100] to-[#FFD700] rounded-xl blur-sm opacity-60"></div>
+            <div className="relative p-3 bg-gradient-to-r from-[#FF9100] to-[#FFD700] rounded-xl">
+              <Search className="w-6 h-6 text-white" />
+            </div>
+          </div>
+          <div>
+            <h3 className="text-xl font-bold bg-gradient-to-r from-[#FF9100] via-[#FFD700] to-[#FF6B35] bg-clip-text text-transparent">
+              Search Champion
+            </h3>
+            <div className="w-12 h-0.5 bg-gradient-to-r from-[#FF9100] to-[#FFD700] rounded-full mt-1"></div>
+          </div>
+        </div>
+
+        {/* Enhanced Input Container */}
+        <div className="relative">
+          <div className={`
+            relative
+            transition-all duration-300 ease-out
+            ${isFocused ? 'scale-[1.01]' : ''}
+          `}>
+            {/* Background pattern overlay */}
+            <div className={`
+              absolute inset-0 bg-gradient-to-r from-[#FF9100]/5 to-transparent rounded-2xl 
+              transition-opacity duration-300
+              ${isFocused ? 'opacity-100' : 'opacity-0'}
+            `} />
+            
+            <input
+              type="text"
+              placeholder="Enter username to find..."
+              className={`
+                relative w-full px-4 py-4 text-left
+                bg-gradient-to-br from-[#2d1b45]/90 via-[#3f2d5f]/80 to-[#1a0f29]/90
+                border-2 border-[#FF9100]/40
+                rounded-2xl
+                shadow-lg shadow-black/20
+                backdrop-blur-sm
+                transition-all duration-300 ease-out
+                hover:border-[#FF9100]/60 hover:shadow-xl hover:shadow-black/30
+                focus:outline-none focus:border-[#FF9100] focus:shadow-xl focus:shadow-black/40
+                focus:ring-4 focus:ring-[#FF9100]/30
+                text-white font-medium text-lg
+                placeholder-gray-400
+              `}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
+            />
+            
+            {/* Enhanced search icon */}
+            <div className={`
+              absolute right-4 top-1/2 transform -translate-y-1/2 
+              p-2 rounded-lg 
+              bg-[#FF9100]/20 border border-[#FF9100]/30
+              transition-all duration-300
+              ${isFocused ? 'bg-[#FF9100]/30 border-[#FF9100]/50 scale-110' : ''}
+            `}>
+              <Search className="w-5 h-5 text-[#FF9100] pointer-events-none" />
+            </div>
+            
+            {/* Bottom accent line */}
+            <div className={`
+              absolute bottom-0 left-4 right-4 h-0.5 
+              bg-gradient-to-r from-[#FF9100]/60 to-[#FFD700]/60
+              transition-all duration-300
+              ${isFocused ? 'opacity-100' : 'opacity-0'}
+            `} />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const Leaderboard = () => {
   const [selectedStandard, setSelectedStandard] = useState("");
@@ -160,88 +437,15 @@ const Leaderboard = () => {
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Class Selection */}
-            <div className="relative group">
-              <div className="relative p-6 rounded-3xl shadow-2xl border bg-gradient-to-br from-[#1a2845]/90 via-[#2d3f5f]/80 to-[#0f1729]/90 border-[#FF9100]/30 backdrop-blur-lg">
-                <div className="absolute inset-0 bg-gradient-to-br from-[#FF9100]/10 via-transparent to-[#FFD700]/10 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                
-                <div className="relative flex items-center gap-4 mb-6">
-                  <div className="relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-[#FF9100] to-[#FFD700] rounded-xl blur-sm opacity-60"></div>
-                    <div className="relative p-3 bg-gradient-to-r from-[#FF9100] to-[#FFD700] rounded-xl">
-                      <BookOpen className="w-6 h-6 text-white" />
-                    </div>
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold bg-gradient-to-r from-[#FF9100] via-[#FFD700] to-[#FF6B35] bg-clip-text text-transparent">
-                      Select Class
-                    </h3>
-                    <div className="w-12 h-0.5 bg-gradient-to-r from-[#FF9100] to-[#FFD700] rounded-full mt-1"></div>
-                  </div>
-                </div>
-
-                <div className="relative">
-                  <select
-                    className="w-full p-4 bg-[#1a2845]/80 backdrop-blur-sm rounded-2xl text-white border-2 border-[#FF9100]/40 focus:ring-4 focus:ring-[#FF9100]/30 focus:border-[#FF9100] transition-all duration-300 appearance-none cursor-pointer text-lg font-medium shadow-inner"
-                    value={selectedStandard}
-                    onChange={(e) => setSelectedStandard(e.target.value)}
-                  >
-                    <option value="" className="text-gray-400 bg-[#1a2845]">Choose your class level</option>
-                    <option value="Class 12 (Science)" className="bg-[#1a2845] text-white">Class 12 (Science)</option>
-                    <option value="Class 12 (Commerce)" className="bg-[#1a2845] text-white">Class 12 (Commerce)</option>
-                    <option value="Class 11 (Science)" className="bg-[#1a2845] text-white">Class 11 (Science)</option>
-                    <option value="Class 11 (Commerce)" className="bg-[#1a2845] text-white">Class 11 (Commerce)</option>
-                    <option value="Class 10" className="bg-[#1a2845] text-white">Class 10</option>
-                    <option value="Class 9" className="bg-[#1a2845] text-white">Class 9</option>
-                    <option value="Class 8" className="bg-[#1a2845] text-white">Class 8</option>
-                    <option value="Class 7" className="bg-[#1a2845] text-white">Class 7</option>
-                    <option value="Class 6" className="bg-[#1a2845] text-white">Class 6</option>
-                    <option value="Class 5" className="bg-[#1a2845] text-white">Class 5</option>
-                    <option value="Class 4" className="bg-[#1a2845] text-white">Class 4</option>
-                    <option value="Class 3" className="bg-[#1a2845] text-white">Class 3</option>
-                    <option value="Class 2" className="bg-[#1a2845] text-white">Class 2</option>
-                    <option value="Class 1" className="bg-[#1a2845] text-white">Class 1</option>
-                  </select>
-                  <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                    <ChevronDown className="w-6 h-6 text-[#FF9100]" />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Search Bar */}
-            <div className="relative group">
-              <div className="relative p-6 rounded-3xl shadow-2xl border bg-gradient-to-br from-[#2d1b45]/90 via-[#3f2d5f]/80 to-[#1a0f29]/90 border-[#FF9100]/30 backdrop-blur-lg">
-                <div className="absolute inset-0 bg-gradient-to-br from-[#FF9100]/10 via-transparent to-[#FFD700]/10 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                
-                <div className="relative flex items-center gap-4 mb-6">
-                  <div className="relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-[#FF9100] to-[#FFD700] rounded-xl blur-sm opacity-60"></div>
-                    <div className="relative p-3 bg-gradient-to-r from-[#FF9100] to-[#FFD700] rounded-xl">
-                      <Search className="w-6 h-6 text-white" />
-                    </div>
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold bg-gradient-to-r from-[#FF9100] via-[#FFD700] to-[#FF6B35] bg-clip-text text-transparent">
-                      Search Champion
-                    </h3>
-                    <div className="w-12 h-0.5 bg-gradient-to-r from-[#FF9100] to-[#FFD700] rounded-full mt-1"></div>
-                  </div>
-                </div>
-
-                <div className="relative">
-                  <input
-                    type="text"
-                    placeholder="Enter username to find..."
-                    className="w-full p-4 bg-[#1a2845]/80 backdrop-blur-sm rounded-2xl text-white border-2 border-[#FF9100]/40 focus:ring-4 focus:ring-[#FF9100]/30 focus:border-[#FF9100] transition-all duration-300 text-lg font-medium shadow-inner placeholder-gray-400"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-                  <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                    <Search className="w-6 h-6 text-[#FF9100]" />
-                  </div>
-                </div>
-              </div>
-            </div>
+            <EnhancedClassSelect 
+        selectedStandard={selectedStandard}
+        setSelectedStandard={setSelectedStandard}
+      />
+      
+      <EnhancedSearchInput 
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+      />
           </div>
         </div>
 
@@ -393,6 +597,8 @@ const Leaderboard = () => {
           </div>
         )}
       </div>
+
+      <Footer isLoggedIn={true} />
 
       <style jsx>{`
         @keyframes gradient-x {
