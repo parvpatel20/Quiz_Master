@@ -1,129 +1,24 @@
 import React, { useState, useEffect } from "react";
-import { ChevronDown, BookOpen, Users, Target, Award, Clock, Filter, Search, Star, Zap, Trophy, Sparkles, Check } from "lucide-react";
+import {
+  ChevronDown,
+  BookOpen,
+  Users,
+  Target,
+  Award,
+  Clock,
+  Filter,
+  Search,
+  Star,
+  Zap,
+  Trophy,
+  Sparkles,
+  Check,
+} from "lucide-react";
 import Header from "../components/Header";
 import Loading from "../components/Loading";
+import Footer from "../components/Footer";
 
-const QuizSearchPageBeforeSignup = () => {
-  const [quizzes, setQuizzes] = useState([]);
-  const [selectedClass, setSelectedClass] = useState("");
-  const [selectedSubject, setSelectedSubject] = useState("");
-  const [selectedTopic, setSelectedTopic] = useState("");
-  const [selectedDifficulty, setSelectedDifficulty] = useState("");
-  const [selectedFormat, setSelectedFormat] = useState("");
-  const [loading, setLoading] = useState(true);
-
-  const data = {
-    "Class 4": {
-      English: ["Parts of Speech"],
-    },
-    "Class 5": {
-      Mathematics: ["Addition and Subtraction"],
-    },
-    "Class 6": {
-      Science: ["States of Matter"],
-    },
-    "Class 7": {
-      "General Knowledge": ["World Facts"],
-    },
-    "Class 12": {
-      Physics: ["Quantum Mechanics"],
-    },
-  };
-
-  const fetchQuizData = async () => {
-    try {
-      const response = await fetch(
-        "https://quiz-master-backend-1a1s.onrender.com/api/quiz-search-before-signup",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch quiz data.");
-      }
-
-      const responseData = await response.json();
-
-      const updatedQuizzes = Array.isArray(responseData.data)
-        ? responseData.data
-        : Object.values(responseData.data);
-
-      setQuizzes(updatedQuizzes);
-    } catch (error) {
-      console.error("Error fetching quiz data:", error);
-      setQuizzes([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchQuizData();
-  }, []);
-
-  const filteredQuizzes = quizzes.filter((quiz) => {
-    const matchesDifficulty = selectedDifficulty
-      ? quiz.difficulty.toLowerCase() === selectedDifficulty.toLowerCase()
-      : true;
-    const matchesFormat = selectedFormat
-      ? quiz.format.toLowerCase() === selectedFormat.toLowerCase()
-      : true;
-    const matchesTopic = selectedTopic
-      ? quiz.topic?.toLowerCase() === selectedTopic.toLowerCase()
-      : true;
-
-    return matchesDifficulty && matchesFormat && matchesTopic;
-  });
-
-  const getDifficultyStyles = (difficulty) => {
-    switch (difficulty?.toLowerCase()) {
-      case 'easy': 
-        return {
-          color: 'text-emerald-300',
-          bg: 'bg-gradient-to-r from-emerald-500/20 to-green-500/20',
-          border: 'border-emerald-400/30',
-          icon: <Target className="w-4 h-4 text-emerald-300" />
-        };
-      case 'medium': 
-        return {
-          color: 'text-amber-300',
-          bg: 'bg-gradient-to-r from-amber-500/20 to-yellow-500/20',
-          border: 'border-amber-400/30',
-          icon: <Target className="w-4 h-4 text-amber-300" />
-        };
-      case 'hard': 
-        return {
-          color: 'text-rose-300',
-          bg: 'bg-gradient-to-r from-rose-500/20 to-red-500/20',
-          border: 'border-rose-400/30',
-          icon: <Target className="w-4 h-4 text-rose-300" />
-        };
-      default: 
-        return {
-          color: 'text-[#FFD700]',
-          bg: 'bg-gradient-to-r from-[#FF9100]/20 to-[#FFD700]/20',
-          border: 'border-[#FF9100]/30',
-          icon: <Target className="w-4 h-4 text-[#FFD700]" />
-        };
-    }
-  };
-
-  const getFormatIcon = (format) => {
-    switch (format) {
-      case 'MCQ-Single': return <Award className="w-5 h-5 text-blue-400" />;
-      case 'MCQ-Multiple': return <Users className="w-5 h-5 text-purple-400" />;
-      case 'True/False': return <Zap className="w-5 h-5 text-green-400" />;
-      case 'Fill-in-the-Blank': return <BookOpen className="w-5 h-5 text-orange-400" />;
-      default: return <Users className="w-5 h-5 text-[#FF9100]" />;
-    }
-  };
-
-  const SelectField = ({ 
+const SelectField = ({ 
   label, 
   value, 
   onChange, 
@@ -317,15 +212,140 @@ const QuizSearchPageBeforeSignup = () => {
   );
 };
 
+const QuizSearchPageBeforeSignup = () => {
+  const [quizzes, setQuizzes] = useState([]);
+  const [selectedClass, setSelectedClass] = useState("");
+  const [selectedSubject, setSelectedSubject] = useState("");
+  const [selectedTopic, setSelectedTopic] = useState("");
+  const [selectedDifficulty, setSelectedDifficulty] = useState("");
+  const [selectedFormat, setSelectedFormat] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  const data = {
+    "Class 4": {
+      English: ["Parts of Speech"],
+    },
+    "Class 5": {
+      Mathematics: ["Addition and Subtraction"],
+    },
+    "Class 6": {
+      Science: ["States of Matter"],
+    },
+    "Class 7": {
+      "General Knowledge": ["World Facts"],
+    },
+    "Class 12": {
+      Physics: ["Quantum Mechanics"],
+    },
+  };
+
+  const fetchQuizData = async () => {
+    try {
+      const response = await fetch(
+        "https://quiz-master-backend-1a1s.onrender.com/api/quiz-search-before-signup",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch quiz data.");
+      }
+
+      const responseData = await response.json();
+
+      const updatedQuizzes = Array.isArray(responseData.data)
+        ? responseData.data
+        : Object.values(responseData.data);
+
+      setQuizzes(updatedQuizzes);
+    } catch (error) {
+      console.error("Error fetching quiz data:", error);
+      setQuizzes([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchQuizData();
+  }, []);
+
+  const filteredQuizzes = quizzes.filter((quiz) => {
+    const matchesDifficulty = selectedDifficulty
+      ? quiz.difficulty.toLowerCase() === selectedDifficulty.toLowerCase()
+      : true;
+    const matchesFormat = selectedFormat
+      ? quiz.format.toLowerCase() === selectedFormat.toLowerCase()
+      : true;
+    const matchesTopic = selectedTopic
+      ? quiz.topic?.toLowerCase() === selectedTopic.toLowerCase()
+      : true;
+
+    return matchesDifficulty && matchesFormat && matchesTopic;
+  });
+
+  const getDifficultyStyles = (difficulty) => {
+    switch (difficulty?.toLowerCase()) {
+      case "easy":
+        return {
+          color: "text-emerald-300",
+          bg: "bg-gradient-to-r from-emerald-500/20 to-green-500/20",
+          border: "border-emerald-400/30",
+          icon: <Target className="w-4 h-4 text-emerald-300" />,
+        };
+      case "medium":
+        return {
+          color: "text-amber-300",
+          bg: "bg-gradient-to-r from-amber-500/20 to-yellow-500/20",
+          border: "border-amber-400/30",
+          icon: <Target className="w-4 h-4 text-amber-300" />,
+        };
+      case "hard":
+        return {
+          color: "text-rose-300",
+          bg: "bg-gradient-to-r from-rose-500/20 to-red-500/20",
+          border: "border-rose-400/30",
+          icon: <Target className="w-4 h-4 text-rose-300" />,
+        };
+      default:
+        return {
+          color: "text-[#FFD700]",
+          bg: "bg-gradient-to-r from-[#FF9100]/20 to-[#FFD700]/20",
+          border: "border-[#FF9100]/30",
+          icon: <Target className="w-4 h-4 text-[#FFD700]" />,
+        };
+    }
+  };
+
+  const getFormatIcon = (format) => {
+    switch (format) {
+      case "MCQ-Single":
+        return <Award className="w-5 h-5 text-blue-400" />;
+      case "MCQ-Multiple":
+        return <Users className="w-5 h-5 text-purple-400" />;
+      case "True/False":
+        return <Zap className="w-5 h-5 text-green-400" />;
+      case "Fill-in-the-Blank":
+        return <BookOpen className="w-5 h-5 text-orange-400" />;
+      default:
+        return <Users className="w-5 h-5 text-[#FF9100]" />;
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0F1A36] via-[#2C4A75] to-[#0A1C36] text-white relative overflow-hidden">
       {/* Animated background elements */}
       <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-r from-[#FF9100]/20 to-[#FFD700]/20 rounded-full blur-3xl animate-pulse"></div>
       <div className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-r from-[#2C4A75]/30 to-[#FF9100]/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
-      
+
       <Loading isLoading={loading} />
       <Header />
-      
+
       <div className="relative max-w-7xl mx-auto p-6 z-10">
         {/* Spectacular Hero Section */}
         <div className="text-center mb-16 py-12">
@@ -335,7 +355,7 @@ const QuizSearchPageBeforeSignup = () => {
               <Sparkles className="w-16 h-16 text-white animate-spin-slow" />
             </div>
           </div>
-          
+
           <h1 className="text-7xl font-black mb-6 leading-tight">
             <span className="bg-gradient-to-r from-[#FF9100] via-[#FFD700] via-[#FF6B35] to-[#FF9100] bg-clip-text text-transparent animate-gradient-x">
               Discover Amazing
@@ -345,11 +365,12 @@ const QuizSearchPageBeforeSignup = () => {
               Quiz Adventures
             </span>
           </h1>
-          
+
           <p className="text-2xl text-gray-300 max-w-3xl mx-auto leading-relaxed font-light">
-            Embark on an educational journey with our stunning collection of interactive quizzes
+            Embark on an educational journey with our stunning collection of
+            interactive quizzes
           </p>
-          
+
           {/* Decorative elements */}
           <div className="flex justify-center items-center gap-6 mt-8">
             <div className="w-16 h-1 bg-gradient-to-r from-transparent via-[#FF9100] to-transparent rounded-full"></div>
@@ -368,98 +389,99 @@ const QuizSearchPageBeforeSignup = () => {
               </h2>
             </div>
           </div>
-          
+
           {/* Primary Filters with different gradients */}
+          {/* Primary Filters */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
             <SelectField
-                          label="Academic Level"
-                          value={selectedClass}
-                          onChange={(e) => {
-                            setSelectedClass(e.target.value);
-                            setSelectedSubject("");
-                            setSelectedTopic("");
-                          }}
-                          options={[
-                            ...Array.from({ length: 10 }, (_, i) => ({
-                              value: `Class ${i + 1}`,
-                              label: `Class ${i + 1}`,
-                            })),
-                            { value: "Class 11 (Science)", label: "Class 11 (Science)" },
-                            { value: "Class 11 (Commerce)", label: "Class 11 (Commerce)" },
-                            { value: "Class 11 (Arts)", label: "Class 11 (Arts)" },
-                            { value: "Class 12 (Science)", label: "Class 12 (Science)" },
-                            { value: "Class 12 (Commerce)", label: "Class 12 (Commerce)" },
-                            { value: "Class 12 (Arts)", label: "Class 12 (Arts)" },
-                          ]}
-                          placeholder="Select your class level"
-                          icon={BookOpen}
-                          gradient="bg-gradient-to-br from-[#1a2845]/90 via-[#2d3f5f]/80 to-[#0f1729]/90"
-                        />
-            
-                        <SelectField
-                          label="Subject Area"
-                          value={selectedSubject}
-                          onChange={(e) => {
-                            setSelectedSubject(e.target.value);
-                            setSelectedTopic(""); // Reset topic
-                          }}
-                          options={
-                            selectedClass
-                              ? Array.from(
-                                  new Set(
-                                    quizzes
-                                      .filter(
-                                        (quiz) =>
-                                          quiz.class.trim() ===
-                                          selectedClass.replace(/Class\s*/i, "").trim()
-                                      )
-                                      .map((quiz) => quiz.subject.trim())
-                                  )
-                                ).map((subject) => ({
-                                  value: subject,
-                                  label: subject,
-                                }))
-                              : []
-                          }
-                          disabled={!selectedClass}
-                          placeholder={
-                            selectedClass ? "Choose your subject" : "Select class first"
-                          }
-                          icon={Target}
-                          gradient="bg-gradient-to-br from-[#2d1b45]/90 via-[#3f2d5f]/80 to-[#1a0f29]/90"
-                        />
-            
-                        <SelectField
-                          label="Learning Topic"
-                          value={selectedTopic}
-                          onChange={(e) => setSelectedTopic(e.target.value)}
-                          options={
-                            selectedSubject
-                              ? Array.from(
-                                  new Set(
-                                    quizzes
-                                      .filter(
-                                        (quiz) =>
-                                          quiz.class.trim() ===
-                                            selectedClass.replace(/Class\s*/i, "").trim() &&
-                                          quiz.subject.trim().toLowerCase() ===
-                                            selectedSubject.trim().toLowerCase()
-                                      )
-                                      .map((quiz) => quiz.topic.trim())
-                                  )
-                                ).map((topic) => ({
-                                  value: topic,
-                                  label: topic,
-                                }))
-                              : []
-                          }
-                          disabled={!selectedSubject}
-                          placeholder={
-                            selectedSubject ? "Pick your topic" : "Select subject first"
-                          }
-                          icon={Sparkles}
-                          gradient="bg-gradient-to-br from-[#451b2d]/90 via-[#5f2d3f]/80 to-[#29101a]/90"
-                        />
+              label="Academic Level"
+              value={selectedClass}
+              onChange={(e) => {
+                setSelectedClass(e.target.value);
+                setSelectedSubject("");
+                setSelectedTopic("");
+              }}
+              options={[
+                ...Array.from({ length: 10 }, (_, i) => ({
+                  value: `Class ${i + 1}`,
+                  label: `Class ${i + 1}`,
+                })),
+                { value: "Class 11 (Science)", label: "Class 11 (Science)" },
+                { value: "Class 11 (Commerce)", label: "Class 11 (Commerce)" },
+                { value: "Class 11 (Arts)", label: "Class 11 (Arts)" },
+                { value: "Class 12 (Science)", label: "Class 12 (Science)" },
+                { value: "Class 12 (Commerce)", label: "Class 12 (Commerce)" },
+                { value: "Class 12 (Arts)", label: "Class 12 (Arts)" },
+              ]}
+              placeholder="Select your class level"
+              icon={BookOpen}
+              gradient="bg-gradient-to-br from-[#1a2845]/90 via-[#2d3f5f]/80 to-[#0f1729]/90"
+            />
+
+            <SelectField
+              label="Subject Area"
+              value={selectedSubject}
+              onChange={(e) => {
+                setSelectedSubject(e.target.value);
+                setSelectedTopic(""); // Reset topic
+              }}
+              options={
+                selectedClass
+                  ? Array.from(
+                      new Set(
+                        quizzes
+                          .filter(
+                            (quiz) =>
+                              quiz.class.trim() ===
+                              selectedClass.replace(/Class\s*/i, "").trim()
+                          )
+                          .map((quiz) => quiz.subject.trim())
+                      )
+                    ).map((subject) => ({
+                      value: subject,
+                      label: subject,
+                    }))
+                  : []
+              }
+              disabled={!selectedClass}
+              placeholder={
+                selectedClass ? "Choose your subject" : "Select class first"
+              }
+              icon={Target}
+              gradient="bg-gradient-to-br from-[#2d1b45]/90 via-[#3f2d5f]/80 to-[#1a0f29]/90"
+            />
+
+            <SelectField
+              label="Learning Topic"
+              value={selectedTopic}
+              onChange={(e) => setSelectedTopic(e.target.value)}
+              options={
+                selectedSubject
+                  ? Array.from(
+                      new Set(
+                        quizzes
+                          .filter(
+                            (quiz) =>
+                              quiz.class.trim() ===
+                                selectedClass.replace(/Class\s*/i, "").trim() &&
+                              quiz.subject.trim().toLowerCase() ===
+                                selectedSubject.trim().toLowerCase()
+                          )
+                          .map((quiz) => quiz.topic.trim())
+                      )
+                    ).map((topic) => ({
+                      value: topic,
+                      label: topic,
+                    }))
+                  : []
+              }
+              disabled={!selectedSubject}
+              placeholder={
+                selectedSubject ? "Pick your topic" : "Select subject first"
+              }
+              icon={Sparkles}
+              gradient="bg-gradient-to-br from-[#451b2d]/90 via-[#5f2d3f]/80 to-[#29101a]/90"
+            />
           </div>
 
           {/* Secondary Filters */}
@@ -501,16 +523,19 @@ const QuizSearchPageBeforeSignup = () => {
             {/* Results Header */}
             <div className="text-center mb-16">
               <div className="text-center mb-16">
-              <h2 className="text-5xl font-black mb-6 bg-gradient-to-r from-[#FF9100] via-[#FFD700] to-[#FF9100] bg-clip-text text-transparent drop-shadow-2xl">
-                Available Quizzes
-              </h2>
-              <div className="inline-block">
-                <p className="text-2xl text-white bg-gradient-to-r from-[#112D4E]/80 to-[#0F1A36]/80 backdrop-blur-lg px-8 py-4 rounded-full border border-[#FF9100]/30 shadow-xl">
-                  Topic: <span className="text-[#FF9100] font-bold">{selectedTopic}</span>
-                </p>
+                <h2 className="text-5xl font-black mb-6 bg-gradient-to-r from-[#FF9100] via-[#FFD700] to-[#FF9100] bg-clip-text text-transparent drop-shadow-2xl">
+                  Available Quizzes
+                </h2>
+                <div className="inline-block">
+                  <p className="text-2xl text-white bg-gradient-to-r from-[#112D4E]/80 to-[#0F1A36]/80 backdrop-blur-lg px-8 py-4 rounded-full border border-[#FF9100]/30 shadow-xl">
+                    Topic:{" "}
+                    <span className="text-[#FF9100] font-bold">
+                      {selectedTopic}
+                    </span>
+                  </p>
+                </div>
               </div>
-            </div>
-              
+
               <div className="flex justify-center items-center gap-4">
                 <div className="w-24 h-1 bg-gradient-to-r from-transparent via-[#FF9100] to-[#FFD700] rounded-full"></div>
                 <div className="p-3 bg-gradient-to-r from-[#FF9100] to-[#FFD700] rounded-full">
@@ -532,9 +557,8 @@ const QuizSearchPageBeforeSignup = () => {
                     >
                       {/* Glowing background effect */}
                       <div className="absolute inset-0 bg-gradient-to-br from-[#FF9100]/20 via-[#FFD700]/10 to-[#FF6B35]/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                      
+
                       <div className="relative bg-gradient-to-br from-[#0F1A36]/95 via-[#1a2845]/90 to-[#0A1C36]/95 backdrop-blur-lg p-8 rounded-3xl shadow-2xl border border-[#FF9100]/30 transition-all duration-500">
-                        
                         {/* Quiz Header */}
                         <div className="text-center mb-8">
                           <div className="relative inline-block mb-6">
@@ -543,11 +567,11 @@ const QuizSearchPageBeforeSignup = () => {
                               <BookOpen className="w-10 h-10 text-white" />
                             </div>
                           </div>
-                          
+
                           <h3 className="text-2xl font-bold mb-3 bg-gradient-to-r from-[#FF9100] via-[#FFD700] to-[#FF6B35] bg-clip-text text-transparent">
                             {quiz.quizName}
                           </h3>
-                          
+
                           <div className="w-20 h-1 bg-gradient-to-r from-[#FF9100] to-[#FFD700] mx-auto rounded-full"></div>
                         </div>
 
@@ -557,7 +581,9 @@ const QuizSearchPageBeforeSignup = () => {
                           <div className="flex items-center justify-between p-4 bg-gradient-to-r from-[#1a2845]/60 to-[#2d3f5f]/40 rounded-2xl border border-blue-500/20">
                             <div className="flex items-center gap-4">
                               {getFormatIcon(quiz.format)}
-                              <span className="text-white font-semibold text-lg">Format</span>
+                              <span className="text-white font-semibold text-lg">
+                                Format
+                              </span>
                             </div>
                             <span className="text-blue-300 font-bold px-4 py-2 bg-blue-500/20 rounded-xl border border-blue-400/30">
                               {quiz.format}
@@ -568,7 +594,9 @@ const QuizSearchPageBeforeSignup = () => {
                           <div className="flex items-center justify-between p-4 bg-gradient-to-r from-[#2d1a45]/60 to-[#3f2d5f]/40 rounded-2xl border border-purple-500/20">
                             <div className="flex items-center gap-4">
                               <Clock className="w-5 h-5 text-purple-400" />
-                              <span className="text-white font-semibold text-lg">Questions</span>
+                              <span className="text-white font-semibold text-lg">
+                                Questions
+                              </span>
                             </div>
                             <span className="text-purple-300 font-bold px-4 py-2 bg-purple-500/20 rounded-xl border border-purple-400/30">
                               {quiz.questions.length}
@@ -576,12 +604,18 @@ const QuizSearchPageBeforeSignup = () => {
                           </div>
 
                           {/* Difficulty */}
-                          <div className={`flex items-center justify-between p-4 rounded-2xl border ${difficultyStyles.bg} ${difficultyStyles.border}`}>
+                          <div
+                            className={`flex items-center justify-between p-4 rounded-2xl border ${difficultyStyles.bg} ${difficultyStyles.border}`}
+                          >
                             <div className="flex items-center gap-4">
                               {difficultyStyles.icon}
-                              <span className="text-white font-semibold text-lg">Difficulty</span>
+                              <span className="text-white font-semibold text-lg">
+                                Difficulty
+                              </span>
                             </div>
-                            <span className={`font-bold px-4 py-2 rounded-xl border ${difficultyStyles.color} ${difficultyStyles.bg} ${difficultyStyles.border}`}>
+                            <span
+                              className={`font-bold px-4 py-2 rounded-xl border ${difficultyStyles.color} ${difficultyStyles.bg} ${difficultyStyles.border}`}
+                            >
                               {quiz.difficulty}
                             </span>
                           </div>
@@ -612,9 +646,12 @@ const QuizSearchPageBeforeSignup = () => {
                     <Search className="w-20 h-20 text-[#FF9100]" />
                   </div>
                 </div>
-                <h3 className="text-4xl font-bold text-white mb-6">No Quizzes Found</h3>
+                <h3 className="text-4xl font-bold text-white mb-6">
+                  No Quizzes Found
+                </h3>
                 <p className="text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
-                  Try adjusting your filters to discover more amazing quizzes that match your learning goals.
+                  Try adjusting your filters to discover more amazing quizzes
+                  that match your learning goals.
                 </p>
               </div>
             )}
@@ -630,18 +667,29 @@ const QuizSearchPageBeforeSignup = () => {
                 <BookOpen className="w-24 h-24 text-[#FF9100]" />
               </div>
             </div>
-            <h3 className="text-5xl font-bold text-white mb-8">Ready to Begin Your Journey?</h3>
+            <h3 className="text-5xl font-bold text-white mb-8">
+              Ready to Begin Your Journey?
+            </h3>
             <p className="text-2xl text-gray-300 max-w-3xl mx-auto leading-relaxed font-light">
-              Select your preferences from the beautiful filters above and unlock a world of knowledge with our carefully crafted quiz collection.
+              Select your preferences from the beautiful filters above and
+              unlock a world of knowledge with our carefully crafted quiz
+              collection.
             </p>
           </div>
         )}
       </div>
 
+      <Footer isLoggedIn={false} />
+
       <style jsx>{`
         @keyframes gradient-x {
-          0%, 100% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
+          0%,
+          100% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
         }
         .animate-gradient-x {
           background-size: 200% 200%;
