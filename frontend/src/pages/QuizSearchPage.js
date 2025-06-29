@@ -15,9 +15,10 @@ import {
   Trophy,
   Sparkles,
   Play,
-  Check
+  Check,
 } from "lucide-react";
 import Loading from "../components/Loading";
+import Footer  from "../components/Footer";
 
 const QuizSearchPage = () => {
   const [userid, setuserid] = useState("");
@@ -370,6 +371,7 @@ const SelectField = ({
     </div>
   );
 };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0F1A36] via-[#2C4A75] to-[#0A1C36] text-white relative overflow-hidden">
       {/* Animated background elements */}
@@ -548,6 +550,7 @@ const SelectField = ({
             />
           </div>
         </div>
+
         {/* Spectacular Quiz Results */}
         {selectedTopic && (
           <div className="animate-in slide-in-from-bottom duration-700">
@@ -704,6 +707,8 @@ const SelectField = ({
           </div>
         )}
       </div>
+
+      <Footer isLoggedIn={true} />
 
       <style jsx>{`
         @keyframes gradient-x {
