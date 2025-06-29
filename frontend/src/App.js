@@ -1,5 +1,5 @@
-import React from "react";
-import { Route, Routes } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Route, Routes, useLocation } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import RegisterPage from "./pages/RegisterPage"; // Placeholder
 import LoginPage from "./pages/LoginPage"; // Placeholder
@@ -12,9 +12,21 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import QuizSearchPageBeforeSignup from "./pages/QuizSearchBeforeSignup";
 import Popup from "./components/Popup";
 
+// ScrollToTop component
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+};
+
 const App = () => {
   return (
-    
+    <>
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/register" element={<RegisterPage />} />
@@ -27,6 +39,7 @@ const App = () => {
         <Route path="/about" element={<About />} />
         <Route path="/popup" element={<Popup />} />
       </Routes>
+    </>
   );
 };
 
