@@ -13,6 +13,33 @@ import { FORMAT_LABELS } from "../config/constants";
 const formatTime = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 const normInt = (o) => (o && o.$numberInt ? parseInt(o.$numberInt, 10) : o);
 
+// Per-question evaluation for the review screen.
+function evaluateQuestion(q, userAns, fmt) {
+  const user = userAns || [];
+  const f = fmt.toLowerCase();
+  let correctText = "";
+  let correct = false;
+  if (f === "mcq-single" || f === "mcq-multiple") {
+    const correctArr = (q.correctOption || []).map(normInt).map((i) => q.options[i]).filter(Boolean);
+    correctText = correctArr.join(", ");
+    if (f === "mcq-single") {
+      correct = user.length === 1 && correctArr[0] && user[0].trim().toLowerCase() === correctArr[0].trim().toLowerCase();
+    } else {
+      const norm = (arr) => arr.map((x) => x.trim().toLowerCase()).sort();
+      const u = norm(user), c = norm(correctArr);
+      correct = u.length === c.length && u.every((v, i) => v === c[i]);
+    }
+  } else if (f === "true/false") {
+    const correctIsTrue = q.isCorrect === true || q.isCorrect === 1;
+    correctText = correctIsTrue ? "True" : "False";
+    correct = user.length === 1 && (user[0].trim().toLowerCase() === "true") === correctIsTrue;
+  } else if (f === "fill-in-the-blank") {
+    correctText = q.correctAnswer || "";
+    correct = user.length === 1 && q.correctAnswer && user[0].trim().toLowerCase() === q.correctAnswer.trim().toLowerCase();
+  }
+  return { correct, correctText, userText: user.length ? user.join(", ") : "Not answered" };
+}
+
 const QuizPage = () => {
   const { userid, quizid } = useParams();
   const [quiz, setQuiz] = useState(null);
@@ -24,6 +51,7 @@ const QuizPage = () => {
   const [submitted, setSubmitted] = useState(false);
   const [showSummary, setShowSummary] = useState(false);
   const [showResult, setShowResult] = useState(false);
+  const [showReview, setShowReview] = useState(false);
   const [timeLeft, setTimeLeft] = useState(null);
   const [timedOut, setTimedOut] = useState(false);
 
@@ -153,6 +181,7 @@ const QuizPage = () => {
     setSubmitted(false);
     setShowSummary(false);
     setShowResult(false);
+    setShowReview(false);
     setAnswers([]);
     setCurrent(0);
     setTimeLeft(quiz.totalTime * 60);
@@ -438,6 +467,66 @@ const QuizPage = () => {
         </Card>
       </div>
 
+      <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+        <Button variant="outline" size="lg" onClick={() => setShowReview(true)}>
+          <ListChecks className="h-5 w-5" /> Review answers
+        </Button>
+        <Button size="lg" onClick={restart}>
+          <RotateCcw className="h-5 w-5" /> Try again
+        </Button>
+      </div>
+    </div>
+  );
+
+  const Review = () => (
+    <div className="mx-auto max-w-3xl px-5 py-10">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-white sm:text-3xl">Answer review</h1>
+          <p className="mt-1 text-sm text-slate-400">
+            {score} of {totalQuestions} correct · {percent}%
+          </p>
+        </div>
+        <Button variant="outline" onClick={() => setShowReview(false)}>
+          <ChevronLeft className="h-4 w-4" /> Back
+        </Button>
+      </div>
+
+      <div className="mt-6 space-y-4">
+        {quiz.questions.map((qq, i) => {
+          const r = evaluateQuestion(qq, answers[i], quiz.format);
+          return (
+            <Card key={i} className="p-5">
+              <div className="flex items-start gap-3">
+                <span className={cx(
+                  "mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-lg",
+                  r.correct ? "bg-emerald-500/15 text-emerald-300" : "bg-red-500/15 text-red-300"
+                )}>
+                  {r.correct ? <CheckCircle2 className="h-4 w-4" /> : <XCircle className="h-4 w-4" />}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs uppercase tracking-wide text-slate-500">Question {i + 1}</p>
+                  <p className="mt-1 font-medium text-white">{qq.questionText}</p>
+                  <div className="mt-3 grid gap-2 text-sm sm:grid-cols-2">
+                    <div className={cx(
+                      "rounded-lg border px-3 py-2",
+                      r.correct ? "border-emerald-500/20 bg-emerald-500/5" : "border-red-500/20 bg-red-500/5"
+                    )}>
+                      <p className="text-xs text-slate-500">Your answer</p>
+                      <p className={cx("mt-0.5 font-medium", r.correct ? "text-emerald-300" : "text-red-300")}>{r.userText}</p>
+                    </div>
+                    <div className="rounded-lg border border-white/10 bg-white/[0.02] px-3 py-2">
+                      <p className="text-xs text-slate-500">Correct answer</p>
+                      <p className="mt-0.5 font-medium text-white">{r.correctText}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Card>
+          );
+        })}
+      </div>
+
       <div className="mt-8 text-center">
         <Button size="lg" onClick={restart}>
           <RotateCcw className="h-5 w-5" /> Try again
@@ -454,7 +543,8 @@ const QuizPage = () => {
         {!started && !submitted && quiz && <Instructions />}
         {started && quiz && <QuizRunner />}
         {showSummary && !showResult && <Summary />}
-        {showResult && quiz && <Result />}
+        {showResult && !showReview && quiz && <Result />}
+        {showResult && showReview && quiz && <Review />}
       </div>
     </div>
   );

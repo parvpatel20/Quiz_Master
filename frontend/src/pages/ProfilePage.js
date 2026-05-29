@@ -1,12 +1,13 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import {
-  Pencil, User, Mail, GraduationCap, FileText, BarChart3, Trophy, Target, ListChecks,
+  Pencil, User, Mail, GraduationCap, FileText, BarChart3, Trophy, Target, ListChecks, ArrowRight,
 } from "lucide-react";
 import Navbar from "../components/Navbar";
 import Loading from "../components/Loading";
 import Popupupdate from "../components/Popupupdate";
 import QuizHistory from "../components/QuizHistory";
-import { Card, SectionHeading, cx } from "../components/ui";
+import { Card, SectionHeading, Button, cx } from "../components/ui";
 import { apiFetch } from "../config/api";
 
 const EDIT_FIELDS = [
@@ -129,7 +130,12 @@ const ProfilePage = () => {
           {/* Right: stats + history */}
           <div className="space-y-6 lg:col-span-2">
             <Card className="p-7">
-              <SectionHeading icon={BarChart3} title="Performance" />
+              <div className="flex items-center justify-between gap-3">
+                <SectionHeading icon={BarChart3} title="Performance" />
+                <Button as={Link} to="/dashboard" variant="outline" size="sm">
+                  Dashboard <ArrowRight className="h-4 w-4" />
+                </Button>
+              </div>
               <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
                 {stats.map(({ label, value, icon: Icon }) => (
                   <div key={label} className="rounded-xl border border-white/10 bg-white/[0.02] p-4">

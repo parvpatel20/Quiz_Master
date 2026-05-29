@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { NavLink, Link, useNavigate } from "react-router-dom";
-import { User, LogOut, Menu, X } from "lucide-react";
+import { User, LogOut, Menu, X, Bookmark, LayoutDashboard } from "lucide-react";
 import { apiFetch } from "../config/api";
 import { cx, Button } from "./ui";
 
@@ -64,11 +64,14 @@ const Navbar = ({ isLoggedIn = false }) => {
   const links = (
     <>
       <NavItem to="/" onClick={() => setMobileOpen(false)}>Home</NavItem>
-      <NavItem to="/about" onClick={() => setMobileOpen(false)}>About</NavItem>
+      {isLoggedIn && (
+        <NavItem to="/dashboard" onClick={() => setMobileOpen(false)}>Dashboard</NavItem>
+      )}
       <NavItem to={quizzesTo} onClick={() => setMobileOpen(false)}>Quizzes</NavItem>
       {isLoggedIn && (
         <NavItem to="/leaderboard" onClick={() => setMobileOpen(false)}>Leaderboard</NavItem>
       )}
+      <NavItem to="/about" onClick={() => setMobileOpen(false)}>About</NavItem>
     </>
   );
 
@@ -105,13 +108,15 @@ const Navbar = ({ isLoggedIn = false }) => {
                 <User className="h-5 w-5" />
               </button>
               {menuOpen && (
-                <div className="absolute right-0 mt-2 w-44 overflow-hidden rounded-xl border border-white/10 bg-ink-850 p-1 shadow-card animate-fade-in">
-                  <Link
-                    to="/profile"
-                    onClick={() => setMenuOpen(false)}
-                    className="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm text-slate-200 hover:bg-white/5"
-                  >
+                <div className="absolute right-0 mt-2 w-48 overflow-hidden rounded-xl border border-white/10 bg-ink-850 p-1 shadow-card animate-fade-in">
+                  <Link to="/profile" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm text-slate-200 hover:bg-white/5">
                     <User className="h-4 w-4 text-brand" /> Profile
+                  </Link>
+                  <Link to="/dashboard" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm text-slate-200 hover:bg-white/5">
+                    <LayoutDashboard className="h-4 w-4 text-brand" /> Dashboard
+                  </Link>
+                  <Link to="/bookmarks" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm text-slate-200 hover:bg-white/5">
+                    <Bookmark className="h-4 w-4 text-brand" /> Bookmarks
                   </Link>
                   <button
                     onClick={handleLogout}
@@ -146,12 +151,11 @@ const Navbar = ({ isLoggedIn = false }) => {
           <div className="mt-4 border-t border-white/10 pt-4">
             {isLoggedIn ? (
               <div className="flex flex-col gap-1">
-                <Link
-                  to="/profile"
-                  onClick={() => setMobileOpen(false)}
-                  className="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm text-slate-200 hover:bg-white/5"
-                >
+                <Link to="/profile" onClick={() => setMobileOpen(false)} className="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm text-slate-200 hover:bg-white/5">
                   <User className="h-4 w-4 text-brand" /> Profile
+                </Link>
+                <Link to="/bookmarks" onClick={() => setMobileOpen(false)} className="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm text-slate-200 hover:bg-white/5">
+                  <Bookmark className="h-4 w-4 text-brand" /> Bookmarks
                 </Link>
                 <button
                   onClick={handleLogout}

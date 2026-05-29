@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { ChevronDown, Check, X } from "lucide-react";
+import { motion } from "framer-motion";
 
 /* ------------------------------------------------------------------ */
 /* utils                                                              */
@@ -314,5 +315,148 @@ export function Modal({ open, onClose, title, icon: Icon, children, maxWidth = "
       </div>
     </div>,
     document.body
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Reveal — fade/slide in when scrolled into view                     */
+/* ------------------------------------------------------------------ */
+export function Reveal({ children, delay = 0, y = 16, className, as = "div" }) {
+  const MotionTag = motion[as] || motion.div;
+  return (
+    <MotionTag
+      className={className}
+      initial={{ opacity: 0, y }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] }}
+    >
+      {children}
+    </MotionTag>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* AnimatedNumber — counts up to value                                */
+/* ------------------------------------------------------------------ */
+export function AnimatedNumber({ value = 0, duration = 900, decimals = 0, suffix = "" }) {
+  const [display, setDisplay] = useState(0);
+  const ref = useRef();
+
+  useEffect(() => {
+    const target = Number(value) || 0;
+    let raf;
+    let start;
+    const step = (ts) => {
+      if (start == null) start = ts;
+      const p = Math.min((ts - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      setDisplay(target * eased);
+      if (p < 1) raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  }, [value, duration]);
+
+  return (
+    <span ref={ref}>
+      {display.toFixed(decimals)}
+      {suffix}
+    </span>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* StatCard                                                           */
+/* ------------------------------------------------------------------ */
+export function StatCard({ icon: Icon, label, value, suffix = "", decimals = 0, hint, tone = "brand" }) {
+  const tones = {
+    brand: "bg-brand/10 text-brand",
+    green: "bg-emerald-500/10 text-emerald-300",
+    blue: "bg-sky-500/10 text-sky-300",
+    amber: "bg-amber-500/10 text-amber-300",
+    red: "bg-red-500/10 text-red-300",
+  };
+  return (
+    <Card hover className="p-5">
+      <div className="flex items-start justify-between">
+        <span className={cx("grid h-10 w-10 place-items-center rounded-xl", tones[tone])}>
+          {Icon && <Icon className="h-5 w-5" />}
+        </span>
+      </div>
+      <p className="mt-4 font-display text-3xl font-bold text-white">
+        <AnimatedNumber value={value} decimals={decimals} suffix={suffix} />
+      </p>
+      <p className="mt-1 text-sm text-slate-400">{label}</p>
+      {hint && <p className="mt-1 text-xs text-slate-500">{hint}</p>}
+    </Card>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* ProgressRing                                                       */
+/* ------------------------------------------------------------------ */
+export function ProgressRing({ value = 0, size = 132, stroke = 10, children }) {
+  const r = (size - stroke) / 2;
+  const c = 2 * Math.PI * r;
+  const offset = c - (Math.min(100, Math.max(0, value)) / 100) * c;
+  return (
+    <div className="relative" style={{ width: size, height: size }}>
+      <svg width={size} height={size} className="-rotate-90">
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth={stroke} />
+        <circle
+          cx={size / 2} cy={size / 2} r={r} fill="none" stroke="#FF9100" strokeWidth={stroke}
+          strokeLinecap="round" strokeDasharray={c} strokeDashoffset={offset}
+          style={{ transition: "stroke-dashoffset 1s ease-out" }}
+        />
+      </svg>
+      <div className="absolute inset-0 grid place-items-center text-center">{children}</div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Chip — selectable pill                                             */
+/* ------------------------------------------------------------------ */
+export function Chip({ active, onClick, children, icon: Icon }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cx(
+        "inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm font-medium transition-all",
+        active
+          ? "border-brand/40 bg-brand/15 text-brand"
+          : "border-white/10 text-slate-400 hover:border-white/20 hover:text-white"
+      )}
+    >
+      {Icon && <Icon className="h-3.5 w-3.5" />}
+      {children}
+    </button>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Skeleton                                                           */
+/* ------------------------------------------------------------------ */
+export function Skeleton({ className }) {
+  return <div className={cx("animate-pulse rounded-lg bg-white/5", className)} />;
+}
+
+/* ------------------------------------------------------------------ */
+/* EmptyState                                                         */
+/* ------------------------------------------------------------------ */
+export function EmptyState({ icon: Icon, title, subtitle, action }) {
+  return (
+    <div className="flex flex-col items-center gap-3 px-6 py-16 text-center">
+      {Icon && (
+        <span className="grid h-16 w-16 place-items-center rounded-2xl bg-brand/10 text-brand">
+          <Icon className="h-8 w-8" />
+        </span>
+      )}
+      <p className="text-lg font-semibold text-white">{title}</p>
+      {subtitle && <p className="max-w-md text-sm text-slate-400">{subtitle}</p>}
+      {action && <div className="mt-2">{action}</div>}
+    </div>
   );
 }

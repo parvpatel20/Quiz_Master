@@ -324,6 +324,8 @@ const getCurrentUser = asyncHandler(async (req, res) => {
         maxScore: { $first: "$maxScore" }, // Include max score
         minScore: { $first: "$minScore" }, // Include min score
         accuracy: { $first: "$accuracy" }, // Include accuracy
+        bookmarks: { $first: "$bookmarks" }, // Include bookmarked quiz ids
+        createdAt: { $first: "$createdAt" }, // Account creation date
       },
     },
   ]);
@@ -346,11 +348,13 @@ const getAllQuizzes = asyncHandler(async (req, res) => {
     const quizzes = await Quiz.fetchAllQuizzes(); // Call the static method
 
     const userid = req.user?._id; // Assuming req.user contains the authenticated user data
+    const bookmarks = (req.user?.bookmarks || []).map((id) => id.toString());
     res.status(200).json({
       success: true,
       data: {
         quizzes,
         userid,
+        bookmarks,
       },
     });
   } catch (error) {
@@ -642,6 +646,47 @@ const checkForLogin = asyncHandler(async (req, res) => {
 
 });
 
+// Toggle a quiz in the user's bookmarks. Returns the updated bookmark id list.
+const toggleBookmark = asyncHandler(async (req, res) => {
+  const { quizid } = req.params;
+  const user = await User.findById(req.user?._id);
+
+  if (!user) {
+    return res.status(404).json({ success: false, message: "User not found" });
+  }
+
+  const quiz = await Quiz.findById(quizid);
+  if (!quiz) {
+    return res.status(404).json({ success: false, message: "Quiz not found" });
+  }
+
+  const exists = user.bookmarks.some((id) => id.toString() === quizid);
+  if (exists) {
+    user.bookmarks = user.bookmarks.filter((id) => id.toString() !== quizid);
+  } else {
+    user.bookmarks.push(quizid);
+  }
+  await user.save({ validateBeforeSave: false });
+
+  return res.status(200).json({
+    success: true,
+    bookmarked: !exists,
+    bookmarks: user.bookmarks.map((id) => id.toString()),
+  });
+});
+
+// Return the full quiz documents the user has bookmarked.
+const getBookmarks = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user?._id).populate("bookmarks");
+  if (!user) {
+    return res.status(404).json({ success: false, message: "User not found" });
+  }
+  return res.status(200).json({
+    success: true,
+    data: { quizzes: user.bookmarks || [], userid: req.user?._id },
+  });
+});
+
 export {
   registerUser,
   loginUser,
@@ -656,5 +701,7 @@ export {
   updateDetails,
   updateProfilePicture,
   changeCurrentPassword,
-  checkForLogin
+  checkForLogin,
+  toggleBookmark,
+  getBookmarks
 };

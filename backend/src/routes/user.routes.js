@@ -12,7 +12,9 @@ import {
     updateDetails,
     updateProfilePicture,
     changeCurrentPassword,
-    checkForLogin
+    checkForLogin,
+    toggleBookmark,
+    getBookmarks
 } from "../controllers/user.controller.js";
 import {upload} from "../middlewares/multer.middleware.js"
 import { verifyJWT } from "../middlewares/auth.middleware.js";
@@ -46,5 +48,9 @@ router.route("/profile-picture").patch(verifyJWT, upload.single("profilePicture"
 router.route("/change-password").patch(verifyJWT, changeCurrentPassword)
 
 router.route("/check-login-status").get(checkForLogin)
+
+router.route("/bookmarks").get(verifyJWT, getBookmarks)
+
+router.route("/bookmarks/:quizid").post(verifyJWT, toggleBookmark)
 
 export default router

@@ -4,8 +4,10 @@ import HomePage from "./pages/HomePage";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
 import ProfilePage from "./pages/ProfilePage";
+import Dashboard from "./pages/Dashboard";
 import QuizSearchPage from "./pages/QuizSearchPage";
 import QuizSearchBeforeSignup from "./pages/QuizSearchBeforeSignup";
+import BookmarksPage from "./pages/BookmarksPage";
 import QuizPage from "./pages/QuizPage";
 import Leaderboard from "./pages/Leaderboard";
 import About from "./pages/About";
@@ -25,9 +27,11 @@ const App = () => (
       <Route path="/" element={<HomePage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/profile" element={<ProfilePage />} />
       <Route path="/quiz-search" element={<QuizSearchPage />} />
       <Route path="/quiz-search-before-signup" element={<QuizSearchBeforeSignup />} />
+      <Route path="/bookmarks" element={<BookmarksPage />} />
       <Route path="/quiz-page/:userid/:quizid" element={<QuizPage />} />
       <Route path="/leaderboard" element={<Leaderboard />} />
       <Route path="/about" element={<About />} />

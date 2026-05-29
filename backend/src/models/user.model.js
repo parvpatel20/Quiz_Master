@@ -53,6 +53,12 @@ const userSchema = new mongoose.Schema(
     refreshToken: {
       type: String,
     },
+    bookmarks: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Quiz',
+      },
+    ],
     quizData: [
       {
         quiz: {

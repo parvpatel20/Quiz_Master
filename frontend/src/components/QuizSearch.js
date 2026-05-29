@@ -1,101 +1,81 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { BookOpen, Layers, Tag, Gauge, ListChecks, Search, Lock, ArrowRight, FileText } from "lucide-react";
+import { Search, SlidersHorizontal, Sparkles, LayoutGrid, X } from "lucide-react";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
-import Loading from "./Loading";
-import { Select, Card, Button, Badge, SectionHeading } from "./ui";
+import QuizCard from "./QuizCard";
+import { Card, Badge, Input, Chip, Select, Skeleton, EmptyState, Reveal } from "./ui";
 import { apiFetch } from "../config/api";
-import { CLASS_OPTIONS, DIFFICULTY_OPTIONS, FORMAT_OPTIONS } from "../config/constants";
+import { useQuizzes, useToggleBookmark } from "../hooks/queries";
+import { DIFFICULTY_OPTIONS, FORMAT_OPTIONS } from "../config/constants";
 
-const difficultyTone = (d) => {
-  switch (d?.toLowerCase()) {
-    case "easy": return "green";
-    case "medium": return "amber";
-    case "hard": return "red";
-    default: return "brand";
-  }
-};
+const SORTS = [
+  { value: "newest", label: "Newest" },
+  { value: "az", label: "Name (A–Z)" },
+  { value: "questions", label: "Most questions" },
+  { value: "time", label: "Shortest time" },
+];
 
-const uniq = (arr) => Array.from(new Set(arr));
-const gradeKey = (cls) => cls.replace(/Class\s*/i, "").trim();
+const CardSkeleton = () => (
+  <Card className="p-6">
+    <div className="flex gap-2"><Skeleton className="h-6 w-20" /><Skeleton className="h-6 w-16" /></div>
+    <Skeleton className="mt-3 h-6 w-3/4" />
+    <Skeleton className="mt-2 h-4 w-1/2" />
+    <div className="hairline my-4" />
+    <div className="grid grid-cols-3 gap-2"><Skeleton className="h-12" /><Skeleton className="h-12" /><Skeleton className="h-12" /></div>
+    <Skeleton className="mt-6 h-10 w-full" />
+  </Card>
+);
 
-/**
- * Shared quiz browser.
- * mode="auth"  -> fetches /quiz-search, quizzes are startable.
- * mode="guest" -> fetches /quiz-search-before-signup, start is locked.
- */
 const QuizSearch = ({ mode = "auth" }) => {
   const navigate = useNavigate();
   const isGuest = mode === "guest";
 
-  const [quizzes, setQuizzes] = useState([]);
-  const [userId, setUserId] = useState("");
-  const [loading, setLoading] = useState(true);
+  const { data, isLoading } = useQuizzes(mode);
+  const quizzes = useMemo(() => data?.quizzes || [], [data]);
+  const bookmarks = useMemo(() => data?.bookmarks || [], [data]);
+  const userId = data?.userid || "";
+  const toggle = useToggleBookmark();
 
-  const [cls, setCls] = useState("");
+  const [q, setQ] = useState("");
   const [subject, setSubject] = useState("");
-  const [topic, setTopic] = useState("");
   const [difficulty, setDifficulty] = useState("");
   const [format, setFormat] = useState("");
+  const [sort, setSort] = useState("newest");
 
-  useEffect(() => {
-    let active = true;
-    const endpoint = isGuest ? "/quiz-search-before-signup" : "/quiz-search";
-    apiFetch(endpoint)
-      .then((res) => {
-        if (!active) return;
-        const payload = isGuest ? res?.data : res?.data?.quizzes;
-        setQuizzes(Array.isArray(payload) ? payload : Object.values(payload || {}));
-        if (!isGuest && res?.data?.userid) setUserId(res.data.userid);
-      })
-      .catch(() => active && setQuizzes([]))
-      .finally(() => active && setLoading(false));
-    return () => {
-      active = false;
-    };
-  }, [isGuest]);
-
-  const subjectOptions = useMemo(() => {
-    if (!cls) return [];
-    return uniq(
-      quizzes
-        .filter((q) => q.class.trim() === gradeKey(cls))
-        .map((q) => q.subject.trim())
-    ).map((s) => ({ value: s, label: s }));
-  }, [cls, quizzes]);
-
-  const topicOptions = useMemo(() => {
-    if (!subject) return [];
-    return uniq(
-      quizzes
-        .filter(
-          (q) =>
-            q.class.trim() === gradeKey(cls) &&
-            q.subject.trim().toLowerCase() === subject.trim().toLowerCase()
-        )
-        .map((q) => q.topic.trim())
-    ).map((t) => ({ value: t, label: t }));
-  }, [subject, cls, quizzes]);
-
-  const results = useMemo(
-    () =>
-      quizzes.filter((q) => {
-        const okDiff = difficulty ? q.difficulty?.toLowerCase() === difficulty.toLowerCase() : true;
-        const okFmt = format ? q.format?.toLowerCase() === format.toLowerCase() : true;
-        const okTopic = topic ? q.topic?.toLowerCase() === topic.toLowerCase() : true;
-        return okDiff && okFmt && okTopic;
-      }),
-    [quizzes, difficulty, format, topic]
+  const subjects = useMemo(
+    () => Array.from(new Set(quizzes.map((x) => x.subject?.trim()).filter(Boolean))).sort(),
+    [quizzes]
   );
+
+  const results = useMemo(() => {
+    const term = q.trim().toLowerCase();
+    let list = quizzes.filter((x) => {
+      const okText =
+        !term ||
+        [x.quizName, x.subject, x.topic].some((f) => f?.toLowerCase().includes(term));
+      const okSub = !subject || x.subject?.trim() === subject;
+      const okDiff = !difficulty || x.difficulty?.toLowerCase() === difficulty.toLowerCase();
+      const okFmt = !format || x.format?.toLowerCase() === format.toLowerCase();
+      return okText && okSub && okDiff && okFmt;
+    });
+    list = [...list].sort((a, b) => {
+      if (sort === "az") return a.quizName.localeCompare(b.quizName);
+      if (sort === "questions") return (b.questions?.length || 0) - (a.questions?.length || 0);
+      if (sort === "time") return (a.totalTime || 0) - (b.totalTime || 0);
+      return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
+    });
+    return list;
+  }, [quizzes, q, subject, difficulty, format, sort]);
+
+  const activeFilters = [subject, difficulty, format].filter(Boolean).length + (q ? 1 : 0);
+  const clearAll = () => { setQ(""); setSubject(""); setDifficulty(""); setFormat(""); };
 
   const startQuiz = async (quizId) => {
     try {
       await apiFetch(`/quiz-page/${userId}/${quizId}`);
-      navigate(`/quiz-page/${userId}/${quizId}`);
-    } catch {
-      navigate(`/quiz-page/${userId}/${quizId}`);
-    }
+    } catch { /* navigate anyway; quiz page re-fetches */ }
+    navigate(`/quiz-page/${userId}/${quizId}`);
   };
 
   return (
@@ -103,124 +83,105 @@ const QuizSearch = ({ mode = "auth" }) => {
       <Navbar isLoggedIn={!isGuest} />
 
       <main className="mx-auto max-w-content px-5 pb-20 pt-28 sm:px-8">
-        {/* Header */}
-        <div className="mx-auto max-w-2xl text-center">
-          <Badge tone="brand">
-            <Search className="h-3.5 w-3.5" /> Quiz library
-          </Badge>
-          <h1 className="mt-4 text-3xl font-bold text-white sm:text-4xl">
-            Find your next quiz
+        <Reveal className="mx-auto max-w-2xl text-center">
+          <Badge tone="brand"><Sparkles className="h-3.5 w-3.5" /> Quiz library</Badge>
+          <h1 className="mt-4 font-display text-3xl font-bold text-white sm:text-4xl">
+            Explore quizzes
           </h1>
           <p className="mt-3 text-slate-400">
-            Filter by class, subject, and topic to discover quizzes that match what
-            you want to practice.
+            Search by name or topic, filter by subject and difficulty, and{" "}
+            {isGuest ? "sign up to start playing." : "jump straight in."}
+          </p>
+        </Reveal>
+
+        {/* Search + sort */}
+        <Reveal delay={0.05}>
+          <Card className="mt-8 p-4 sm:p-5">
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <div className="flex-1">
+                <Input
+                  icon={Search}
+                  value={q}
+                  onChange={(e) => setQ(e.target.value)}
+                  placeholder="Search quizzes by name, subject, or topic"
+                  rightSlot={q ? (
+                    <button onClick={() => setQ("")} className="grid h-8 w-8 place-items-center rounded-lg text-slate-400 hover:text-white" aria-label="Clear search">
+                      <X className="h-4 w-4" />
+                    </button>
+                  ) : null}
+                />
+              </div>
+              <div className="sm:w-48">
+                <Select icon={SlidersHorizontal} value={sort} onChange={setSort} options={SORTS} placeholder="Sort" />
+              </div>
+            </div>
+
+            {/* Subject chips */}
+            {subjects.length > 0 && (
+              <div className="mt-4 flex flex-wrap gap-2">
+                <Chip active={!subject} onClick={() => setSubject("")} icon={LayoutGrid}>All subjects</Chip>
+                {subjects.map((s) => (
+                  <Chip key={s} active={subject === s} onClick={() => setSubject(subject === s ? "" : s)}>{s}</Chip>
+                ))}
+              </div>
+            )}
+
+            {/* Difficulty + format chips */}
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              <span className="text-xs uppercase tracking-wide text-slate-500">Difficulty</span>
+              {DIFFICULTY_OPTIONS.map((d) => (
+                <Chip key={d.value} active={difficulty === d.value} onClick={() => setDifficulty(difficulty === d.value ? "" : d.value)}>{d.label}</Chip>
+              ))}
+              <span className="ml-2 text-xs uppercase tracking-wide text-slate-500">Format</span>
+              {FORMAT_OPTIONS.map((f) => (
+                <Chip key={f.value} active={format === f.value} onClick={() => setFormat(format === f.value ? "" : f.value)}>{f.label}</Chip>
+              ))}
+              {activeFilters > 0 && (
+                <button onClick={clearAll} className="ml-auto inline-flex items-center gap-1 text-sm text-slate-400 hover:text-white">
+                  <X className="h-3.5 w-3.5" /> Clear
+                </button>
+              )}
+            </div>
+          </Card>
+        </Reveal>
+
+        {/* Results */}
+        <div className="mt-8 flex items-center justify-between">
+          <p className="text-sm text-slate-400">
+            {isLoading ? "Loading…" : `${results.length} quiz${results.length === 1 ? "" : "zes"} found`}
           </p>
         </div>
 
-        {/* Filters */}
-        <Card className="mt-10 p-6">
-          <div className="grid gap-5 md:grid-cols-3">
-            <Select
-              label="Class" icon={BookOpen} value={cls}
-              onChange={(v) => { setCls(v); setSubject(""); setTopic(""); }}
-              options={CLASS_OPTIONS} placeholder="Select class"
-            />
-            <Select
-              label="Subject" icon={Layers} value={subject}
-              onChange={(v) => { setSubject(v); setTopic(""); }}
-              options={subjectOptions} disabled={!cls}
-              placeholder={cls ? "Select subject" : "Select class first"}
-            />
-            <Select
-              label="Topic" icon={Tag} value={topic} onChange={setTopic}
-              options={topicOptions} disabled={!subject}
-              placeholder={subject ? "Select topic" : "Select subject first"}
-            />
+        {isLoading ? (
+          <div className="mt-4 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {Array.from({ length: 6 }).map((_, i) => <CardSkeleton key={i} />)}
           </div>
-          <div className="mt-5 grid gap-5 md:grid-cols-2">
-            <Select
-              label="Difficulty" icon={Gauge} value={difficulty}
-              onChange={setDifficulty} options={DIFFICULTY_OPTIONS}
-              placeholder="Any difficulty"
-            />
-            <Select
-              label="Format" icon={ListChecks} value={format}
-              onChange={setFormat} options={FORMAT_OPTIONS}
-              placeholder="Any format"
-            />
+        ) : results.length > 0 ? (
+          <div className="mt-4 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {results.map((quiz, i) => (
+              <Reveal key={quiz._id} delay={Math.min(i * 0.04, 0.3)}>
+                <QuizCard
+                  quiz={quiz}
+                  isGuest={isGuest}
+                  bookmarked={bookmarks.includes(quiz._id)}
+                  onToggleBookmark={(id) => toggle.mutate(id)}
+                  onStart={startQuiz}
+                />
+              </Reveal>
+            ))}
           </div>
-        </Card>
-
-        {/* Results */}
-        {topic ? (
-          <section className="mt-12">
-            <SectionHeading
-              icon={BookOpen}
-              title="Available quizzes"
-              subtitle={`Topic: ${topic}`}
-            />
-            {results.length > 0 ? (
-              <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {results.map((quiz) => (
-                  <Card key={quiz._id} hover className="flex flex-col p-6">
-                    <h3 className="text-lg font-semibold text-white">{quiz.quizName}</h3>
-                    <div className="hairline my-4" />
-                    <dl className="space-y-3 text-sm">
-                      <div className="flex items-center justify-between">
-                        <dt className="text-slate-400">Format</dt>
-                        <dd><Badge tone="blue">{quiz.format}</Badge></dd>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <dt className="text-slate-400">Questions</dt>
-                        <dd className="font-medium text-white">{quiz.questions.length}</dd>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <dt className="text-slate-400">Difficulty</dt>
-                        <dd><Badge tone={difficultyTone(quiz.difficulty)}>{quiz.difficulty}</Badge></dd>
-                      </div>
-                    </dl>
-                    <div className="mt-6">
-                      {isGuest ? (
-                        <Button as={"a"} href="/register" variant="outline" className="w-full">
-                          <Lock className="h-4 w-4" /> Sign up to play
-                        </Button>
-                      ) : (
-                        <Button className="w-full" onClick={() => startQuiz(quiz._id)}>
-                          Start quiz <ArrowRight className="h-4 w-4" />
-                        </Button>
-                      )}
-                    </div>
-                  </Card>
-                ))}
-              </div>
-            ) : (
-              <Card className="mt-8 flex flex-col items-center gap-3 px-6 py-16 text-center">
-                <span className="grid h-14 w-14 place-items-center rounded-2xl bg-brand/10 text-brand">
-                  <Search className="h-7 w-7" />
-                </span>
-                <p className="font-medium text-white">No quizzes match these filters</p>
-                <p className="max-w-md text-sm text-slate-400">
-                  Try a different difficulty or format to see more results.
-                </p>
-              </Card>
-            )}
-          </section>
         ) : (
-          <Card className="mt-12 flex flex-col items-center gap-3 px-6 py-20 text-center">
-            <span className="grid h-16 w-16 place-items-center rounded-2xl bg-brand/10 text-brand">
-              <FileText className="h-8 w-8" />
-            </span>
-            <p className="text-lg font-semibold text-white">Start by picking a topic</p>
-            <p className="max-w-md text-sm text-slate-400">
-              Choose a class, subject, and topic above and the matching quizzes will
-              show up here.
-            </p>
+          <Card className="mt-4">
+            <EmptyState
+              icon={Search}
+              title="No quizzes match your filters"
+              subtitle="Try a different search term, subject, or clear the filters."
+            />
           </Card>
         )}
       </main>
 
       <Footer isLoggedIn={!isGuest} />
-      <Loading isLoading={loading} />
     </div>
   );
 };
