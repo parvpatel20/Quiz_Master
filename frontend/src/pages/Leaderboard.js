@@ -1,9 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Trophy, Crown, Medal, Award, Search, Users } from "lucide-react";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
-import Loading from "../components/Loading";
-import { Card, Badge, Select, Input, FieldLabel, SectionHeading, cx } from "../components/ui";
+import Shell from "../components/Shell";
+import { Card, Badge, Select, Input, FieldLabel, SectionHeading, PageHeader, Reveal, cx } from "../components/ui";
 import { apiFetch } from "../config/api";
 import { CLASS_OPTIONS } from "../config/constants";
 
@@ -65,21 +63,18 @@ const Leaderboard = () => {
   }, [rows, selectedStandard, searchTerm]);
 
   return (
-    <div className="app-bg">
-      <Navbar isLoggedIn />
+    <Shell isLoggedIn loading={loading}>
+      <Reveal>
+        <PageHeader
+          badge="Leaderboard"
+          badgeIcon={Trophy}
+          title="Top performers"
+          subtitle="See who's leading by accuracy across each class and celebrate the best."
+        />
+      </Reveal>
 
-      <main className="mx-auto max-w-content px-5 pb-20 pt-28 sm:px-8">
-        <div className="mx-auto max-w-2xl text-center">
-          <Badge tone="brand">
-            <Trophy className="h-3.5 w-3.5" /> Leaderboard
-          </Badge>
-          <h1 className="mt-4 text-3xl font-bold text-white sm:text-4xl">Top performers</h1>
-          <p className="mt-3 text-slate-400">
-            See who's leading by accuracy across each class and celebrate the best.
-          </p>
-        </div>
-
-        <Card className="mt-10 p-6">
+      <div className="section-gap">
+        <Card className="p-6">
           <div className="grid gap-5 md:grid-cols-2">
             <Select
               label="Class" icon={Users} value={selectedStandard}
@@ -203,11 +198,8 @@ const Leaderboard = () => {
             </p>
           </Card>
         )}
-      </main>
-
-      <Footer isLoggedIn />
-      <Loading isLoading={loading} />
-    </div>
+      </div>
+    </Shell>
   );
 };
 

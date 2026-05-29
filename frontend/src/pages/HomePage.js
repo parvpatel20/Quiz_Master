@@ -112,7 +112,7 @@ const HomePage = () => {
       </section>
 
       {/* How it works */}
-      <section className="mx-auto max-w-content px-5 py-20 sm:px-8">
+      <section className="mx-auto max-w-content px-5 py-14 sm:px-8 sm:py-20">
         <Reveal><SectionHeading icon={Sparkles} title="How it works" subtitle="Three steps from curious to confident." center /></Reveal>
         <div className="mt-10 grid gap-6 md:grid-cols-3">
           {STEPS.map((s, i) => (
@@ -133,7 +133,7 @@ const HomePage = () => {
       </section>
 
       {/* Features */}
-      <section className="mx-auto max-w-content px-5 py-8 sm:px-8">
+      <section className="mx-auto max-w-content px-5 py-14 sm:px-8 sm:py-20">
         <Reveal><SectionHeading icon={Star} title="What you get" center /></Reveal>
         <div className="mt-10 grid gap-6 md:grid-cols-3">
           {FEATURES.map(({ icon: Icon, img, title, desc }, i) => (
@@ -156,7 +156,7 @@ const HomePage = () => {
       </section>
 
       {/* Tips */}
-      <section className="mx-auto max-w-content px-5 py-20 sm:px-8">
+      <section className="mx-auto max-w-content px-5 py-14 sm:px-8 sm:py-20">
         <Reveal><SectionHeading icon={Lightbulb} title="Quiz tips & strategies" subtitle="Small habits that make a big difference." center /></Reveal>
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {TIPS.map((tip, i) => (
@@ -171,7 +171,7 @@ const HomePage = () => {
       </section>
 
       {/* Testimonials */}
-      <section className="mx-auto max-w-content px-5 py-8 sm:px-8">
+      <section className="mx-auto max-w-content px-5 py-14 sm:px-8 sm:py-20">
         <Reveal><SectionHeading icon={Quote} title="What learners say" subtitle="Join thousands of students improving with Quiz Master." center /></Reveal>
         <div className="mt-10 grid gap-6 md:grid-cols-3">
           {TESTIMONIALS.map((t, i) => (
@@ -195,7 +195,7 @@ const HomePage = () => {
       </section>
 
       {/* CTA */}
-      <section className="mx-auto max-w-content px-5 py-20 sm:px-8">
+      <section className="mx-auto max-w-content px-5 py-14 sm:px-8 sm:py-20">
         <Reveal>
           <Card className="relative flex flex-col items-center gap-5 overflow-hidden px-6 py-16 text-center">
             <div className="pointer-events-none absolute inset-x-0 -top-20 mx-auto h-48 w-96 rounded-full bg-brand/10 blur-3xl" />

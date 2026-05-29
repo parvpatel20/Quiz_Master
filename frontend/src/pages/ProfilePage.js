@@ -3,11 +3,10 @@ import { Link } from "react-router-dom";
 import {
   Pencil, User, Mail, GraduationCap, FileText, BarChart3, Trophy, Target, ListChecks, ArrowRight,
 } from "lucide-react";
-import Navbar from "../components/Navbar";
-import Loading from "../components/Loading";
+import Shell from "../components/Shell";
 import Popupupdate from "../components/Popupupdate";
 import QuizHistory from "../components/QuizHistory";
-import { Card, SectionHeading, Button, cx } from "../components/ui";
+import { Card, SectionHeading, Button, PageHeader, Reveal, cx } from "../components/ui";
 import { apiFetch } from "../config/api";
 
 const EDIT_FIELDS = [
@@ -69,12 +68,18 @@ const ProfilePage = () => {
   ];
 
   return (
-    <div className="app-bg">
-      <Loading isLoading={loading} />
-      <Navbar isLoggedIn />
+    <Shell isLoggedIn loading={loading}>
+      <Reveal>
+        <PageHeader
+          center={false}
+          badge="Account"
+          badgeIcon={User}
+          title="Your profile"
+          subtitle="Manage your details and review your quiz performance."
+        />
+      </Reveal>
 
-      <main className="mx-auto max-w-content px-5 pb-20 pt-28 sm:px-8">
-        <div className="grid gap-6 lg:grid-cols-3">
+      <div className="section-gap grid gap-6 lg:grid-cols-3">
           {/* Left: identity */}
           <Card className="relative p-7 lg:col-span-1">
             {/* Edit menu */}
@@ -159,7 +164,6 @@ const ProfilePage = () => {
             </Card>
           </div>
         </div>
-      </main>
 
       <Popupupdate
         isOpen={popupField !== null}
@@ -167,7 +171,7 @@ const ProfilePage = () => {
         fieldType={popupField || ""}
         updateUser={handleUserUpdate}
       />
-    </div>
+    </Shell>
   );
 };
 

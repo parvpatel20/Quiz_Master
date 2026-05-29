@@ -1,10 +1,9 @@
 import React, { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search, SlidersHorizontal, Sparkles, LayoutGrid, X } from "lucide-react";
-import Navbar from "./Navbar";
-import Footer from "./Footer";
+import Shell from "./Shell";
 import QuizCard from "./QuizCard";
-import { Card, Badge, Input, Chip, Select, Skeleton, EmptyState, Reveal } from "./ui";
+import { Card, Input, Chip, Select, Skeleton, EmptyState, Reveal, PageHeader } from "./ui";
 import { apiFetch } from "../config/api";
 import { useQuizzes, useToggleBookmark } from "../hooks/queries";
 import { DIFFICULTY_OPTIONS, FORMAT_OPTIONS } from "../config/constants";
@@ -79,24 +78,22 @@ const QuizSearch = ({ mode = "auth" }) => {
   };
 
   return (
-    <div className="app-bg">
-      <Navbar isLoggedIn={!isGuest} />
+    <Shell isLoggedIn={!isGuest}>
+      <Reveal>
+        <PageHeader
+          badge="Quiz library"
+          badgeIcon={Sparkles}
+          title="Explore quizzes"
+          subtitle={`Search by name or topic, filter by subject and difficulty, and ${
+            isGuest ? "sign up to start playing." : "jump straight in."
+          }`}
+        />
+      </Reveal>
 
-      <main className="mx-auto max-w-content px-5 pb-20 pt-28 sm:px-8">
-        <Reveal className="mx-auto max-w-2xl text-center">
-          <Badge tone="brand"><Sparkles className="h-3.5 w-3.5" /> Quiz library</Badge>
-          <h1 className="mt-4 font-display text-3xl font-bold text-white sm:text-4xl">
-            Explore quizzes
-          </h1>
-          <p className="mt-3 text-slate-400">
-            Search by name or topic, filter by subject and difficulty, and{" "}
-            {isGuest ? "sign up to start playing." : "jump straight in."}
-          </p>
-        </Reveal>
-
+      <div className="section-gap">
         {/* Search + sort */}
         <Reveal delay={0.05}>
-          <Card className="mt-8 p-4 sm:p-5">
+          <Card className="p-5 sm:p-6">
             <div className="flex flex-col gap-3 sm:flex-row">
               <div className="flex-1">
                 <Input
@@ -179,10 +176,8 @@ const QuizSearch = ({ mode = "auth" }) => {
             />
           </Card>
         )}
-      </main>
-
-      <Footer isLoggedIn={!isGuest} />
-    </div>
+      </div>
+    </Shell>
   );
 };
 

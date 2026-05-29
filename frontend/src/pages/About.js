@@ -3,10 +3,8 @@ import {
   Target, Globe, Users, Library, MapPin, Mail, Phone, ArrowRight,
   Star, Award, Trophy, BookOpen, Zap, Info,
 } from "lucide-react";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
-import Loading from "../components/Loading";
-import { Card, Badge, Button, SectionHeading } from "../components/ui";
+import Shell from "../components/Shell";
+import { Card, Button, SectionHeading, PageHeader, Reveal } from "../components/ui";
 import useAuth from "../hooks/useAuth";
 
 const MAP_URL =
@@ -43,26 +41,18 @@ const About = () => {
   const { isLoggedIn } = useAuth();
 
   return (
-    <div className="app-bg">
-      <Loading isLoading={isLoggedIn === null} />
-      <Navbar isLoggedIn={!!isLoggedIn} />
+    <Shell isLoggedIn={!!isLoggedIn} loading={isLoggedIn === null}>
+      <Reveal>
+        <PageHeader
+          badge="About us"
+          badgeIcon={Info}
+          title="About Quiz Master"
+          subtitle="We believe learning should be engaging — an interactive space where knowledge is explored, skills are sharpened, and goals are reached."
+        />
+      </Reveal>
 
-      <main className="mx-auto max-w-content px-5 pb-20 pt-28 sm:px-8">
-        {/* Hero */}
-        <div className="mx-auto max-w-3xl text-center">
-          <Badge tone="brand">
-            <Info className="h-3.5 w-3.5" /> About us
-          </Badge>
-          <h1 className="mt-4 text-3xl font-bold text-white sm:text-5xl">About Quiz Master</h1>
-          <p className="mt-4 text-lg leading-relaxed text-slate-400">
-            We believe learning should be engaging. Our mission is to build an
-            interactive space where knowledge is explored, skills are sharpened, and
-            goals are reached.
-          </p>
-        </div>
-
-        {/* Vision & Mission */}
-        <section className="mt-20">
+      {/* Vision & Mission */}
+      <section className="section-gap">
           <SectionHeading icon={Target} title="Vision & mission" center />
           <div className="mt-10 grid gap-6 lg:grid-cols-2">
             <Card className="p-8">
@@ -83,7 +73,7 @@ const About = () => {
         </section>
 
         {/* Impact */}
-        <section className="mt-20">
+        <section className="section-gap">
           <SectionHeading icon={Trophy} title="Our impact" subtitle="Trusted by learners and educators." center />
           <div className="mt-10 grid gap-6 lg:grid-cols-2">
             <StatCard
@@ -110,7 +100,7 @@ const About = () => {
         </section>
 
         {/* Contact */}
-        <section className="mt-20">
+        <section className="section-gap">
           <SectionHeading icon={Mail} title="Get in touch" subtitle="We're here to help you every step of the way." center />
           <div className="mt-10 grid gap-6 lg:grid-cols-2">
             <Card className="p-8">
@@ -155,10 +145,7 @@ const About = () => {
             </Card>
           </div>
         </section>
-      </main>
-
-      <Footer isLoggedIn={!!isLoggedIn} />
-    </div>
+    </Shell>
   );
 };
 

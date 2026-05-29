@@ -460,3 +460,23 @@ export function EmptyState({ icon: Icon, title, subtitle, action }) {
     </div>
   );
 }
+
+/* ------------------------------------------------------------------ */
+/* PageHeader — consistent page intro (badge + title + subtitle)      */
+/* ------------------------------------------------------------------ */
+export function PageHeader({ badge, badgeIcon: BadgeIcon, title, subtitle, center = true, actions }) {
+  return (
+    <div className={cx("flex flex-col gap-4", center ? "items-center text-center" : "items-start", actions && !center && "sm:flex-row sm:items-end sm:justify-between")}>
+      <div className={cx(center && "mx-auto max-w-2xl")}>
+        {badge && (
+          <Badge tone="brand">
+            {BadgeIcon && <BadgeIcon className="h-3.5 w-3.5" />} {badge}
+          </Badge>
+        )}
+        <h1 className="mt-4 font-display text-3xl font-bold text-white sm:text-4xl">{title}</h1>
+        {subtitle && <p className="mt-3 text-slate-400">{subtitle}</p>}
+      </div>
+      {actions && <div className="shrink-0">{actions}</div>}
+    </div>
+  );
+}

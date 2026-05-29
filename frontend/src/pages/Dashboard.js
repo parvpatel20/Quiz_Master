@@ -7,8 +7,7 @@ import {
 import {
   ListChecks, Target, Trophy, Flame, TrendingUp, BookOpen, ArrowRight, Activity, Award, Compass,
 } from "lucide-react";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
+import Shell from "../components/Shell";
 import {
   Card, Badge, Button, StatCard, ProgressRing, AnimatedNumber, SectionHeading,
   Reveal, Skeleton, EmptyState, cx,
@@ -93,24 +92,18 @@ const Dashboard = () => {
 
   if (isLoading) {
     return (
-      <div className="app-bg">
-        <Navbar isLoggedIn />
-        <main className="mx-auto max-w-content px-5 pb-20 pt-28 sm:px-8">
-          <Skeleton className="h-40 w-full rounded-2xl" />
-          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-32" />)}
-          </div>
-        </main>
-      </div>
+      <Shell isLoggedIn>
+        <Skeleton className="h-40 w-full rounded-2xl" />
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-32" />)}
+        </div>
+      </Shell>
     );
   }
 
   return (
-    <div className="app-bg">
-      <Navbar isLoggedIn />
-
-      <main className="mx-auto max-w-content px-5 pb-20 pt-28 sm:px-8">
-        {/* Greeting / hero */}
+    <Shell isLoggedIn>
+      {/* Greeting / hero */}
         <Reveal>
           <Card className="relative overflow-hidden p-6 sm:p-8">
             <div className="pointer-events-none absolute -right-10 -top-16 h-56 w-56 rounded-full bg-brand/10 blur-3xl" />
@@ -271,10 +264,7 @@ const Dashboard = () => {
             </div>
           </section>
         )}
-      </main>
-
-      <Footer isLoggedIn />
-    </div>
+    </Shell>
   );
 };
 
