@@ -94,8 +94,8 @@ const Dashboard = () => {
     return (
       <Shell isLoggedIn>
         <Skeleton className="h-40 w-full rounded-2xl" />
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-32" />)}
+        <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-36" />)}
         </div>
       </Shell>
     );
@@ -140,15 +140,15 @@ const Dashboard = () => {
         </Reveal>
 
         {/* Stats */}
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <Reveal delay={0.04}><StatCard icon={ListChecks} label="Quizzes taken" value={user?.totalQuizzesGiven || 0} /></Reveal>
-          <Reveal delay={0.08}><StatCard icon={Target} label="Avg. accuracy" value={accuracy} suffix="%" tone="green" /></Reveal>
-          <Reveal delay={0.12}><StatCard icon={Trophy} label="Best score" value={user?.maxScore || 0} suffix="%" tone="amber" /></Reveal>
-          <Reveal delay={0.16}><StatCard icon={Flame} label="Day streak" value={streak} tone="red" hint={streak > 0 ? "Keep it going!" : "Take a quiz today"} /></Reveal>
+        <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <Reveal delay={0.04} className="h-full"><StatCard icon={ListChecks} label="Quizzes taken" value={user?.totalQuizzesGiven || 0} hint="All-time attempts" /></Reveal>
+          <Reveal delay={0.08} className="h-full"><StatCard icon={Target} label="Avg. accuracy" value={accuracy} suffix="%" tone="green" hint="Across all quizzes" /></Reveal>
+          <Reveal delay={0.12} className="h-full"><StatCard icon={Trophy} label="Best score" value={user?.maxScore || 0} suffix="%" tone="amber" hint="Personal best" /></Reveal>
+          <Reveal delay={0.16} className="h-full"><StatCard icon={Flame} label="Day streak" value={streak} tone="red" hint={streak > 0 ? "Keep it going!" : "Take a quiz today"} /></Reveal>
         </div>
 
         {!hasData ? (
-          <Card className="mt-8">
+          <Card className="mt-6">
             <EmptyState
               icon={Activity}
               title="No activity yet"
@@ -159,11 +159,11 @@ const Dashboard = () => {
         ) : (
           <>
             {/* Charts */}
-            <div className="mt-8 grid gap-6 lg:grid-cols-3">
-              <Reveal className="lg:col-span-2">
-                <Card className="p-6">
+            <div className="mt-6 grid gap-6 lg:grid-cols-3">
+              <Reveal className="lg:col-span-2 h-full">
+                <Card className="flex h-full flex-col p-6">
                   <SectionHeading icon={TrendingUp} title="Score over time" />
-                  <div className="mt-6 h-64">
+                  <div className="mt-6 h-64 flex-1">
                     <ResponsiveContainer width="100%" height="100%">
                       <LineChart data={timeline} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
                         <defs>
@@ -183,8 +183,8 @@ const Dashboard = () => {
                 </Card>
               </Reveal>
 
-              <Reveal delay={0.06}>
-                <Card className="flex flex-col p-6">
+              <Reveal delay={0.06} className="h-full">
+                <Card className="flex h-full flex-col p-6">
                   <SectionHeading icon={Award} title="Top subjects" />
                   <div className="mt-6 h-64 flex-1">
                     <ResponsiveContainer width="100%" height="100%">
@@ -232,19 +232,19 @@ const Dashboard = () => {
 
         {/* Recommended */}
         {recommended.length > 0 && (
-          <section className="mt-10">
-            <div className="flex items-center justify-between">
+          <section className="mt-6">
+            <div className="flex items-center justify-between gap-3">
               <SectionHeading icon={BookOpen} title="Fresh quizzes" />
               <Button variant="ghost" size="sm" onClick={() => navigate("/quiz-search")}>
                 Browse all <ArrowRight className="h-4 w-4" />
               </Button>
             </div>
-            <div className="mt-6 grid gap-4 sm:grid-cols-3">
+            <div className="mt-6 grid gap-6 sm:grid-cols-3">
               {recommended.map((quiz, i) => (
                 <Reveal key={quiz._id} delay={i * 0.05} className="h-full">
                   <Card
                     hover
-                    className="flex h-full cursor-pointer flex-col p-5"
+                    className="flex h-full cursor-pointer flex-col p-6"
                     onClick={() => navigate(`/quiz-page/${user?._id}/${quiz._id}`)}
                   >
                     <div className="flex items-center gap-2">

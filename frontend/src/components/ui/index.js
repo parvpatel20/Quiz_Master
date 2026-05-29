@@ -409,17 +409,15 @@ export function StatCard({ icon: Icon, label, value, suffix = "", decimals = 0, 
     red: "bg-red-500/10 text-red-300",
   };
   return (
-    <Card hover className="p-5">
-      <div className="flex items-start justify-between">
-        <span className={cx("grid h-10 w-10 place-items-center rounded-xl", tones[tone])}>
-          {Icon && <Icon className="h-5 w-5" />}
-        </span>
-      </div>
+    <Card hover className="flex h-full flex-col p-6">
+      <span className={cx("grid h-10 w-10 place-items-center rounded-xl", tones[tone])}>
+        {Icon && <Icon className="h-5 w-5" />}
+      </span>
       <p className="mt-4 font-display text-3xl font-bold text-white">
         <AnimatedNumber value={value} decimals={decimals} suffix={suffix} />
       </p>
       <p className="mt-1 text-sm text-slate-400">{label}</p>
-      {hint && <p className="mt-1 text-xs text-slate-500">{hint}</p>}
+      <p className="mt-1 text-xs text-slate-500">{hint || " "}</p>
     </Card>
   );
 }
