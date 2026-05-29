@@ -163,7 +163,7 @@ const Dashboard = () => {
               <Reveal className="lg:col-span-2 h-full">
                 <Card className="flex h-full flex-col p-6">
                   <SectionHeading icon={TrendingUp} title="Score over time" />
-                  <div className="mt-6 h-64 flex-1">
+                  <div className="mt-6 h-72 w-full">
                     <ResponsiveContainer width="100%" height="100%">
                       <LineChart data={timeline} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
                         <defs>
@@ -186,7 +186,7 @@ const Dashboard = () => {
               <Reveal delay={0.06} className="h-full">
                 <Card className="flex h-full flex-col p-6">
                   <SectionHeading icon={Award} title="Top subjects" />
-                  <div className="mt-6 h-64 flex-1">
+                  <div className="mt-6 h-72 w-full">
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart data={bySubject.slice(0, 6)} layout="vertical" margin={{ top: 0, right: 10, left: 0, bottom: 0 }}>
                         <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" horizontal={false} />
