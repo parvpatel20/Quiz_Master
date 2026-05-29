@@ -1,242 +1,110 @@
 import React, { useState } from "react";
-import { Eye, EyeOff, Lock, User, Sparkles } from "lucide-react";
-import { useNavigate } from "react-router-dom"; // Import navigate from react-router-dom
-import Popup from "../components/Popup"; // Import Popup component
-import ResponsiveBackground from "../components/ResponsiveBackground"; // Import ResponsiveBackground component
-import { Link } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom";
+import { Eye, EyeOff, Lock, User, ArrowRight } from "lucide-react";
+import { Button, Input, FieldLabel } from "../components/ui";
+import Popup from "../components/Popup";
+import { apiFetch } from "../config/api";
 
 const LoginPage = () => {
-  const [formData, setFormData] = useState({
-    username: "",
-    password: "",
-  });
-
-  const navigate = useNavigate(); // Get the navigate function from useNavigate
-
-  const [popup, setPopup] = useState({
-    show: false,
-    message: "",
-    showActionButton: false,
-    actionButtonText: "",
-  });
-
+  const navigate = useNavigate();
+  const [form, setForm] = useState({ username: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [popup, setPopup] = useState(null);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent default form submission behavior
+    e.preventDefault();
+    setBusy(true);
     try {
-      const response = await fetch("https://quiz-master-backend-1a1s.onrender.com/api/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData), // Send the username and password
-        credentials: "include", // Include credentials for the request
-      });
-
-      if (response.ok) {
-        const responseData = await response.json();
-        console.log("Login Successful:", responseData);
-        setPopup({
-          show: true,
-          message: "Login successful! Redirecting to the home page.",
-          showActionButton: true,
-          actionButtonText: "Home",
-        });
-      } else {
-        console.error("Login Failed");
-        setPopup({
-          show: true,
-          message: "Invalid credentials. Please try again.",
-          showActionButton: false,
-        });
-      }
-    } catch (error) {
-      console.error("Error:", error);
+      await apiFetch("/login", { method: "POST", body: form });
       setPopup({
-        show: true,
-        message: "Error during login. Please try again.",
-        showActionButton: false,
+        title: "Welcome back",
+        message: "You're signed in. Let's get to your quizzes.",
+        action: true,
+        actionText: "Continue",
       });
+    } catch (err) {
+      setPopup({
+        title: "Sign in failed",
+        message: err.message || "Invalid credentials. Please try again.",
+        action: false,
+      });
+    } finally {
+      setBusy(false);
     }
   };
 
-  const handlePopupClose = () => {
-    setPopup({ show: false, message: "", showActionButton: false });
-  };
-
-  const handleGoToHome = () => {
-    navigate("/");
-  };
-
-  const togglePasswordVisibility = () => {
-    setShowPassword((prev) => !prev);
-  };
-
   return (
-    <div className="min-h-screen text-white flex items-center justify-center p-6 relative overflow-hidden">
-      <ResponsiveBackground />
+    <div className="app-bg flex min-h-screen items-center justify-center p-5">
+      <div className="w-full max-w-md">
+        <Link to="/" className="mb-8 flex items-center justify-center gap-2.5">
+          <img src="/assets/logo.png" alt="" className="h-10 w-10 object-contain" />
+          <span className="font-display text-xl font-bold text-white">
+            Quiz<span className="text-brand">Master</span>
+          </span>
+        </Link>
 
-      {/* Login card with enhanced effects */}
-      <div className="relative z-10 w-full max-w-md">
-        {/* Glow effect behind card */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#FF9100]/20 to-[#FFD700]/20 rounded-3xl blur-2xl animate-pulse"></div>
-        
-        <div className="relative bg-gradient-to-br from-[#0F1A36]/95 via-[#1a2845]/90 to-[#0A1C36]/95 backdrop-blur-lg border border-[#FF9100]/30 rounded-3xl p-8 shadow-2xl hover:shadow-[#FF9100]/25 transition-all duration-700">
-          {/* Animated background overlay */}
-          <div className="absolute inset-0 bg-gradient-to-br from-[#FF9100]/5 via-transparent to-[#FFD700]/5 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-          {/* Header with enhanced icon */}
-          <div className="text-center mb-8 relative z-10">
-            <div className="relative inline-block mb-6">
-              <div className="absolute inset-0 bg-gradient-to-r from-[#FF9100] to-[#FFD700] rounded-2xl blur-md opacity-60 animate-pulse"></div>
-              <div className="absolute inset-0 bg-gradient-to-r from-[#FF9100] to-[#FFD700] rounded-2xl blur-sm opacity-40 scale-110 animate-pulse animation-delay-500"></div>
-              <div className="relative p-4 bg-gradient-to-r from-[#FF9100] to-[#FFD700] rounded-2xl shadow-2xl">
-                <Lock className="w-8 h-8 text-white animate-pulse animation-delay-1000" />
-              </div>
-            </div>
-            
-            <h1 className="text-3xl font-bold mb-3 bg-gradient-to-r from-[#FF9100] via-[#FFD700] via-[#FF6B35] to-[#FF9100] bg-clip-text text-transparent animate-gradient-x">
-              Welcome Back
-            </h1>
-            
-            <div className="w-20 h-1 bg-gradient-to-r from-[#FF9100] to-[#FFD700] mx-auto rounded-full animate-pulse"></div>
-          </div>
+        <div className="card p-8">
+          <h1 className="text-2xl font-bold text-white">Sign in</h1>
+          <p className="mt-1 text-sm text-slate-400">
+            Welcome back — enter your details to continue.
+          </p>
 
-          <form
-  onSubmit={handleSubmit}
-  className="space-y-6 relative z-10"
->
-            {/* Username field with enhanced effects */}
-            <div className="relative group">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <User className="h-5 w-5 text-gray-400 group-focus-within:text-[#FF9100] transition-all duration-300 group-focus-within:scale-110" />
-              </div>
-              <input
-                type="text"
-                name="username"
-                value={formData.username}
-                onChange={handleChange}
-                className="w-full pl-12 pr-4 py-4 bg-[#1a2845]/80 rounded-2xl text-white border-2 border-[#FF9100]/40 focus:ring-4 focus:ring-[#FF9100]/30 focus:border-[#FF9100] focus:shadow-[0_0_20px_rgba(255,145,0,0.3)] transition-all duration-300 placeholder-gray-400 text-lg font-medium shadow-inner hover:bg-[#1a2845]/90"
-                placeholder="Username"
-                required
+          <form onSubmit={handleSubmit} className="mt-7 space-y-5">
+            <div>
+              <FieldLabel icon={User} htmlFor="username">Username</FieldLabel>
+              <Input
+                id="username" name="username" icon={User}
+                value={form.username} onChange={handleChange}
+                placeholder="Your username" required
               />
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-[#FF9100]/10 to-[#FFD700]/10 opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
             </div>
-
-            {/* Password field with enhanced effects */}
-            <div className="relative group">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <Lock className="h-5 w-5 text-gray-400 group-focus-within:text-[#FF9100] transition-all duration-300 group-focus-within:scale-110" />
-              </div>
-              <input
+            <div>
+              <FieldLabel icon={Lock} htmlFor="password">Password</FieldLabel>
+              <Input
+                id="password" name="password" icon={Lock}
                 type={showPassword ? "text" : "password"}
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                className="w-full pl-12 pr-12 py-4 bg-[#1a2845]/80 rounded-2xl text-white border-2 border-[#FF9100]/40 focus:ring-4 focus:ring-[#FF9100]/30 focus:border-[#FF9100] focus:shadow-[0_0_20px_rgba(255,145,0,0.3)] transition-all duration-300 placeholder-gray-400 text-lg font-medium shadow-inner hover:bg-[#1a2845]/90"
-                placeholder="Password"
-                required
+                value={form.password} onChange={handleChange}
+                placeholder="Your password" required
+                rightSlot={
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((v) => !v)}
+                    className="grid h-8 w-8 place-items-center rounded-lg text-slate-400 hover:text-white"
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                  >
+                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                }
               />
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-[#FF9100]/10 to-[#FFD700]/10 opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
-              <button
-                type="button"
-                onClick={togglePasswordVisibility}
-                className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-[#FF9100] hover:scale-110 transition-all duration-300"
-              >
-                {showPassword ? (
-                  <EyeOff className="h-5 w-5" />
-                ) : (
-                  <Eye className="h-5 w-5" />
-                )}
-              </button>
             </div>
 
-            {/* Submit button with subtle glow effect */}
-            <button
-            type="submit"
-            className="w-full my-2 px-6 py-2 bg-gradient-to-r from-[#FF9100] to-[#FF5E00] text-[#ffffff] text-lg font-semibold rounded-full shadow-lg hover:scale-105 transform transition duration-300"
-          >
-            Log In
-          </button>
+            <Button type="submit" size="lg" className="w-full" disabled={busy}>
+              {busy ? "Signing in…" : <>Sign in <ArrowRight className="h-4 w-4" /></>}
+            </Button>
           </form>
 
-          {/* Register link */}
-          <div className="mt-8 text-center relative z-10">
-            <p className="text-gray-300 text-lg">
-              Don't have an account?{" "}
-              <Link
-              to="/register"
-              className="text-[#ff9100] font-bold hover:underline"
-            >
-              Register
+          <p className="mt-6 text-center text-sm text-slate-400">
+            Don't have an account?{" "}
+            <Link to="/register" className="font-semibold text-brand hover:underline">
+              Create one
             </Link>
-            </p>
-          </div>
+          </p>
         </div>
       </div>
 
-      {/* Enhanced popup */}
-      {popup.show && (
-          <Popup
-            message={popup.message}
-            showActionButton={popup.showActionButton}
-            actionButtonText={popup.actionButtonText}
-            onClose={handlePopupClose}
-            onAction={handleGoToHome}
-          />
-        )}
-
-      <style jsx>{`
-        @keyframes gradient-x {
-          0%, 100% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-        }
-        .animate-gradient-x {
-          background-size: 200% 200%;
-          animation: gradient-x 4s ease infinite;
-        }
-        .animate-spin-slow {
-          animation: spin 6s linear infinite;
-        }
-        .animate-reverse-spin {
-          animation: spin 8s linear infinite reverse;
-        }
-        @keyframes float {
-          0%, 100% { transform: translateY(0px) rotate(0deg); }
-          50% { transform: translateY(-20px) rotate(180deg); }
-        }
-        .animate-float {
-          animation: float 6s ease-in-out infinite;
-        }
-        @keyframes slide-right {
-          0% { transform: translateX(-100%); }
-          100% { transform: translateX(100vw); }
-        }
-        @keyframes slide-left {
-          0% { transform: translateX(100vw); }
-          100% { transform: translateX(-100%); }
-        }
-        .animate-slide-right {
-          animation: slide-right 15s linear infinite;
-        }
-        .animate-slide-left {
-          animation: slide-left 20s linear infinite;
-        }
-        .animation-delay-500 { animation-delay: 0.5s; }
-        .animation-delay-1000 { animation-delay: 1s; }
-        .animation-delay-1500 { animation-delay: 1.5s; }
-        .animation-delay-2000 { animation-delay: 2s; }
-        .animation-delay-2500 { animation-delay: 2.5s; }
-        .animation-delay-3000 { animation-delay: 3s; }
-        .animation-delay-3500 { animation-delay: 3.5s; }
-        .animation-delay-4000 { animation-delay: 4s; }
-      `}</style>
+      {popup && (
+        <Popup
+          title={popup.title}
+          message={popup.message}
+          showActionButton={popup.action}
+          actionButtonText={popup.actionText}
+          onClose={() => setPopup(null)}
+          onAction={() => navigate("/")}
+        />
+      )}
     </div>
   );
 };

@@ -1,3 +1,53 @@
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-ink-950 text-slate-200 font-sans antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display tracking-tight text-white;
+  }
+
+  ::selection {
+    background-color: rgba(255, 145, 0, 0.3);
+    color: #fff;
+  }
+
+  /* Consistent focus ring across the app */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-brand/60 ring-offset-2 ring-offset-ink-950;
+  }
+}
+
+@layer components {
+  /* Subtle, reusable page background: deep navy with two soft amber glows */
+  .app-bg {
+    @apply relative min-h-screen bg-ink-950;
+    background-image:
+      radial-gradient(60rem 40rem at 85% -10%, rgba(255, 145, 0, 0.08), transparent 60%),
+      radial-gradient(50rem 40rem at 0% 110%, rgba(42, 63, 107, 0.25), transparent 55%);
+  }
+
+  .card {
+    @apply rounded-2xl border border-white/10 bg-ink-850/80 shadow-card backdrop-blur-sm;
+  }
+
+  .hairline {
+    @apply h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent;
+  }
+}

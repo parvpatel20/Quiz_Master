@@ -6,6 +6,16 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
 import { Quiz } from "../models/quiz.model.js";
 
+// Cross-site cookies need Secure + SameSite=None in production (HTTPS).
+// In local development (HTTP) those flags prevent the cookie from being set,
+// so fall back to Lax + non-secure.
+const isProd = process.env.NODE_ENV === "production";
+const cookieOptions = {
+  httpOnly: true,
+  secure: isProd,
+  sameSite: isProd ? "None" : "Lax",
+};
+
 async function deleteFromCloudinary(imageUrl) {
   try {
       const publicId = extractPublicIdFromUrl(imageUrl); // You need to extract the public ID from the URL
@@ -148,18 +158,11 @@ const loginUser = asyncHandler(async (req, res) => {
     "-password -refreshToken"
   );
 
-  // set options for cookies
-  const options = {
-    httpOnly: true,
-    secure: true,
-    sameSite: 'None',
-  };
-
   // send response
   return res
     .status(200)
-    .cookie("accessToken", accessToken, options)
-    .cookie("refreshToken", refreshToken, options)
+    .cookie("accessToken", accessToken, cookieOptions)
+    .cookie("refreshToken", refreshToken, cookieOptions)
     .json(
       new ApiResponse(
         200,
@@ -199,20 +202,11 @@ const logoutUser = asyncHandler(async (req, res) => {
       }
     );
 
-    // Options for clearing cookies
-    const options = {
-      httpOnly: true,
-      secure: true,
-      sameSite: "None",
-    };
-
-    // console.log("here")
-
     // Clear cookies and send a response
     return res
       .status(200)
-      .clearCookie("accessToken", options)
-      .clearCookie("refreshToken", options)
+      .clearCookie("accessToken", cookieOptions)
+      .clearCookie("refreshToken", cookieOptions)
       .json(new ApiResponse(200, {}, "User logged out successfully"));
   } catch (error) {
     console.error(error);
@@ -246,18 +240,13 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       throw new ApiError(401, "Refresh token is expired or used");
     }
 
-    const options = {
-      httpOnly: true,
-      secure: true,
-    };
-
     const { accessToken, newRefreshToken } =
       await generateAccessAndRefereshTokens(user._id);
 
     return res
       .status(200)
-      .cookie("accessToken", accessToken, options)
-      .cookie("refreshToken", newRefreshToken, options)
+      .cookie("accessToken", accessToken, cookieOptions)
+      .cookie("refreshToken", newRefreshToken, cookieOptions)
       .json(
         new ApiResponse(
           200,
@@ -638,8 +627,6 @@ const changeCurrentPassword = asyncHandler(async(req, res) => {
 const checkForLogin = asyncHandler(async (req, res) => {
   
   const token = req.cookies?.accessToken;
-
-  console.log(req.cookies);
 
   if (!token) {
       return res.status(200).json({

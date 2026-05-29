@@ -1,392 +1,166 @@
-import React, { useState, useEffect } from "react";
-import HeaderAfterSignup from "../components/HeaderAfterSignup";
-import { Edit, User, Mail, Book, FileText, GraduationCap, TrendingUp, BarChart3, Trophy, Sparkles, Target } from "lucide-react";
-import Popupupdate from "../components/Popupupdate";
+import React, { useEffect, useMemo, useState } from "react";
+import {
+  Pencil, User, Mail, GraduationCap, FileText, BarChart3, Trophy, Target, ListChecks,
+} from "lucide-react";
+import Navbar from "../components/Navbar";
 import Loading from "../components/Loading";
+import Popupupdate from "../components/Popupupdate";
 import QuizHistory from "../components/QuizHistory";
+import { Card, SectionHeading, cx } from "../components/ui";
+import { apiFetch } from "../config/api";
 
-const ProfilePage = () => {
-  const [user, setUser] = useState(null);
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [currentField, setCurrentField] = useState("");
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
+const EDIT_FIELDS = [
+  { label: "Username", field: "username" },
+  { label: "Email", field: "email" },
+  { label: "Class", field: "class" },
+  { label: "Bio", field: "bio" },
+  { label: "Profile picture", field: "profilePicture" },
+  { label: "Password", field: "password" },
+];
 
-  const fetchProfileData = async () => {
-    try {
-      const response = await fetch("https://quiz-master-backend-1a1s.onrender.com/api/profile", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch profile data.");
-      }
-
-      const responseData = await response.json();
-      setUser(responseData.data);
-    } catch (error) {
-      console.error("Error fetching profile data:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchProfileData();
-  }, []);
-
-  const [sortedQuizzes, setSortedQuizzes] = useState([]);
-
-  useEffect(() => {
-    if (user?.quizData) {
-      const validQuizzes = user.quizData.filter(
-        (quiz) => quiz.quizDate && quiz.score !== undefined && quiz.quiz
-      );
-
-      const quizzes = [...validQuizzes].sort(
-        (a, b) => new Date(b.quizDate) - new Date(a.quizDate)
-      );
-
-      setSortedQuizzes(quizzes);
-    }
-  }, [user]);
-
-  const handleOpenPopup = (field) => {
-    if (field === "profile picture") {
-      setCurrentField("profilePicture");
-    } else {
-      setCurrentField(field);
-    }
-    setIsPopupOpen(true);
-    setMenuOpen(false);
-  };
-
-  const handleClosePopup = () => {
-    setIsPopupOpen(false);
-  };
-
-  const handleUserUpdate = (updatedField, newValue) => {
-    if (newValue === "") {
-      return;
-    }
-
-    if (updatedField === "class") {
-      setUser((prevUser) => ({
-        ...prevUser,
-        classname: newValue,
-      }));
-    } else {
-      setUser((prevUser) => ({
-        ...prevUser,
-        [updatedField]: newValue,
-      }));
-    }
-  };
-
-  const statsCards = [
-    {
-      title: "Total Quizzes",
-      value: user?.totalQuizzesGiven || 0,
-      icon: GraduationCap,
-      gradient: "from-[#FF9100] to-[#FFD700]",
-      bg: "bg-gradient-to-br from-[#FF9100]/10 to-[#FFD700]/10",
-      border: "border-[#FF9100]/30",
-      textColor: "text-[#FF9100]"
-    },
-    {
-      title: "Average Accuracy",
-      value: `${user?.accuracy || 0}%`,
-      icon: BarChart3,
-      gradient: "from-emerald-500 to-green-500",
-      bg: "bg-gradient-to-br from-emerald-500/10 to-green-500/10",
-      border: "border-emerald-500/30",
-      textColor: "text-emerald-600"
-    },
-    {
-      title: "Highest Score",
-      value: `${user?.maxScore || 0}%`,
-      icon: Trophy,
-      gradient: "from-purple-500 to-violet-500",
-      bg: "bg-gradient-to-br from-purple-500/10 to-violet-500/10",
-      border: "border-purple-500/30",
-      textColor: "text-purple-600"
-    },
-    {
-      title: "Lowest Score",
-      value: `${user?.minScore || 0}%`,
-      icon: Target,
-      gradient: "from-rose-500 to-red-500",
-      bg: 'bg-gradient-to-r from-rose-500/20 to-red-500/20',
-      border: 'border-rose-400/30',
-      textColor: "text-red-600"
-    }
-  ];
-const InfoField = ({ icon: Icon, label, value }) => (
-  <div className="flex items-center gap-4 py-3">
-    {/* Icon - sized to match heading + value height */}
-    <div className="w-8 h-8 flex items-center justify-center">
-      <Icon className="w-6 h-6 text-[#FF9100]" />
+const InfoRow = ({ icon: Icon, label, value, muted }) => (
+  <div className="flex items-start gap-3 border-b border-white/5 py-3.5 last:border-0">
+    <Icon className="mt-0.5 h-5 w-5 shrink-0 text-brand" />
+    <div className="min-w-0">
+      <p className="text-xs uppercase tracking-wide text-slate-500">{label}</p>
+      <p className={cx("mt-0.5 break-words", muted ? "italic text-slate-500" : "text-white")}>
+        {value}
+      </p>
     </div>
-    
-    {/* Content */}
-    <div className="flex-1">
-      <p className="text-xs text-gray-400 mb-1 font-medium uppercase tracking-wide">{label}</p>
-      <p className="text-white text-base font-medium">{value}</p>
-    </div>
-    
-    {/* Separator line */}
-    <div className="absolute left-0 right-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#FF9100]/20 to-transparent"></div>
   </div>
 );
 
+const ProfilePage = () => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [popupField, setPopupField] = useState(null);
+
+  const loadProfile = () => {
+    apiFetch("/profile")
+      .then((res) => setUser(res.data))
+      .catch((err) => console.error("Failed to load profile:", err.message))
+      .finally(() => setLoading(false));
+  };
+
+  useEffect(loadProfile, []);
+
+  const sortedQuizzes = useMemo(() => {
+    if (!user?.quizData) return [];
+    return user.quizData
+      .filter((q) => q.quizDate && q.score !== undefined && q.quiz)
+      .sort((a, b) => new Date(b.quizDate) - new Date(a.quizDate));
+  }, [user]);
+
+  const handleUserUpdate = (field, value) => {
+    if (value === "" || value == null) return;
+    setUser((prev) => ({
+      ...prev,
+      [field === "class" ? "classname" : field]: value,
+    }));
+  };
+
+  const stats = [
+    { label: "Total quizzes", value: user?.totalQuizzesGiven ?? 0, icon: ListChecks },
+    { label: "Avg. accuracy", value: `${user?.accuracy ?? 0}%`, icon: BarChart3 },
+    { label: "Highest score", value: `${user?.maxScore ?? 0}%`, icon: Trophy },
+    { label: "Lowest score", value: `${user?.minScore ?? 0}%`, icon: Target },
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0F1A36] via-[#2C4A75] to-[#0A1C36] text-white relative">
-      {/* Animated background elements */}
-      <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-r from-[#FF9100]/20 to-[#FFD700]/20 rounded-full blur-3xl animate-pulse"></div>
-      <div className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-r from-[#2C4A75]/30 to-[#FF9100]/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
-      
+    <div className="app-bg">
       <Loading isLoading={loading} />
-      <HeaderAfterSignup />
-      
-      {/* Main scrollable container - Whole page scroll */}
-      <div className="relative max-w-7xl mx-auto p-6 z-10 overflow-y-auto">
-        <div className="flex gap-4 min-h-[calc(100vh-140px)]">
-          
-          {/* Left Sidebar - 30% - User Details Section */}
-          <div className="w-[30%] bg-gradient-to-br from-[#0F1A36]/95 via-[#1a2845]/90 to-[#0A1C36]/95 backdrop-blur-lg rounded-3xl shadow-2xl relative overflow-hidden">
-            {/* Animated background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-[#FF9100]/5 via-transparent to-[#FFD700]/5 rounded-3xl opacity-60"></div>
-            
-            {/* Edit Menu */}
-            <div className="absolute top-6 right-6 z-20">
-              <div
-                className="relative"
-                onMouseEnter={() => setMenuOpen(true)}
-                onMouseLeave={() => setMenuOpen(false)}
+      <Navbar isLoggedIn />
+
+      <main className="mx-auto max-w-content px-5 pb-20 pt-28 sm:px-8">
+        <div className="grid gap-6 lg:grid-cols-3">
+          {/* Left: identity */}
+          <Card className="relative p-7 lg:col-span-1">
+            {/* Edit menu */}
+            <div className="absolute right-5 top-5">
+              <button
+                onClick={() => setMenuOpen((v) => !v)}
+                onBlur={() => setTimeout(() => setMenuOpen(false), 150)}
+                className="grid h-9 w-9 place-items-center rounded-lg border border-white/10 text-slate-300 transition-colors hover:border-brand/50 hover:text-white"
+                aria-label="Edit profile"
               >
-                <button className="group relative p-3 bg-gradient-to-r from-[#FF9100]/20 to-[#FFD700]/20 hover:from-[#FF9100]/30 hover:to-[#FFD700]/30 rounded-2xl border border-[#FF9100]/30 transition-all duration-300 backdrop-blur-sm">
-                  <div className="absolute inset-0 bg-gradient-to-r from-[#FF9100] to-[#FFD700] rounded-2xl blur-md opacity-0 group-hover:opacity-40 transition-opacity duration-300"></div>
-                  <Edit className="relative w-5 h-5 text-[#FF9100] group-hover:text-white transition-colors duration-300" />
-                </button>
-
-                {menuOpen && (
-                  <div className="absolute right-0 w-56 bg-gradient-to-br from-[#1a2845]/95 to-[#0F1A36]/95 backdrop-blur-lg rounded-2xl shadow-2xl border border-[#FF9100]/30 py-3 z-30 overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-br from-[#FF9100]/10 via-transparent to-[#FFD700]/10 rounded-2xl"></div>
-                    {[
-                      "Username",
-                      "Email", 
-                      "Class",
-                      "Bio",
-                      "Profile Picture",
-                      "Password",
-                    ].map((field, index) => (
-                      <button
-                        key={index}
-                        onClick={() => handleOpenPopup(field.toLowerCase())}
-                        className="relative w-full px-5 py-3 text-left text-white hover:bg-gradient-to-r hover:from-[#FF9100]/20 hover:to-[#FFD700]/20 transition-all duration-200 text-sm font-semibold border-b border-[#FF9100]/10 last:border-b-0"
-                      >
-                        Change {field}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* User Details - Independent scroll */}
-            <div className="relative h-[calc(100vh-140px)] overflow-y-auto scrollbar-hide">
-              <div className="p-8">
-                {/* Profile Picture */}
-                <div className="flex justify-center mb-12">
-                  <div className="relative group">
-                    <div className="absolute inset-0 bg-gradient-to-r from-[#FF9100] to-[#FFD700] rounded-full blur-xl opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
-                    <div className="relative w-40 h-40 rounded-full bg-gradient-to-r from-[#FF9100] to-[#FFD700] p-2 shadow-2xl">
-                      <img
-                        src={
-                          user?.profilePicture
-                        }
-                        alt="Profile"
-                        className="w-full h-full rounded-full object-cover bg-[#1a2845] border-4 border-white/20"
-                      />
-                    </div>
-                    <div className="absolute -bottom-2 -right-2 p-2 bg-gradient-to-r from-[#FF9100] to-[#FFD700] rounded-full shadow-lg">
-                      <Sparkles className="w-5 h-5 text-white animate-spin-slow" />
-                    </div>
-                  </div>
+                <Pencil className="h-4 w-4" />
+              </button>
+              {menuOpen && (
+                <div className="absolute right-0 z-20 mt-2 w-48 overflow-hidden rounded-xl border border-white/10 bg-ink-850 p-1 shadow-card animate-fade-in">
+                  {EDIT_FIELDS.map(({ label, field }) => (
+                    <button
+                      key={field}
+                      onMouseDown={() => { setPopupField(field); setMenuOpen(false); }}
+                      className="block w-full rounded-lg px-3 py-2.5 text-left text-sm text-slate-300 hover:bg-white/5 hover:text-white"
+                    >
+                      Change {label.toLowerCase()}
+                    </button>
+                  ))}
                 </div>
+              )}
+            </div>
 
-                {/* User Information */}
-                
-                <div className="relative">
-          <InfoField 
-            icon={User} 
-            label="Username" 
-            value={user?.username || "Loading..."} 
-          />
-        </div>
-        
-        <div className="relative">
-          <InfoField 
-            icon={Mail} 
-            label="Email" 
-            value={user?.email || "Loading..."} 
-          />
-        </div>
-        
-        <div className="relative">
-          <InfoField 
-            icon={Book} 
-            label="Class" 
-            value={user?.classname || "Not specified"} 
-          />
-        </div>
-        
-        {/* Bio Section */}
-        <div className="relative py-3">
-          <div className="flex items-start gap-4">
-            <div className="w-8 h-8 flex items-center justify-center mt-1">
-              <FileText className="w-6 h-6 text-[#FF9100]" />
+            <div className="flex flex-col items-center text-center">
+              <img
+                src={user?.profilePicture || "/assets/logo.png"}
+                alt="Profile"
+                className="h-32 w-32 rounded-full border border-white/10 object-cover"
+              />
+              <h2 className="mt-4 text-xl font-bold text-white">
+                {user?.username || "—"}
+              </h2>
+              <p className="text-sm text-slate-500">{user?.classname || "—"}</p>
             </div>
-            <div className="flex-1">
-              <p className="text-xs text-gray-400 mb-1 font-medium uppercase tracking-wide">Bio</p>
-              <p className="text-white text-base leading-relaxed">
-                {user?.bio || (
-                  <span className="italic text-gray-400">
-                    No bio added yet. Share something about yourself!
-                  </span>
-                )}
-              </p>
+
+            <div className="mt-6">
+              <InfoRow icon={User} label="Username" value={user?.username || "—"} />
+              <InfoRow icon={Mail} label="Email" value={user?.email || "—"} />
+              <InfoRow icon={GraduationCap} label="Class" value={user?.classname || "Not specified"} />
+              <InfoRow
+                icon={FileText}
+                label="Bio"
+                value={user?.bio || "No bio added yet."}
+                muted={!user?.bio}
+              />
             </div>
-          </div>
-          {/* Separator line */}
-          <div className="absolute left-0 right-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#FF9100]/20 to-transparent"></div>
-        </div>
-        
+          </Card>
+
+          {/* Right: stats + history */}
+          <div className="space-y-6 lg:col-span-2">
+            <Card className="p-7">
+              <SectionHeading icon={BarChart3} title="Performance" />
+              <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
+                {stats.map(({ label, value, icon: Icon }) => (
+                  <div key={label} className="rounded-xl border border-white/10 bg-white/[0.02] p-4">
+                    <span className="grid h-9 w-9 place-items-center rounded-lg bg-brand/10 text-brand">
+                      <Icon className="h-4 w-4" />
+                    </span>
+                    <p className="mt-3 text-2xl font-bold text-white">{value}</p>
+                    <p className="text-xs text-slate-500">{label}</p>
+                  </div>
+                ))}
               </div>
-            </div>
-          </div>
+            </Card>
 
-          {/* Vertical Divider */}
-          <div className="w-px bg-gradient-to-b from-transparent via-[#FF9100]/50 to-transparent"></div>
-
-          {/* Right Content - 70% - Stats and Quiz History */}
-          <div className="w-[70%] bg-gradient-to-br from-[#0F1A36]/95 via-[#1a2845]/90 to-[#0A1C36]/95 backdrop-blur-lg rounded-3xl shadow-2xl relative overflow-hidden">
-            {/* Animated background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-[#FF9100]/5 via-transparent to-[#FFD700]/5 rounded-3xl opacity-60"></div>
-            
-            {/* Right section - Independent scroll */}
-            <div className="relative h-[calc(100vh-140px)] overflow-y-auto scrollbar-hide">
-              <div className="p-8 space-y-8">
-                
-                {/* Performance Stats Section */}
-                <div className="relative">
-                  <div className="flex items-center gap-4 mb-8">
-                    <div className="relative">
-                      <div className="absolute inset-0 bg-gradient-to-r from-[#FF9100] to-[#FFD700] rounded-xl blur-sm opacity-60"></div>
-                      <div className="relative p-3 bg-gradient-to-r from-[#FF9100] to-[#FFD700] rounded-xl">
-                        <BarChart3 className="w-8 h-8 text-white" />
-                      </div>
-                    </div>
-                    <div>
-                      <h2 className="text-3xl font-bold bg-gradient-to-r from-[#FF9100] via-[#FFD700] to-[#FF6B35] bg-clip-text text-transparent">
-                        Performance Statistics
-                      </h2>
-                      <div className="w-16 h-0.5 bg-gradient-to-r from-[#FF9100] to-[#FFD700] rounded-full mt-2"></div>
-                    </div>
-                  </div>
-                  
-                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-                    {statsCards.map((stat, index) => {
-                      const IconComponent = stat.icon;
-                      return (
-                        <div
-                          key={index}
-                          className={`group relative ${stat.bg} backdrop-blur-sm rounded-2xl p-6 border ${stat.border} hover:shadow-2xl transition-all duration-500 overflow-hidden`}
-                          style={{ animationDelay: `${index * 100}ms` }}
-                        >
-                          {/* Animated background effect */}
-                          <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-white/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                          
-                          <div className="relative">
-                            <div className="flex items-center justify-between mb-4">
-                              <div className={`relative p-3 rounded-xl bg-gradient-to-r ${stat.gradient} shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-                                <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent rounded-xl"></div>
-                                <IconComponent className="relative w-6 h-6 text-white" />
-                              </div>
-                            </div>
-                            
-                            <div>
-                              <p className="text-sm font-semibold text-gray-300 mb-2 uppercase tracking-wide">
-                                {stat.title}
-                              </p>
-                              <p className={`text-3xl font-black ${stat.textColor} group-hover:scale-105 transition-transform duration-300`}>
-                                {stat.value}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* Separator Line between Stats and Quiz History */}
-                <div className="w-full h-px bg-gradient-to-r from-transparent via-[#FF9100]/50 to-transparent my-8"></div>
-
-                {/* Quiz History Section with independent scroll */}
-                <div className="relative">
-                  <div className="flex items-center gap-4 mb-6">
-                    <div className="relative">
-                      <div className="absolute inset-0 bg-gradient-to-r from-[#FF9100] to-[#FFD700] rounded-xl blur-sm opacity-60"></div>
-                      <div className="relative p-3 bg-gradient-to-r from-[#FF9100] to-[#FFD700] rounded-xl">
-                        <GraduationCap className="w-8 h-8 text-white" />
-                      </div>
-                    </div>
-                    <div>
-                      <h2 className="text-3xl font-bold bg-gradient-to-r from-[#FF9100] via-[#FFD700] to-[#FF6B35] bg-clip-text text-transparent">
-                        Quiz History
-                      </h2>
-                      <div className="w-16 h-0.5 bg-gradient-to-r from-[#FF9100] to-[#FFD700] rounded-full mt-2"></div>
-                    </div>
-                  </div>
-                  
-                  {/* Quiz History with its own scroll - max height to show 5-6 quizzes */}
-                  <div className="max-h-[600px] overflow-y-auto scrollbar-hide bg-gradient-to-br from-[#1a2845]/50 to-[#2d3f5f]/30 rounded-2xl border border-[#FF9100]/20 backdrop-blur-sm">
-                    <QuizHistory quizzes={sortedQuizzes} />
-                  </div>
-                </div>
+            <Card className="overflow-hidden">
+              <div className="p-7 pb-0">
+                <SectionHeading icon={ListChecks} title="Quiz history" />
               </div>
-            </div>
+              <div className="mt-4">
+                <QuizHistory quizzes={sortedQuizzes} />
+              </div>
+            </Card>
           </div>
         </div>
-      </div>
+      </main>
 
-      {/* Popup Component */}
       <Popupupdate
-        isOpen={isPopupOpen}
-        closePopup={handleClosePopup}
-        fieldType={currentField}
-        updateUser={(updatedField, newValue) =>
-          handleUserUpdate(updatedField, newValue)
-        }
+        isOpen={popupField !== null}
+        closePopup={() => setPopupField(null)}
+        fieldType={popupField || ""}
+        updateUser={handleUserUpdate}
       />
-
-      <style jsx>{`
-        .scrollbar-hide {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-        }
-        .animate-spin-slow {
-          animation: spin 4s linear infinite;
-        }
-      `}</style>
     </div>
   );
 };

@@ -1,19 +1,35 @@
-import express from "express"
-import cors from "cors"
-import cookieParser from "cookie-parser"
-import userRouter from './routes/user.routes.js'
+import express from "express";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+import userRouter from "./routes/user.routes.js";
 
-const app = express()
+const app = express();
 
-app.use(cors({
-    origin: 'https://quiz-master-wp32.onrender.com', // Frontend URL
-    credentials: true, // Allow credentials (cookies)
-}))
+// Allowed origins come from CORS_ORIGIN (comma-separated). Localhost dev
+// origins are always permitted so the app runs without extra config.
+const allowedOrigins = [
+  ...(process.env.CORS_ORIGIN
+    ? process.env.CORS_ORIGIN.split(",").map((o) => o.trim()).filter(Boolean)
+    : []),
+  "http://localhost:3000",
+  "http://127.0.0.1:3000",
+];
 
-app.use(express.json({limit: "16kb"}))
-app.use(express.urlencoded({extended: true, limit: "16kb"}))
-app.use(express.static("public"))
-app.use(cookieParser())
+app.use(
+  cors({
+    origin(origin, callback) {
+      // Allow non-browser tools (no Origin header) and whitelisted origins.
+      if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
+      return callback(new Error(`Origin ${origin} not allowed by CORS`));
+    },
+    credentials: true,
+  })
+);
+
+app.use(express.json({ limit: "16kb" }));
+app.use(express.urlencoded({ extended: true, limit: "16kb" }));
+app.use(express.static("public"));
+app.use(cookieParser());
 
 app.use("/api", userRouter);
 
