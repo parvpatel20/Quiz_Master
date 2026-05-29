@@ -1,10 +1,14 @@
 /**
- * Seed script — populates the database with sample quizzes and users so every
- * feature (discovery, quiz play, answer review, bookmarks, profile analytics,
- * dashboard charts, leaderboard) is testable.
+ * Seed script — adds sample quizzes and users so every feature (discovery,
+ * quiz play, answer review, bookmarks, profile analytics, dashboard charts,
+ * leaderboard) is testable.
  *
  * Run:  cd backend && npm run seed
- * WARNING: this WIPES the User and Quiz collections, then re-inserts samples.
+ *
+ * ADDITIVE & idempotent: it never deletes existing data. Sample quizzes are
+ * matched by quizName and sample users by username — anything already present
+ * is left untouched, so it is safe to run against a populated database and can
+ * be run repeatedly.
  */
 import dotenv from "dotenv";
 import mongoose from "mongoose";
@@ -157,15 +161,21 @@ function buildUser({ username, email, classname, bio, attempts, bookmarks = [] }
 async function seed() {
   await connectDB();
 
-  console.log("Clearing existing users and quizzes…");
-  await User.deleteMany({});
-  await Quiz.deleteMany({});
-
-  console.log("Inserting quizzes…");
-  const quizzes = await Quiz.insertMany(
-    QUIZZES.map((q) => ({ ...q, noOfQuestions: q.questions.length }))
-  );
-  const id = (name) => quizzes.find((q) => q.quizName === name)._id;
+  console.log("Adding quizzes (existing ones are kept)…");
+  const quizIdByName = {};
+  let createdQuizzes = 0;
+  for (const q of QUIZZES) {
+    const existing = await Quiz.findOne({ quizName: q.quizName });
+    if (existing) {
+      quizIdByName[q.quizName] = existing._id;
+    } else {
+      const doc = await Quiz.create({ ...q, noOfQuestions: q.questions.length });
+      quizIdByName[q.quizName] = doc._id;
+      createdQuizzes += 1;
+      console.log(`  + quiz: ${q.quizName}`);
+    }
+  }
+  const id = (name) => quizIdByName[name];
 
   console.log("Building users…");
   const usersData = [
@@ -244,13 +254,26 @@ async function seed() {
   ];
 
   // Use create() (not insertMany) so the pre-save hook hashes each password.
+  // Skip any username/email that already exists — never overwrite real users.
+  let createdUsers = 0;
+  let skippedUsers = 0;
   for (const u of usersData) {
+    const clash = await User.findOne({ $or: [{ username: u.username }, { email: u.email }] });
+    if (clash) {
+      skippedUsers += 1;
+      console.log(`  · user exists, skipped: ${u.username}`);
+      continue;
+    }
     await User.create(u);
-    console.log(`  + ${u.username}`);
+    createdUsers += 1;
+    console.log(`  + user: ${u.username}`);
   }
 
-  console.log(`\nDone. ${quizzes.length} quizzes, ${usersData.length} users.`);
-  console.log(`All accounts use password: ${PASSWORD}`);
+  console.log(
+    `\nDone. Quizzes added: ${createdQuizzes} (of ${QUIZZES.length}). ` +
+      `Users added: ${createdUsers}, skipped: ${skippedUsers}.`
+  );
+  console.log(`Sample accounts password: ${PASSWORD}`);
   await mongoose.connection.close();
   process.exit(0);
 }

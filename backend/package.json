@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon -r dotenv/config src/index.js",
-    "seed": "node src/seed.js"
+    "seed": "node --import ./src/preload.mjs src/seed.js"
   },
   "author": "",
   "license": "ISC",

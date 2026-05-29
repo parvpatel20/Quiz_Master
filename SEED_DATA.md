@@ -11,11 +11,13 @@ cd backend
 npm run seed
 ```
 
-> ⚠️ The seed **wipes the `User` and `Quiz` collections** first, then inserts
-> the sample data below. Only run it against a development/test database.
+The seed is **additive and idempotent** — it never deletes anything. Sample
+quizzes are matched by name and sample users by username/email; anything that
+already exists is skipped. Safe to run against a populated database and safe to
+re-run.
 
-After it finishes you'll see a confirmation listing the inserted quizzes and
-users.
+After it finishes you'll see a summary of how many quizzes/users were added or
+skipped.
 
 ---
 
@@ -68,5 +70,9 @@ Log in at `/login` with any username above + `Test@123`.
 
 ## Re-seeding
 
-Running `npm run seed` again resets everything to this baseline. Any accounts
-you create through the UI will be removed on the next seed.
+`npm run seed` can be run repeatedly — existing sample quizzes/users are
+detected and skipped, and no data is ever deleted.
+
+> Note: the script loads a small compatibility shim (`src/preload.mjs`) via
+> `node --import` so it runs on newer Node versions (24+) where the legacy
+> `SlowBuffer` API used by an old `jsonwebtoken` dependency was removed.
