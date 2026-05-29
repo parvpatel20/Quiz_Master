@@ -74,4 +74,18 @@ npm start                 # starts on http://localhost:3000
 
 ---
 
+## Deployment (SPA routing)
+
+This is a single-page app using client-side routing. The static host **must
+rewrite all paths to `index.html`**, otherwise refreshing a deep link like
+`/leaderboard` returns 404.
+
+- A `render.yaml` blueprint and `frontend/public/_redirects` (`/* → /index.html`)
+  are included.
+- For an **existing Render static site**, also set it in the dashboard:
+  *Settings → Redirects/Rewrites → Add Rule* →
+  Source `/*`, Destination `/index.html`, Action **Rewrite**.
+
+---
+
 Start learning with **Quiz Master**.
