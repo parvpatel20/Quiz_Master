@@ -10,7 +10,7 @@ import {
 import Shell from "../components/Shell";
 import {
   Card, Badge, Button, StatCard, ProgressRing, AnimatedNumber, SectionHeading,
-  Reveal, Skeleton, EmptyState, cx,
+  Reveal, Skeleton, EmptyState,
 } from "../components/ui";
 import { useProfile, useQuizzes } from "../hooks/queries";
 
@@ -241,10 +241,10 @@ const Dashboard = () => {
             </div>
             <div className="mt-6 grid gap-4 sm:grid-cols-3">
               {recommended.map((quiz, i) => (
-                <Reveal key={quiz._id} delay={i * 0.05}>
+                <Reveal key={quiz._id} delay={i * 0.05} className="h-full">
                   <Card
                     hover
-                    className="cursor-pointer p-5"
+                    className="flex h-full cursor-pointer flex-col p-5"
                     onClick={() => navigate(`/quiz-page/${user?._id}/${quiz._id}`)}
                   >
                     <div className="flex items-center gap-2">
@@ -255,9 +255,9 @@ const Dashboard = () => {
                     </div>
                     <p className="mt-3 font-semibold text-white">{quiz.quizName}</p>
                     <p className="text-xs text-slate-500">{quiz.topic}</p>
-                    <p className={cx("mt-4 inline-flex items-center gap-1 text-sm font-medium text-brand")}>
+                    <span className="mt-auto inline-flex items-center gap-1 pt-4 text-sm font-medium text-brand">
                       Start <ArrowRight className="h-4 w-4" />
-                    </p>
+                    </span>
                   </Card>
                 </Reveal>
               ))}

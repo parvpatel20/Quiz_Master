@@ -13,7 +13,7 @@ const difficultyTone = (d) => {
 };
 
 const QuizCard = ({ quiz, isGuest = false, bookmarked = false, onToggleBookmark, onStart }) => (
-  <Card hover className="group relative flex flex-col p-6">
+  <Card hover className="group relative flex h-full flex-col p-6">
     {!isGuest && (
       <button
         onClick={() => onToggleBookmark?.(quiz._id)}
@@ -57,7 +57,7 @@ const QuizCard = ({ quiz, isGuest = false, bookmarked = false, onToggleBookmark,
       </div>
     </dl>
 
-    <div className="mt-6">
+    <div className="mt-auto pt-6">
       {isGuest ? (
         <Button as={Link} to="/register" variant="outline" className="w-full">
           <Lock className="h-4 w-4" /> Sign up to play

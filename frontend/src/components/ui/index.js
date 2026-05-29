@@ -192,47 +192,78 @@ export function Select({
   id,
 }) {
   const [open, setOpen] = useState(false);
-  const ref = useRef(null);
+  const [rect, setRect] = useState(null);
+  const btnRef = useRef(null);
+  const menuRef = useRef(null);
   const selected = options.find((o) => o.value === value);
+
+  const place = () => {
+    if (btnRef.current) setRect(btnRef.current.getBoundingClientRect());
+  };
+
+  const toggle = () => {
+    if (disabled) return;
+    if (!open) place();
+    setOpen((v) => !v);
+  };
 
   useEffect(() => {
     if (!open) return;
-    const onDoc = (e) => ref.current && !ref.current.contains(e.target) && setOpen(false);
+    const onDoc = (e) => {
+      if (btnRef.current?.contains(e.target) || menuRef.current?.contains(e.target)) return;
+      setOpen(false);
+    };
     const onEsc = (e) => e.key === "Escape" && setOpen(false);
+    const reposition = () => setOpen(false); // close on scroll/resize to avoid drift
     document.addEventListener("mousedown", onDoc);
     document.addEventListener("keydown", onEsc);
+    window.addEventListener("resize", reposition);
+    window.addEventListener("scroll", reposition, true);
     return () => {
       document.removeEventListener("mousedown", onDoc);
       document.removeEventListener("keydown", onEsc);
+      window.removeEventListener("resize", reposition);
+      window.removeEventListener("scroll", reposition, true);
     };
   }, [open]);
 
   return (
-    <div className="w-full" ref={ref}>
+    <div className="w-full">
       {label && <FieldLabel icon={Icon} htmlFor={id}>{label}</FieldLabel>}
-      <div className="relative">
-        <button
-          id={id}
-          type="button"
-          disabled={disabled}
-          onClick={() => !disabled && setOpen((v) => !v)}
-          className={cx(
-            FIELD_BASE,
-            "flex items-center justify-between px-4 py-3 text-left",
-            disabled && "cursor-not-allowed opacity-50",
-            open && "border-brand/70"
-          )}
-        >
-          <span className={cx("truncate", selected ? "text-white" : "text-slate-500")}>
-            {selected ? selected.label : placeholder}
-          </span>
-          <ChevronDown
-            className={cx("h-4 w-4 shrink-0 text-slate-400 transition-transform", open && "rotate-180")}
-          />
-        </button>
+      <button
+        ref={btnRef}
+        id={id}
+        type="button"
+        disabled={disabled}
+        onClick={toggle}
+        className={cx(
+          FIELD_BASE,
+          "flex w-full items-center justify-between px-4 py-3 text-left",
+          disabled && "cursor-not-allowed opacity-50",
+          open && "border-brand/70"
+        )}
+      >
+        <span className={cx("truncate", selected ? "text-white" : "text-slate-500")}>
+          {selected ? selected.label : placeholder}
+        </span>
+        <ChevronDown
+          className={cx("h-4 w-4 shrink-0 text-slate-400 transition-transform", open && "rotate-180")}
+        />
+      </button>
 
-        {open && !disabled && (
-          <div className="absolute z-30 mt-2 max-h-64 w-full overflow-auto rounded-xl border border-white/10 bg-ink-800 p-1 shadow-card scrollbar-thin animate-fade-in">
+      {open && !disabled && rect &&
+        createPortal(
+          <div
+            ref={menuRef}
+            style={{
+              position: "fixed",
+              top: rect.bottom + 6,
+              left: rect.left,
+              width: rect.width,
+              zIndex: 80,
+            }}
+            className="max-h-64 overflow-auto rounded-xl border border-white/10 bg-ink-800 p-1 shadow-card scrollbar-thin animate-fade-in"
+          >
             {options.length === 0 && (
               <p className="px-3 py-2 text-sm text-slate-500">No options</p>
             )}
@@ -256,9 +287,9 @@ export function Select({
                 </button>
               );
             })}
-          </div>
+          </div>,
+          document.body
         )}
-      </div>
     </div>
   );
 }

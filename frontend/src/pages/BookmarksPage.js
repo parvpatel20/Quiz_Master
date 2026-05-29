@@ -38,7 +38,7 @@ const BookmarksPage = () => {
         ) : quizzes.length > 0 ? (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {quizzes.map((quiz, i) => (
-              <Reveal key={quiz._id} delay={Math.min(i * 0.04, 0.3)}>
+              <Reveal key={quiz._id} delay={Math.min(i * 0.04, 0.3)} className="h-full">
                 <QuizCard
                   quiz={quiz}
                   bookmarked
