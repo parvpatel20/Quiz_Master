@@ -5,12 +5,13 @@ import userRouter from "./routes/user.routes.js";
 
 const app = express();
 
-// Allowed origins come from CORS_ORIGIN (comma-separated). Localhost dev
-// origins are always permitted so the app runs without extra config.
+// Allowed origins: the known production frontend and localhost are always
+// permitted; CORS_ORIGIN (comma-separated) extends the list for other deployments.
 const allowedOrigins = [
   ...(process.env.CORS_ORIGIN
     ? process.env.CORS_ORIGIN.split(",").map((o) => o.trim()).filter(Boolean)
     : []),
+  "https://quiz-master-wp32.onrender.com",
   "http://localhost:3000",
   "http://127.0.0.1:3000",
 ];
