@@ -41,14 +41,14 @@ const LoginPage = () => {
       <div className="w-full max-w-md">
         <Link to="/" className="mb-8 flex items-center justify-center gap-2.5">
           <img src="/assets/logo.png" alt="" className="h-10 w-10 object-contain" />
-          <span className="font-display text-xl font-bold text-white">
+          <span className="font-display text-xl font-bold text-fg">
             Quiz<span className="text-brand">Master</span>
           </span>
         </Link>
 
         <div className="card p-8">
-          <h1 className="text-2xl font-bold text-white">Sign in</h1>
-          <p className="mt-1 text-sm text-slate-400">
+          <h1 className="text-2xl font-bold text-fg">Sign in</h1>
+          <p className="mt-1 text-sm text-muted">
             Welcome back — enter your details to continue.
           </p>
 
@@ -72,7 +72,7 @@ const LoginPage = () => {
                   <button
                     type="button"
                     onClick={() => setShowPassword((v) => !v)}
-                    className="grid h-8 w-8 place-items-center rounded-lg text-slate-400 hover:text-white"
+                    className="grid h-8 w-8 place-items-center rounded-lg text-muted hover:text-fg"
                     aria-label={showPassword ? "Hide password" : "Show password"}
                   >
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -86,7 +86,7 @@ const LoginPage = () => {
             </Button>
           </form>
 
-          <p className="mt-6 text-center text-sm text-slate-400">
+          <p className="mt-6 text-center text-sm text-muted">
             Don't have an account?{" "}
             <Link to="/register" className="font-semibold text-brand hover:underline">
               Create one

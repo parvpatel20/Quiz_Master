@@ -14,7 +14,7 @@ const RankBadge = ({ rank }) => {
     );
   if (rank === 2)
     return (
-      <span className="grid h-11 w-11 place-items-center rounded-xl bg-white/10 text-slate-300">
+      <span className="grid h-11 w-11 place-items-center rounded-xl bg-surface2 text-muted">
         <Medal className="h-5 w-5" />
       </span>
     );
@@ -25,7 +25,7 @@ const RankBadge = ({ rank }) => {
       </span>
     );
   return (
-    <span className="grid h-11 w-11 place-items-center rounded-xl border border-white/10 text-sm font-bold text-slate-300">
+    <span className="grid h-11 w-11 place-items-center rounded-xl border border-line text-sm font-bold text-muted">
       #{rank}
     </span>
   );
@@ -97,15 +97,15 @@ const Leaderboard = () => {
             <span className="grid h-14 w-14 place-items-center rounded-2xl bg-red-500/10 text-red-300">
               <Trophy className="h-7 w-7" />
             </span>
-            <p className="font-medium text-white">{error}</p>
+            <p className="font-medium text-fg">{error}</p>
           </Card>
         ) : !selectedStandard ? (
           <Card className="mt-12 flex flex-col items-center gap-3 px-6 py-20 text-center">
             <span className="grid h-16 w-16 place-items-center rounded-2xl bg-brand/10 text-brand">
               <Users className="h-8 w-8" />
             </span>
-            <p className="text-lg font-semibold text-white">Pick a class to view champions</p>
-            <p className="max-w-md text-sm text-slate-400">
+            <p className="text-lg font-semibold text-fg">Pick a class to view champions</p>
+            <p className="max-w-md text-sm text-muted">
               Choose a class above to see its ranked leaderboard.
             </p>
           </Card>
@@ -128,14 +128,14 @@ const Leaderboard = () => {
                           alt=""
                           className={cx(
                             "rounded-full border-2 object-cover",
-                            rank === 1 ? "h-16 w-16 border-brand" : "h-12 w-12 border-white/20"
+                            rank === 1 ? "h-16 w-16 border-brand" : "h-12 w-12 border-line"
                           )}
                         />
                         <span className="absolute -bottom-1 left-1/2 -translate-x-1/2"><RankBadge rank={rank} /></span>
                       </div>
-                      <p className="mt-4 truncate text-center text-sm font-semibold text-white">{s.username}</p>
+                      <p className="mt-4 truncate text-center text-sm font-semibold text-fg">{s.username}</p>
                       <Badge tone="brand" className="mt-1">{s.accuracy}%</Badge>
-                      <div className={cx("mt-3 w-full rounded-t-xl border border-b-0 border-white/10 bg-gradient-to-t from-brand/5 to-brand/15", heights[idx])} />
+                      <div className={cx("mt-3 w-full rounded-t-xl border border-b-0 border-line bg-primary/10", heights[idx])} />
                     </div>
                   );
                 })}
@@ -143,20 +143,20 @@ const Leaderboard = () => {
             )}
 
             <Card className="mt-8 overflow-hidden">
-              <div className="hidden grid-cols-[auto_1fr_auto_auto] gap-4 border-b border-white/10 px-6 py-3 text-xs uppercase tracking-wide text-slate-400 sm:grid">
+              <div className="hidden grid-cols-[auto_1fr_auto_auto] gap-4 border-b border-line px-6 py-3 text-xs uppercase tracking-wide text-muted sm:grid">
                 <span>Rank</span>
                 <span>Champion</span>
                 <span className="text-right">Quizzes</span>
                 <span className="text-right">Accuracy</span>
               </div>
-              <ul className="divide-y divide-white/5">
+              <ul className="divide-y divide-line">
                 {filtered.map((s, i) => {
                   const rank = i + 1;
                   return (
                     <li
                       key={s.username + i}
                       className={cx(
-                        "grid grid-cols-[auto_1fr_auto] items-center gap-4 px-6 py-4 transition-colors hover:bg-white/[0.03] sm:grid-cols-[auto_1fr_auto_auto]",
+                        "grid grid-cols-[auto_1fr_auto] items-center gap-4 px-6 py-4 transition-colors hover:bg-surface2 sm:grid-cols-[auto_1fr_auto_auto]",
                         rank <= 3 && "bg-brand/[0.04]"
                       )}
                     >
@@ -165,16 +165,16 @@ const Leaderboard = () => {
                         <img
                           src={s.profilePicture || "/assets/logo.png"}
                           alt=""
-                          className="h-11 w-11 shrink-0 rounded-full border border-white/10 object-cover"
+                          className="h-11 w-11 shrink-0 rounded-full border border-line object-cover"
                         />
                         <div className="min-w-0">
-                          <p className="truncate font-semibold text-white">{s.username}</p>
-                          <p className="truncate text-xs text-slate-500">{s.classname}</p>
+                          <p className="truncate font-semibold text-fg">{s.username}</p>
+                          <p className="truncate text-xs text-subtle">{s.classname}</p>
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm font-semibold text-white">{s.totalQuizzesGiven}</p>
-                        <p className="text-xs text-slate-500">completed</p>
+                        <p className="text-sm font-semibold text-fg">{s.totalQuizzesGiven}</p>
+                        <p className="text-xs text-subtle">completed</p>
                       </div>
                       <div className="hidden text-right sm:block">
                         <Badge tone="brand">{s.accuracy}%</Badge>
@@ -190,8 +190,8 @@ const Leaderboard = () => {
             <span className="grid h-14 w-14 place-items-center rounded-2xl bg-brand/10 text-brand">
               <Search className="h-7 w-7" />
             </span>
-            <p className="font-medium text-white">No champions found</p>
-            <p className="max-w-md text-sm text-slate-400">
+            <p className="font-medium text-fg">No champions found</p>
+            <p className="max-w-md text-sm text-muted">
               {searchTerm
                 ? `No students match "${searchTerm}" in ${selectedStandard}.`
                 : `No leaderboard data for ${selectedStandard} yet — be the first to take a quiz!`}

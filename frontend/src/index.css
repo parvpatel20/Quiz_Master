@@ -3,12 +3,46 @@
 @import "tailwindcss/utilities";
 
 @layer base {
+  /* ---- Design tokens (light) ---- */
   :root {
+    --bg: 248 250 252;          /* slate-50  */
+    --surface: 255 255 255;     /* white     */
+    --surface-2: 241 245 249;   /* slate-100 */
+    --line: 226 232 240;        /* slate-200 */
+    --fg: 15 23 42;             /* slate-900 */
+    --muted: 71 85 105;         /* slate-600 */
+    --subtle: 100 116 139;      /* slate-500 */
+    --primary: 79 70 229;       /* indigo-600 */
+    --primary-fg: 255 255 255;
+    --primary-soft: 238 242 255;/* indigo-50  */
+    --success: 22 163 74;
+    --warning: 217 119 6;
+    --error: 220 38 38;
+    --info: 37 99 235;
+    color-scheme: light;
+  }
+
+  /* ---- Design tokens (dark) ---- */
+  .dark {
+    --bg: 2 6 23;               /* slate-950 */
+    --surface: 15 23 42;        /* slate-900 */
+    --surface-2: 30 41 59;      /* slate-800 */
+    --line: 51 65 85;           /* slate-700 */
+    --fg: 248 250 252;          /* slate-50  */
+    --muted: 148 163 184;       /* slate-400 */
+    --subtle: 100 116 139;      /* slate-500 */
+    --primary: 129 140 248;     /* indigo-400 */
+    --primary-fg: 15 23 42;     /* slate-900 */
+    --primary-soft: 30 27 75;   /* indigo-950 */
+    --success: 34 197 94;
+    --warning: 245 158 11;
+    --error: 248 113 113;
+    --info: 96 165 250;
     color-scheme: dark;
   }
 
   * {
-    border-color: rgba(255, 255, 255, 0.08);
+    border-color: rgb(var(--line));
   }
 
   html {
@@ -17,76 +51,64 @@
   }
 
   body {
-    @apply bg-ink-950 text-slate-300 font-sans antialiased;
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    @apply bg-bg text-fg font-sans antialiased;
+    line-height: 1.6;
     text-rendering: optimizeLegibility;
   }
 
   h1, h2, h3, h4, h5 {
-    @apply font-display font-bold tracking-tight text-white;
+    @apply font-display font-semibold tracking-tight text-fg;
+    line-height: 1.2;
     text-wrap: balance;
   }
 
-  p {
-    text-wrap: pretty;
-  }
+  p { text-wrap: pretty; }
 
   ::selection {
-    background-color: rgba(255, 145, 0, 0.28);
-    color: #fff;
+    background-color: rgb(var(--primary) / 0.18);
   }
 
   *:focus-visible {
-    @apply outline-none ring-2 ring-brand/60 ring-offset-2 ring-offset-ink-950;
+    @apply outline-none ring-2 ring-primary/55 ring-offset-2;
+    --tw-ring-offset-color: rgb(var(--bg));
   }
 
-  /* Consistent thin scrollbar everywhere */
+  /* Thin neutral scrollbar */
   * {
     scrollbar-width: thin;
-    scrollbar-color: rgba(255, 145, 0, 0.35) transparent;
+    scrollbar-color: rgb(var(--line)) transparent;
   }
-  *::-webkit-scrollbar {
-    width: 9px;
-    height: 9px;
-  }
+  *::-webkit-scrollbar { width: 10px; height: 10px; }
   *::-webkit-scrollbar-thumb {
-    background: rgba(255, 145, 0, 0.3);
+    background: rgb(var(--line));
     border-radius: 9999px;
     border: 2px solid transparent;
     background-clip: content-box;
   }
-  *::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 145, 0, 0.5);
-    background-clip: content-box;
-  }
+  *::-webkit-scrollbar-thumb:hover { background: rgb(var(--subtle)); background-clip: content-box; }
 }
 
 @layer components {
-  /* Page background: deep navy with restrained amber glows */
+  /* Flat page background */
   .app-bg {
-    @apply relative min-h-screen bg-ink-950;
-    background-image:
-      radial-gradient(48rem 32rem at 88% -8%, rgba(255, 145, 0, 0.07), transparent 60%),
-      radial-gradient(42rem 32rem at -5% 8%, rgba(42, 63, 107, 0.22), transparent 55%);
-    background-attachment: fixed;
+    @apply relative min-h-screen bg-bg;
   }
 
-  /* Consistent surface */
+  /* Surface card — flat-modern: border + subtle shadow, no blur/gradient */
   .card {
-    @apply rounded-2xl border border-white/10 bg-ink-850/70 shadow-card backdrop-blur-sm;
+    @apply rounded-2xl border border-line bg-surface shadow-card;
   }
 
   .hairline {
-    @apply h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent;
+    @apply h-px w-full bg-line;
   }
 
-  /* Standard page main region — consistent width, gutters, and navbar offset */
+  /* Standard page main region */
   .page-main {
     @apply mx-auto w-full max-w-content px-5 pb-24 pt-24 sm:px-8 sm:pt-28;
   }
 
-  /* Standard vertical rhythm between page sections */
   .section-gap {
-    @apply mt-14 sm:mt-20;
+    @apply mt-12 sm:mt-16;
   }
 }

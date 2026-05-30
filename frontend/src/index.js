@@ -27,13 +27,15 @@ root.render(
         position="top-center"
         toastOptions={{
           style: {
-            background: "#152340",
-            color: "#e2e8f0",
-            border: "1px solid rgba(255,255,255,0.1)",
+            background: "rgb(var(--surface))",
+            color: "rgb(var(--fg))",
+            border: "1px solid rgb(var(--line))",
             borderRadius: "12px",
             fontSize: "14px",
+            boxShadow: "0 12px 28px -8px rgb(15 23 42 / 0.18)",
           },
-          success: { iconTheme: { primary: "#FF9100", secondary: "#152340" } },
+          success: { iconTheme: { primary: "rgb(var(--primary))", secondary: "rgb(var(--surface))" } },
+          error: { iconTheme: { primary: "rgb(var(--error))", secondary: "rgb(var(--surface))" } },
         }}
       />
     </QueryClientProvider>

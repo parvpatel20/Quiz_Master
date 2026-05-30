@@ -22,7 +22,7 @@ const QuizCard = ({ quiz, isGuest = false, bookmarked = false, onToggleBookmark,
           "absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-lg border transition-colors",
           bookmarked
             ? "border-brand/40 bg-brand/15 text-brand"
-            : "border-white/10 text-slate-400 hover:border-brand/40 hover:text-brand"
+            : "border-line text-muted hover:border-brand/40 hover:text-brand"
         )}
       >
         <Bookmark className={cx("h-4 w-4", bookmarked && "fill-brand")} />
@@ -34,26 +34,26 @@ const QuizCard = ({ quiz, isGuest = false, bookmarked = false, onToggleBookmark,
       <Badge tone={difficultyTone(quiz.difficulty)}>{quiz.difficulty}</Badge>
     </div>
 
-    <h3 className="mt-3 text-lg font-semibold text-white">{quiz.quizName}</h3>
-    <p className="mt-1 text-sm text-slate-500">{quiz.topic}</p>
+    <h3 className="mt-3 text-lg font-semibold text-fg">{quiz.quizName}</h3>
+    <p className="mt-1 text-sm text-subtle">{quiz.topic}</p>
 
     <div className="hairline my-4" />
 
     <dl className="grid grid-cols-3 gap-2 text-center text-sm">
       <div>
-        <dt className="flex items-center justify-center gap-1 text-slate-500"><HelpCircle className="h-3.5 w-3.5" /></dt>
-        <dd className="mt-1 font-semibold text-white">{quiz.questions?.length}</dd>
-        <dd className="text-xs text-slate-500">Questions</dd>
+        <dt className="flex items-center justify-center gap-1 text-subtle"><HelpCircle className="h-3.5 w-3.5" /></dt>
+        <dd className="mt-1 font-semibold text-fg">{quiz.questions?.length}</dd>
+        <dd className="text-xs text-subtle">Questions</dd>
       </div>
       <div>
-        <dt className="flex items-center justify-center gap-1 text-slate-500"><Clock className="h-3.5 w-3.5" /></dt>
-        <dd className="mt-1 font-semibold text-white">{quiz.totalTime}m</dd>
-        <dd className="text-xs text-slate-500">Time</dd>
+        <dt className="flex items-center justify-center gap-1 text-subtle"><Clock className="h-3.5 w-3.5" /></dt>
+        <dd className="mt-1 font-semibold text-fg">{quiz.totalTime}m</dd>
+        <dd className="text-xs text-subtle">Time</dd>
       </div>
       <div>
-        <dt className="flex items-center justify-center gap-1 text-slate-500"><ListChecks className="h-3.5 w-3.5" /></dt>
-        <dd className="mt-1 truncate text-xs font-semibold text-white">{quiz.format}</dd>
-        <dd className="text-xs text-slate-500">Format</dd>
+        <dt className="flex items-center justify-center gap-1 text-subtle"><ListChecks className="h-3.5 w-3.5" /></dt>
+        <dd className="mt-1 truncate text-xs font-semibold text-fg">{quiz.format}</dd>
+        <dd className="text-xs text-subtle">Format</dd>
       </div>
     </dl>
 

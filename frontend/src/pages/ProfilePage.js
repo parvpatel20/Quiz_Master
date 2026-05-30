@@ -19,11 +19,11 @@ const EDIT_FIELDS = [
 ];
 
 const InfoRow = ({ icon: Icon, label, value, muted }) => (
-  <div className="flex items-start gap-3 border-b border-white/5 py-3.5 last:border-0">
+  <div className="flex items-start gap-3 border-b border-line py-3.5 last:border-0">
     <Icon className="mt-0.5 h-5 w-5 shrink-0 text-brand" />
     <div className="min-w-0">
-      <p className="text-xs uppercase tracking-wide text-slate-500">{label}</p>
-      <p className={cx("mt-0.5 break-words", muted ? "italic text-slate-500" : "text-white")}>
+      <p className="text-xs uppercase tracking-wide text-subtle">{label}</p>
+      <p className={cx("mt-0.5 break-words", muted ? "italic text-subtle" : "text-fg")}>
         {value}
       </p>
     </div>
@@ -87,18 +87,18 @@ const ProfilePage = () => {
               <button
                 onClick={() => setMenuOpen((v) => !v)}
                 onBlur={() => setTimeout(() => setMenuOpen(false), 150)}
-                className="grid h-9 w-9 place-items-center rounded-lg border border-white/10 text-slate-300 transition-colors hover:border-brand/50 hover:text-white"
+                className="grid h-9 w-9 place-items-center rounded-lg border border-line text-muted transition-colors hover:border-brand/50 hover:text-fg"
                 aria-label="Edit profile"
               >
                 <Pencil className="h-4 w-4" />
               </button>
               {menuOpen && (
-                <div className="absolute right-0 z-20 mt-2 w-48 overflow-hidden rounded-xl border border-white/10 bg-ink-850 p-1 shadow-card animate-fade-in">
+                <div className="absolute right-0 z-20 mt-2 w-48 overflow-hidden rounded-xl border border-line bg-surface p-1 shadow-card animate-fade-in">
                   {EDIT_FIELDS.map(({ label, field }) => (
                     <button
                       key={field}
                       onMouseDown={() => { setPopupField(field); setMenuOpen(false); }}
-                      className="block w-full rounded-lg px-3 py-2.5 text-left text-sm text-slate-300 hover:bg-white/5 hover:text-white"
+                      className="block w-full rounded-lg px-3 py-2.5 text-left text-sm text-muted hover:bg-surface2 hover:text-fg"
                     >
                       Change {label.toLowerCase()}
                     </button>
@@ -111,12 +111,12 @@ const ProfilePage = () => {
               <img
                 src={user?.profilePicture || "/assets/logo.png"}
                 alt="Profile"
-                className="h-32 w-32 rounded-full border border-white/10 object-cover"
+                className="h-32 w-32 rounded-full border border-line object-cover"
               />
-              <h2 className="mt-4 text-xl font-bold text-white">
+              <h2 className="mt-4 text-xl font-bold text-fg">
                 {user?.username || "—"}
               </h2>
-              <p className="text-sm text-slate-500">{user?.classname || "—"}</p>
+              <p className="text-sm text-subtle">{user?.classname || "—"}</p>
             </div>
 
             <div className="mt-6">
@@ -143,12 +143,12 @@ const ProfilePage = () => {
               </div>
               <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
                 {stats.map(({ label, value, icon: Icon }) => (
-                  <div key={label} className="rounded-xl border border-white/10 bg-white/[0.02] p-4">
+                  <div key={label} className="rounded-xl border border-line bg-surface2 p-4">
                     <span className="grid h-9 w-9 place-items-center rounded-lg bg-brand/10 text-brand">
                       <Icon className="h-4 w-4" />
                     </span>
-                    <p className="mt-3 text-2xl font-bold text-white">{value}</p>
-                    <p className="text-xs text-slate-500">{label}</p>
+                    <p className="mt-3 text-2xl font-bold text-fg">{value}</p>
+                    <p className="text-xs text-subtle">{label}</p>
                   </div>
                 ))}
               </div>

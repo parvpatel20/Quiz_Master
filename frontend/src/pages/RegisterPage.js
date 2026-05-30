@@ -61,19 +61,19 @@ const RegisterPage = () => {
         <div className="hidden lg:block">
           <Link to="/" className="flex items-center gap-2.5">
             <img src="/assets/logo.png" alt="" className="h-10 w-10 object-contain" />
-            <span className="font-display text-xl font-bold text-white">
+            <span className="font-display text-xl font-bold text-fg">
               Quiz<span className="text-brand">Master</span>
             </span>
           </Link>
-          <h2 className="mt-8 font-display text-4xl font-bold leading-tight text-white">
+          <h2 className="mt-8 font-display text-4xl font-bold leading-tight text-fg">
             Learn faster,<br />one quiz at a time.
           </h2>
-          <p className="mt-4 max-w-md text-slate-400">
+          <p className="mt-4 max-w-md text-muted">
             Join a community of learners and turn practice into measurable progress.
           </p>
           <ul className="mt-8 space-y-3">
             {PERKS.map((p) => (
-              <li key={p} className="flex items-center gap-3 text-slate-300">
+              <li key={p} className="flex items-center gap-3 text-muted">
                 <CheckCircle2 className="h-5 w-5 shrink-0 text-brand" />
                 {p}
               </li>
@@ -83,8 +83,8 @@ const RegisterPage = () => {
 
         {/* Form */}
         <div className="card p-8">
-          <h1 className="text-2xl font-bold text-white">Create account</h1>
-          <p className="mt-1 text-sm text-slate-400">It takes less than a minute.</p>
+          <h1 className="text-2xl font-bold text-fg">Create account</h1>
+          <p className="mt-1 text-sm text-muted">It takes less than a minute.</p>
 
           <form onSubmit={handleSubmit} className="mt-6 space-y-4">
             <div>
@@ -111,23 +111,23 @@ const RegisterPage = () => {
                 placeholder="Create a password" required
                 rightSlot={
                   <button type="button" onClick={() => setShowPassword((v) => !v)}
-                    className="grid h-8 w-8 place-items-center rounded-lg text-slate-400 hover:text-white"
+                    className="grid h-8 w-8 place-items-center rounded-lg text-muted hover:text-fg"
                     aria-label={showPassword ? "Hide password" : "Show password"}>
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
                 } />
-              <p className="mt-2 text-xs leading-relaxed text-slate-500">{PASSWORD_HINT}</p>
+              <p className="mt-2 text-xs leading-relaxed text-subtle">{PASSWORD_HINT}</p>
             </div>
             <div>
-              <FieldLabel icon={Camera}>Profile picture <span className="text-slate-500">(optional)</span></FieldLabel>
+              <FieldLabel icon={Camera}>Profile picture <span className="text-subtle">(optional)</span></FieldLabel>
               <input
                 type="file" accept="image/*"
                 onChange={(e) => setField("profilePicture", e.target.files[0])}
-                className="block w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2.5 text-sm text-slate-300 file:mr-3 file:rounded-lg file:border-0 file:bg-brand/15 file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-brand hover:file:bg-brand/25"
+                className="block w-full rounded-xl border border-line bg-surface2 px-3 py-2.5 text-sm text-muted file:mr-3 file:rounded-lg file:border-0 file:bg-brand/15 file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-brand hover:file:bg-brand/25"
               />
             </div>
             <div>
-              <FieldLabel icon={FileText}>Bio <span className="text-slate-500">(optional)</span></FieldLabel>
+              <FieldLabel icon={FileText}>Bio <span className="text-subtle">(optional)</span></FieldLabel>
               <Textarea rows={3} value={form.bio}
                 onChange={(e) => setField("bio", e.target.value)}
                 placeholder="Tell us about yourself" />
@@ -138,7 +138,7 @@ const RegisterPage = () => {
             </Button>
           </form>
 
-          <p className="mt-6 text-center text-sm text-slate-400">
+          <p className="mt-6 text-center text-sm text-muted">
             Already have an account?{" "}
             <Link to="/login" className="font-semibold text-brand hover:underline">
               Sign in

@@ -12,35 +12,27 @@ export const cx = (...parts) => parts.filter(Boolean).join(" ");
 /* Button                                                             */
 /* ------------------------------------------------------------------ */
 const BUTTON_VARIANTS = {
-  primary:
-    "bg-brand text-ink-950 hover:bg-brand-400 shadow-glow disabled:hover:bg-brand",
-  outline:
-    "border border-white/15 text-slate-100 hover:border-brand/60 hover:text-white bg-white/[0.02]",
-  ghost: "text-slate-300 hover:text-white hover:bg-white/5",
-  danger: "bg-red-500/90 text-white hover:bg-red-500",
-  subtle: "bg-brand/10 text-brand hover:bg-brand/20 border border-brand/20",
+  primary: "bg-primary text-primary-fg hover:opacity-90 shadow-xs",
+  // `outline` kept as a secondary-style alias used across the app
+  outline: "border border-line bg-surface text-fg hover:bg-surface2",
+  secondary: "border border-line bg-surface text-fg hover:bg-surface2",
+  ghost: "text-muted hover:bg-surface2 hover:text-fg",
+  danger: "bg-error text-white hover:opacity-90",
+  subtle: "bg-primary/10 text-primary hover:bg-primary/15",
 };
 
 const BUTTON_SIZES = {
-  sm: "px-3.5 py-2 text-sm",
-  md: "px-5 py-2.5 text-sm",
-  lg: "px-6 py-3 text-base",
+  sm: "h-9 px-3.5 text-sm gap-1.5",
+  md: "h-10 px-4 text-sm gap-2",
+  lg: "h-11 px-5 text-[15px] gap-2",
 };
 
-export function Button({
-  as: Comp = "button",
-  variant = "primary",
-  size = "md",
-  className,
-  children,
-  ...props
-}) {
+export function Button({ as: Comp = "button", variant = "primary", size = "md", className, children, ...props }) {
   return (
     <Comp
       className={cx(
-        "inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all duration-200",
-        "focus-visible:ring-2 focus-visible:ring-brand/60 disabled:opacity-50 disabled:cursor-not-allowed",
-        "active:scale-[0.98]",
+        "inline-flex items-center justify-center rounded-lg font-medium transition-colors",
+        "focus-visible:ring-2 focus-visible:ring-primary/55 disabled:opacity-50 disabled:pointer-events-none",
         BUTTON_VARIANTS[variant],
         BUTTON_SIZES[size],
         className
@@ -58,12 +50,7 @@ export function Button({
 export function Card({ className, children, hover = false, ...props }) {
   return (
     <div
-      className={cx(
-        "card",
-        hover &&
-          "transition-all duration-300 hover:border-brand/40 hover:-translate-y-0.5",
-        className
-      )}
+      className={cx("card", hover && "transition-shadow duration-200 hover:shadow-md", className)}
       {...props}
     >
       {children}
@@ -75,19 +62,19 @@ export function Card({ className, children, hover = false, ...props }) {
 /* Badge                                                              */
 /* ------------------------------------------------------------------ */
 const BADGE_TONES = {
-  neutral: "bg-white/5 text-slate-300 border-white/10",
-  brand: "bg-brand/10 text-brand border-brand/20",
-  green: "bg-emerald-500/10 text-emerald-300 border-emerald-500/20",
-  amber: "bg-amber-500/10 text-amber-300 border-amber-500/20",
-  red: "bg-red-500/10 text-red-300 border-red-500/20",
-  blue: "bg-sky-500/10 text-sky-300 border-sky-500/20",
+  neutral: "bg-surface2 text-muted border-line",
+  brand: "bg-primary/10 text-primary border-primary/20",
+  green: "bg-success/10 text-success border-success/20",
+  amber: "bg-warning/10 text-warning border-warning/20",
+  red: "bg-error/10 text-error border-error/20",
+  blue: "bg-info/10 text-info border-info/20",
 };
 
 export function Badge({ tone = "neutral", className, children }) {
   return (
     <span
       className={cx(
-        "inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold",
+        "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-medium",
         BADGE_TONES[tone],
         className
       )}
@@ -103,10 +90,7 @@ export function Badge({ tone = "neutral", className, children }) {
 export function Spinner({ className }) {
   return (
     <span
-      className={cx(
-        "inline-block rounded-full border-2 border-white/15 border-t-brand animate-spin-smooth",
-        className || "h-6 w-6"
-      )}
+      className={cx("inline-block rounded-full border-2 border-line border-t-primary animate-spin-smooth", className || "h-6 w-6")}
       role="status"
       aria-label="Loading"
     />
@@ -119,19 +103,15 @@ export function Spinner({ className }) {
 export function SectionHeading({ icon: Icon, title, subtitle, center = false, className }) {
   return (
     <div className={cx(center && "text-center", className)}>
-      <div className={cx("flex items-center gap-3", center && "justify-center")}>
+      <div className={cx("flex items-center gap-2.5", center && "justify-center")}>
         {Icon && (
-          <span className="grid h-10 w-10 place-items-center rounded-xl bg-brand/10 text-brand">
+          <span className="grid h-9 w-9 place-items-center rounded-lg bg-primary/10 text-primary">
             <Icon className="h-5 w-5" />
           </span>
         )}
-        <h2 className="text-2xl font-bold text-white sm:text-3xl">{title}</h2>
+        <h2 className="text-xl font-semibold text-fg sm:text-2xl">{title}</h2>
       </div>
-      {subtitle && (
-        <p className={cx("mt-2 text-slate-400", center && "mx-auto max-w-2xl")}>
-          {subtitle}
-        </p>
-      )}
+      {subtitle && <p className={cx("mt-2 text-sm text-muted", center && "mx-auto max-w-2xl")}>{subtitle}</p>}
     </div>
   );
 }
@@ -140,16 +120,13 @@ export function SectionHeading({ icon: Icon, title, subtitle, center = false, cl
 /* Field primitives                                                   */
 /* ------------------------------------------------------------------ */
 const FIELD_BASE =
-  "w-full rounded-xl border border-white/10 bg-white/[0.03] text-white placeholder-slate-500 " +
-  "transition-colors duration-200 focus:border-brand/70 focus:bg-white/[0.05] focus:outline-none";
+  "w-full rounded-lg border border-line bg-surface text-fg placeholder-subtle " +
+  "transition-colors duration-150 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30";
 
 export function FieldLabel({ icon: Icon, children, htmlFor }) {
   return (
-    <label
-      htmlFor={htmlFor}
-      className="mb-2 flex items-center gap-2 text-sm font-medium text-slate-300"
-    >
-      {Icon && <Icon className="h-4 w-4 text-brand" />}
+    <label htmlFor={htmlFor} className="mb-1.5 flex items-center gap-1.5 text-sm font-medium text-muted">
+      {Icon && <Icon className="h-4 w-4 text-subtle" />}
       {children}
     </label>
   );
@@ -158,54 +135,32 @@ export function FieldLabel({ icon: Icon, children, htmlFor }) {
 export function Input({ icon: Icon, className, rightSlot, ...props }) {
   return (
     <div className="relative">
-      {Icon && (
-        <Icon className="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-500" />
-      )}
+      {Icon && <Icon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle" />}
       <input
-        className={cx(FIELD_BASE, "py-3", Icon ? "pl-11" : "pl-4", rightSlot ? "pr-11" : "pr-4", className)}
+        className={cx(FIELD_BASE, "h-11", Icon ? "pl-9" : "pl-3.5", rightSlot ? "pr-11" : "pr-3.5", className)}
         {...props}
       />
-      {rightSlot && (
-        <div className="absolute right-2 top-1/2 -translate-y-1/2">{rightSlot}</div>
-      )}
+      {rightSlot && <div className="absolute right-1.5 top-1/2 -translate-y-1/2">{rightSlot}</div>}
     </div>
   );
 }
 
 export function Textarea({ className, ...props }) {
-  return (
-    <textarea className={cx(FIELD_BASE, "resize-none p-4", className)} {...props} />
-  );
+  return <textarea className={cx(FIELD_BASE, "resize-none p-3.5", className)} {...props} />;
 }
 
 /* ------------------------------------------------------------------ */
-/* Select (single reusable dropdown — replaces duplicated SelectField) */
+/* Select — portal dropdown (escapes any clipping/stacking context)   */
 /* ------------------------------------------------------------------ */
-export function Select({
-  label,
-  icon: Icon,
-  value,
-  onChange,
-  options = [],
-  placeholder = "Select…",
-  disabled = false,
-  id,
-}) {
+export function Select({ label, icon: Icon, value, onChange, options = [], placeholder = "Select…", disabled = false, id }) {
   const [open, setOpen] = useState(false);
   const [rect, setRect] = useState(null);
   const btnRef = useRef(null);
   const menuRef = useRef(null);
   const selected = options.find((o) => o.value === value);
 
-  const place = () => {
-    if (btnRef.current) setRect(btnRef.current.getBoundingClientRect());
-  };
-
-  const toggle = () => {
-    if (disabled) return;
-    if (!open) place();
-    setOpen((v) => !v);
-  };
+  const place = () => btnRef.current && setRect(btnRef.current.getBoundingClientRect());
+  const toggle = () => { if (disabled) return; if (!open) place(); setOpen((v) => !v); };
 
   useEffect(() => {
     if (!open) return;
@@ -214,16 +169,16 @@ export function Select({
       setOpen(false);
     };
     const onEsc = (e) => e.key === "Escape" && setOpen(false);
-    const reposition = () => setOpen(false); // close on scroll/resize to avoid drift
+    const close = () => setOpen(false);
     document.addEventListener("mousedown", onDoc);
     document.addEventListener("keydown", onEsc);
-    window.addEventListener("resize", reposition);
-    window.addEventListener("scroll", reposition, true);
+    window.addEventListener("resize", close);
+    window.addEventListener("scroll", close, true);
     return () => {
       document.removeEventListener("mousedown", onDoc);
       document.removeEventListener("keydown", onEsc);
-      window.removeEventListener("resize", reposition);
-      window.removeEventListener("scroll", reposition, true);
+      window.removeEventListener("resize", close);
+      window.removeEventListener("scroll", close, true);
     };
   }, [open]);
 
@@ -236,54 +191,36 @@ export function Select({
         type="button"
         disabled={disabled}
         onClick={toggle}
-        className={cx(
-          FIELD_BASE,
-          "flex w-full items-center justify-between px-4 py-3 text-left",
-          disabled && "cursor-not-allowed opacity-50",
-          open && "border-brand/70"
-        )}
+        className={cx(FIELD_BASE, "flex h-11 w-full items-center justify-between px-3.5 text-left", disabled && "cursor-not-allowed opacity-50", open && "border-primary ring-2 ring-primary/30")}
       >
-        <span className={cx("truncate", selected ? "text-white" : "text-slate-500")}>
+        <span className={cx("truncate text-sm", selected ? "text-fg" : "text-subtle")}>
           {selected ? selected.label : placeholder}
         </span>
-        <ChevronDown
-          className={cx("h-4 w-4 shrink-0 text-slate-400 transition-transform", open && "rotate-180")}
-        />
+        <ChevronDown className={cx("h-4 w-4 shrink-0 text-subtle transition-transform", open && "rotate-180")} />
       </button>
 
       {open && !disabled && rect &&
         createPortal(
           <div
             ref={menuRef}
-            style={{
-              position: "fixed",
-              top: rect.bottom + 6,
-              left: rect.left,
-              width: rect.width,
-              zIndex: 80,
-            }}
-            className="max-h-64 overflow-auto rounded-xl border border-white/10 bg-ink-800 p-1 shadow-card scrollbar-thin animate-fade-in"
+            style={{ position: "fixed", top: rect.bottom + 6, left: rect.left, width: rect.width, zIndex: 80 }}
+            className="max-h-64 overflow-auto rounded-lg border border-line bg-surface p-1 shadow-lg animate-fade-in"
           >
-            {options.length === 0 && (
-              <p className="px-3 py-2 text-sm text-slate-500">No options</p>
-            )}
+            {options.length === 0 && <p className="px-3 py-2 text-sm text-subtle">No options</p>}
             {options.map((opt) => {
               const active = opt.value === value;
               return (
                 <button
                   key={opt.value}
                   type="button"
-                  onClick={() => {
-                    onChange(opt.value);
-                    setOpen(false);
-                  }}
+                  onClick={() => { onChange(opt.value); setOpen(false); }}
                   className={cx(
-                    "flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-sm transition-colors",
-                    active ? "bg-brand/15 text-white" : "text-slate-300 hover:bg-white/5"
+                    "flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-sm transition-colors",
+                    active ? "bg-primary/10 text-primary" : "text-muted hover:bg-surface2 hover:text-fg"
                   )}
                 >
                   <span className="truncate">{opt.label}</span>
-                  {active && <Check className="h-4 w-4 text-brand" />}
+                  {active && <Check className="h-4 w-4" />}
                 </button>
               );
             })}
@@ -313,36 +250,30 @@ export function Modal({ open, onClose, title, icon: Icon, children, maxWidth = "
 
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-black/50 animate-fade-in" onClick={onClose} />
       <div
-        className="absolute inset-0 bg-black/70 backdrop-blur-sm animate-fade-in"
-        onClick={onClose}
-      />
-      <div
-        className={cx(
-          "relative w-full rounded-2xl border border-white/10 bg-ink-850 p-6 shadow-card animate-fade-up",
-          maxWidth
-        )}
+        className={cx("relative w-full rounded-2xl border border-line bg-surface shadow-lg animate-fade-up", maxWidth)}
         role="dialog"
         aria-modal="true"
       >
-        <button
-          onClick={onClose}
-          aria-label="Close"
-          className="absolute right-4 top-4 grid h-8 w-8 place-items-center rounded-lg text-slate-400 hover:bg-white/5 hover:text-white"
-        >
-          <X className="h-5 w-5" />
-        </button>
         {(title || Icon) && (
-          <div className="mb-5 flex items-center gap-3 pr-8">
+          <div className="flex items-center gap-3 border-b border-line px-5 py-4 pr-12">
             {Icon && (
-              <span className="grid h-10 w-10 place-items-center rounded-xl bg-brand/10 text-brand">
+              <span className="grid h-9 w-9 place-items-center rounded-lg bg-primary/10 text-primary">
                 <Icon className="h-5 w-5" />
               </span>
             )}
-            {title && <h3 className="text-lg font-bold text-white">{title}</h3>}
+            {title && <h3 className="text-base font-semibold text-fg">{title}</h3>}
           </div>
         )}
-        {children}
+        <button
+          onClick={onClose}
+          aria-label="Close"
+          className="absolute right-3.5 top-3.5 grid h-8 w-8 place-items-center rounded-lg text-muted transition-colors hover:bg-surface2 hover:text-fg"
+        >
+          <X className="h-5 w-5" />
+        </button>
+        <div className="px-5 py-5">{children}</div>
       </div>
     </div>,
     document.body
@@ -350,9 +281,9 @@ export function Modal({ open, onClose, title, icon: Icon, children, maxWidth = "
 }
 
 /* ------------------------------------------------------------------ */
-/* Reveal — fade/slide in when scrolled into view                     */
+/* Reveal                                                             */
 /* ------------------------------------------------------------------ */
-export function Reveal({ children, delay = 0, y = 16, className, as = "div" }) {
+export function Reveal({ children, delay = 0, y = 12, className, as = "div" }) {
   const MotionTag = motion[as] || motion.div;
   return (
     <MotionTag
@@ -360,7 +291,7 @@ export function Reveal({ children, delay = 0, y = 16, className, as = "div" }) {
       initial={{ opacity: 0, y }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.4, delay, ease: [0.22, 1, 0.36, 1] }}
     >
       {children}
     </MotionTag>
@@ -368,56 +299,47 @@ export function Reveal({ children, delay = 0, y = 16, className, as = "div" }) {
 }
 
 /* ------------------------------------------------------------------ */
-/* AnimatedNumber — counts up to value                                */
+/* AnimatedNumber                                                     */
 /* ------------------------------------------------------------------ */
-export function AnimatedNumber({ value = 0, duration = 900, decimals = 0, suffix = "" }) {
+export function AnimatedNumber({ value = 0, duration = 800, decimals = 0, suffix = "" }) {
   const [display, setDisplay] = useState(0);
-  const ref = useRef();
-
   useEffect(() => {
     const target = Number(value) || 0;
-    let raf;
-    let start;
+    let raf, start;
     const step = (ts) => {
       if (start == null) start = ts;
       const p = Math.min((ts - start) / duration, 1);
-      const eased = 1 - Math.pow(1 - p, 3);
-      setDisplay(target * eased);
+      setDisplay(target * (1 - Math.pow(1 - p, 3)));
       if (p < 1) raf = requestAnimationFrame(step);
     };
     raf = requestAnimationFrame(step);
     return () => cancelAnimationFrame(raf);
   }, [value, duration]);
-
-  return (
-    <span ref={ref}>
-      {display.toFixed(decimals)}
-      {suffix}
-    </span>
-  );
+  return <span>{display.toFixed(decimals)}{suffix}</span>;
 }
 
 /* ------------------------------------------------------------------ */
 /* StatCard                                                           */
 /* ------------------------------------------------------------------ */
+const STAT_TONES = {
+  brand: "bg-primary/10 text-primary",
+  green: "bg-success/10 text-success",
+  blue: "bg-info/10 text-info",
+  amber: "bg-warning/10 text-warning",
+  red: "bg-error/10 text-error",
+};
+
 export function StatCard({ icon: Icon, label, value, suffix = "", decimals = 0, hint, tone = "brand" }) {
-  const tones = {
-    brand: "bg-brand/10 text-brand",
-    green: "bg-emerald-500/10 text-emerald-300",
-    blue: "bg-sky-500/10 text-sky-300",
-    amber: "bg-amber-500/10 text-amber-300",
-    red: "bg-red-500/10 text-red-300",
-  };
   return (
-    <Card hover className="flex h-full flex-col p-6">
-      <span className={cx("grid h-10 w-10 place-items-center rounded-xl", tones[tone])}>
+    <Card hover className="flex h-full flex-col p-5">
+      <span className={cx("grid h-10 w-10 place-items-center rounded-lg", STAT_TONES[tone])}>
         {Icon && <Icon className="h-5 w-5" />}
       </span>
-      <p className="mt-4 font-display text-3xl font-bold text-white">
+      <p className="mt-4 font-display text-2xl font-semibold text-fg">
         <AnimatedNumber value={value} decimals={decimals} suffix={suffix} />
       </p>
-      <p className="mt-1 text-sm text-slate-400">{label}</p>
-      <p className="mt-1 text-xs text-slate-500">{hint || " "}</p>
+      <p className="mt-0.5 text-sm text-muted">{label}</p>
+      <p className="mt-0.5 text-xs text-subtle">{hint || " "}</p>
     </Card>
   );
 }
@@ -432,11 +354,11 @@ export function ProgressRing({ value = 0, size = 132, stroke = 10, children }) {
   return (
     <div className="relative" style={{ width: size, height: size }}>
       <svg width={size} height={size} className="-rotate-90">
-        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth={stroke} />
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" style={{ stroke: "rgb(var(--line))" }} strokeWidth={stroke} />
         <circle
-          cx={size / 2} cy={size / 2} r={r} fill="none" stroke="#FF9100" strokeWidth={stroke}
+          cx={size / 2} cy={size / 2} r={r} fill="none" style={{ stroke: "rgb(var(--primary))" }} strokeWidth={stroke}
           strokeLinecap="round" strokeDasharray={c} strokeDashoffset={offset}
-          style={{ transition: "stroke-dashoffset 1s ease-out" }}
+          className="transition-[stroke-dashoffset] duration-1000 ease-out"
         />
       </svg>
       <div className="absolute inset-0 grid place-items-center text-center">{children}</div>
@@ -445,7 +367,7 @@ export function ProgressRing({ value = 0, size = 132, stroke = 10, children }) {
 }
 
 /* ------------------------------------------------------------------ */
-/* Chip — selectable pill                                             */
+/* Chip                                                               */
 /* ------------------------------------------------------------------ */
 export function Chip({ active, onClick, children, icon: Icon }) {
   return (
@@ -453,10 +375,8 @@ export function Chip({ active, onClick, children, icon: Icon }) {
       type="button"
       onClick={onClick}
       className={cx(
-        "inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm font-medium transition-all",
-        active
-          ? "border-brand/40 bg-brand/15 text-brand"
-          : "border-white/10 text-slate-400 hover:border-white/20 hover:text-white"
+        "inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-sm font-medium transition-colors",
+        active ? "border-primary/30 bg-primary/10 text-primary" : "border-line text-muted hover:bg-surface2 hover:text-fg"
       )}
     >
       {Icon && <Icon className="h-3.5 w-3.5" />}
@@ -469,7 +389,7 @@ export function Chip({ active, onClick, children, icon: Icon }) {
 /* Skeleton                                                           */
 /* ------------------------------------------------------------------ */
 export function Skeleton({ className }) {
-  return <div className={cx("animate-pulse rounded-lg bg-white/5", className)} />;
+  return <div className={cx("animate-pulse rounded-lg bg-surface2", className)} />;
 }
 
 /* ------------------------------------------------------------------ */
@@ -477,21 +397,21 @@ export function Skeleton({ className }) {
 /* ------------------------------------------------------------------ */
 export function EmptyState({ icon: Icon, title, subtitle, action }) {
   return (
-    <div className="flex flex-col items-center gap-3 px-6 py-16 text-center">
+    <div className="flex flex-col items-center gap-3 px-6 py-14 text-center">
       {Icon && (
-        <span className="grid h-16 w-16 place-items-center rounded-2xl bg-brand/10 text-brand">
-          <Icon className="h-8 w-8" />
+        <span className="grid h-12 w-12 place-items-center rounded-xl bg-primary/10 text-primary">
+          <Icon className="h-6 w-6" />
         </span>
       )}
-      <p className="text-lg font-semibold text-white">{title}</p>
-      {subtitle && <p className="max-w-md text-sm text-slate-400">{subtitle}</p>}
+      <p className="font-semibold text-fg">{title}</p>
+      {subtitle && <p className="max-w-md text-sm text-muted">{subtitle}</p>}
       {action && <div className="mt-2">{action}</div>}
     </div>
   );
 }
 
 /* ------------------------------------------------------------------ */
-/* PageHeader — consistent page intro (badge + title + subtitle)      */
+/* PageHeader                                                         */
 /* ------------------------------------------------------------------ */
 export function PageHeader({ badge, badgeIcon: BadgeIcon, title, subtitle, center = true, actions }) {
   return (
@@ -502,8 +422,8 @@ export function PageHeader({ badge, badgeIcon: BadgeIcon, title, subtitle, cente
             {BadgeIcon && <BadgeIcon className="h-3.5 w-3.5" />} {badge}
           </Badge>
         )}
-        <h1 className="mt-4 font-display text-3xl font-bold text-white sm:text-4xl">{title}</h1>
-        {subtitle && <p className="mt-3 text-slate-400">{subtitle}</p>}
+        <h1 className="mt-3 font-display text-2xl font-semibold text-fg sm:text-3xl">{title}</h1>
+        {subtitle && <p className="mt-2 text-muted">{subtitle}</p>}
       </div>
       {actions && <div className="shrink-0">{actions}</div>}
     </div>

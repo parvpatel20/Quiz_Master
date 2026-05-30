@@ -16,7 +16,7 @@ const Popup = ({
 }) => {
   return (
     <Modal open onClose={onClose} title={title}>
-      <p className="text-slate-300">{message}</p>
+      <p className="text-muted">{message}</p>
       <div className="mt-6 flex justify-end gap-3">
         {showActionButton && (
           <Button onClick={onAction}>{actionButtonText}</Button>

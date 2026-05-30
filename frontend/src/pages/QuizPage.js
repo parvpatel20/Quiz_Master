@@ -195,7 +195,7 @@ const QuizPage = () => {
         <span className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-brand/10 text-brand">
           <BookOpen className="h-7 w-7" />
         </span>
-        <h1 className="mt-5 text-3xl font-bold text-white">{quiz?.quizName || "Quiz"}</h1>
+        <h1 className="mt-5 text-3xl font-bold text-fg">{quiz?.quizName || "Quiz"}</h1>
       </div>
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2">
@@ -210,16 +210,16 @@ const QuizPage = () => {
               <Icon className="h-5 w-5" />
             </span>
             <div>
-              <p className="text-xs uppercase tracking-wide text-slate-500">{label}</p>
-              <p className="text-lg font-semibold text-white">{value}</p>
+              <p className="text-xs uppercase tracking-wide text-subtle">{label}</p>
+              <p className="text-lg font-semibold text-fg">{value}</p>
             </div>
           </Card>
         ))}
       </div>
 
       <Card className="mt-4 p-6">
-        <h3 className="text-sm font-semibold text-white">Guidelines</h3>
-        <ul className="mt-4 grid gap-3 text-sm text-slate-300 sm:grid-cols-2">
+        <h3 className="text-sm font-semibold text-fg">Guidelines</h3>
+        <ul className="mt-4 grid gap-3 text-sm text-muted sm:grid-cols-2">
           <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-emerald-400" /> No negative marking</li>
           <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-emerald-400" /> Free navigation between questions</li>
           <li className="flex items-center gap-2"><span className="h-3 w-3 rounded-sm bg-emerald-500" /> Answered questions</li>
@@ -241,12 +241,12 @@ const QuizPage = () => {
     <div className="mx-auto grid max-w-content gap-6 px-5 py-6 lg:grid-cols-[260px_1fr]">
       {/* Sidebar */}
       <Card className="h-fit p-5">
-        <div className="rounded-xl border border-white/10 bg-white/[0.02] p-4">
-          <div className="flex items-center justify-center gap-2 text-white">
+        <div className="rounded-xl border border-line bg-surface2 p-4">
+          <div className="flex items-center justify-center gap-2 text-fg">
             <Clock className="h-4 w-4 text-brand" />
             <span className="font-mono text-lg font-semibold">{formatTime(timeLeft || 0)}</span>
           </div>
-          <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-white/10">
+          <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-surface2">
             <div
               className={cx(
                 "h-full transition-all duration-700",
@@ -257,7 +257,7 @@ const QuizPage = () => {
           </div>
         </div>
 
-        <p className="mt-5 text-xs uppercase tracking-wide text-slate-500">Questions</p>
+        <p className="mt-5 text-xs uppercase tracking-wide text-subtle">Questions</p>
         <div className="mt-3 grid grid-cols-5 gap-2">
           {quiz.questions.map((_, i) => (
             <button
@@ -269,7 +269,7 @@ const QuizPage = () => {
                   ? "border-brand bg-brand text-ink-950"
                   : answers[i]
                   ? "border-emerald-500/40 bg-emerald-500/15 text-emerald-300"
-                  : "border-white/10 text-slate-400 hover:border-white/20"
+                  : "border-line text-muted hover:border-line"
               )}
             >
               {i + 1}
@@ -284,7 +284,7 @@ const QuizPage = () => {
           <div className="flex items-center justify-between">
             <Badge tone="brand">Question {current + 1} of {totalQuestions}</Badge>
           </div>
-          <p className="mt-5 text-lg leading-relaxed text-white">{q?.questionText}</p>
+          <p className="mt-5 text-lg leading-relaxed text-fg">{q?.questionText}</p>
 
           <div className="mt-6 space-y-3">
             {(quiz.format === "MCQ-Single" || quiz.format === "MCQ-Multiple") &&
@@ -295,7 +295,7 @@ const QuizPage = () => {
                     key={i}
                     className={cx(
                       "flex cursor-pointer items-center gap-3 rounded-xl border px-4 py-3.5 transition-colors",
-                      selected ? "border-brand/60 bg-brand/10 text-white" : "border-white/10 text-slate-300 hover:border-white/20"
+                      selected ? "border-brand/60 bg-brand/10 text-fg" : "border-line text-muted hover:border-line"
                     )}
                   >
                     <input
@@ -318,7 +318,7 @@ const QuizPage = () => {
                     key={opt}
                     className={cx(
                       "flex cursor-pointer items-center gap-3 rounded-xl border px-4 py-3.5 transition-colors",
-                      selected ? "border-brand/60 bg-brand/10 text-white" : "border-white/10 text-slate-300 hover:border-white/20"
+                      selected ? "border-brand/60 bg-brand/10 text-fg" : "border-line text-muted hover:border-line"
                     )}
                   >
                     <input
@@ -338,7 +338,7 @@ const QuizPage = () => {
                 value={answers[current]?.[0] || ""}
                 onChange={(e) => setAnswer(e.target.value, current, "Fill-in-the-Blank")}
                 placeholder="Type your answer…"
-                className="h-28 w-full resize-none rounded-xl border border-white/10 bg-white/[0.03] p-4 text-white placeholder-slate-500 focus:border-brand/70 focus:outline-none"
+                className="h-28 w-full resize-none rounded-xl border border-line bg-surface2 p-4 text-fg placeholder-subtle focus:border-brand/70 focus:outline-none"
               />
             )}
           </div>
@@ -373,28 +373,28 @@ const QuizPage = () => {
         <span className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-brand/10 text-brand">
           <Target className="h-7 w-7" />
         </span>
-        <h1 className="mt-5 text-3xl font-bold text-white">Quiz summary</h1>
+        <h1 className="mt-5 text-3xl font-bold text-fg">Quiz summary</h1>
       </div>
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2">
         <Card className="p-6 text-center">
           <CheckCircle2 className="mx-auto h-7 w-7 text-emerald-400" />
-          <p className="mt-3 text-3xl font-bold text-white">{attempted}</p>
-          <p className="text-sm text-slate-400">Attempted</p>
+          <p className="mt-3 text-3xl font-bold text-fg">{attempted}</p>
+          <p className="text-sm text-muted">Attempted</p>
         </Card>
         <Card className="p-6 text-center">
           <XCircle className="mx-auto h-7 w-7 text-red-400" />
-          <p className="mt-3 text-3xl font-bold text-white">{missed}</p>
-          <p className="text-sm text-slate-400">Unattempted</p>
+          <p className="mt-3 text-3xl font-bold text-fg">{missed}</p>
+          <p className="text-sm text-muted">Unattempted</p>
         </Card>
       </div>
 
       <Card className="mt-4 p-6">
-        <div className="flex justify-between text-sm text-slate-400">
+        <div className="flex justify-between text-sm text-muted">
           <span>Progress</span>
           <span>{attempted} / {totalQuestions}</span>
         </div>
-        <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-white/10">
+        <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-surface2">
           <div className="h-full bg-brand transition-all" style={{ width: `${totalQuestions ? (attempted / totalQuestions) * 100 : 0}%` }} />
         </div>
       </Card>
@@ -426,44 +426,44 @@ const QuizPage = () => {
         <span className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-brand/10 text-brand">
           <Trophy className="h-8 w-8" />
         </span>
-        <h1 className="mt-5 text-3xl font-bold text-white">Your results</h1>
+        <h1 className="mt-5 text-3xl font-bold text-fg">Your results</h1>
       </div>
 
       <div className="mt-8 flex flex-col items-center">
         <div className="grid h-36 w-36 place-items-center rounded-full border-4 border-brand/30">
           <div className="text-center">
-            <p className="font-display text-4xl font-bold text-white">{score}</p>
-            <p className="text-xs text-slate-400">of {totalQuestions}</p>
+            <p className="font-display text-4xl font-bold text-fg">{score}</p>
+            <p className="text-xs text-muted">of {totalQuestions}</p>
           </div>
         </div>
         <div className="mt-6 w-full max-w-sm">
-          <div className="h-2 w-full overflow-hidden rounded-full bg-white/10">
+          <div className="h-2 w-full overflow-hidden rounded-full bg-surface2">
             <div className="h-full bg-brand transition-all" style={{ width: `${percent}%` }} />
           </div>
-          <p className="mt-2 text-center text-sm text-slate-400">{percent}% score</p>
+          <p className="mt-2 text-center text-sm text-muted">{percent}% score</p>
         </div>
       </div>
 
       <Card className="mt-8 p-6 text-center">
         <Badge tone={message.tone}>{message.title}</Badge>
-        <p className="mt-3 text-slate-300">{message.body}</p>
+        <p className="mt-3 text-muted">{message.body}</p>
       </Card>
 
       <div className="mt-6 grid gap-4 sm:grid-cols-3">
         <Card className="p-5 text-center">
           <CheckCircle2 className="mx-auto h-6 w-6 text-emerald-400" />
-          <p className="mt-2 text-xl font-bold text-white">{score}</p>
-          <p className="text-xs text-slate-400">Correct</p>
+          <p className="mt-2 text-xl font-bold text-fg">{score}</p>
+          <p className="text-xs text-muted">Correct</p>
         </Card>
         <Card className="p-5 text-center">
           <XCircle className="mx-auto h-6 w-6 text-red-400" />
-          <p className="mt-2 text-xl font-bold text-white">{totalQuestions - score}</p>
-          <p className="text-xs text-slate-400">Incorrect / skipped</p>
+          <p className="mt-2 text-xl font-bold text-fg">{totalQuestions - score}</p>
+          <p className="text-xs text-muted">Incorrect / skipped</p>
         </Card>
         <Card className="p-5 text-center">
           <Clock className="mx-auto h-6 w-6 text-brand" />
-          <p className="mt-2 text-xl font-bold text-white">{formatTime(quiz.totalTime * 60 - (timeLeft || 0))}</p>
-          <p className="text-xs text-slate-400">Time taken</p>
+          <p className="mt-2 text-xl font-bold text-fg">{formatTime(quiz.totalTime * 60 - (timeLeft || 0))}</p>
+          <p className="text-xs text-muted">Time taken</p>
         </Card>
       </div>
 
@@ -482,8 +482,8 @@ const QuizPage = () => {
     <div className="mx-auto max-w-3xl px-5 py-10">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white sm:text-3xl">Answer review</h1>
-          <p className="mt-1 text-sm text-slate-400">
+          <h1 className="text-2xl font-bold text-fg sm:text-3xl">Answer review</h1>
+          <p className="mt-1 text-sm text-muted">
             {score} of {totalQuestions} correct · {percent}%
           </p>
         </div>
@@ -505,19 +505,19 @@ const QuizPage = () => {
                   {r.correct ? <CheckCircle2 className="h-4 w-4" /> : <XCircle className="h-4 w-4" />}
                 </span>
                 <div className="min-w-0 flex-1">
-                  <p className="text-xs uppercase tracking-wide text-slate-500">Question {i + 1}</p>
-                  <p className="mt-1 font-medium text-white">{qq.questionText}</p>
+                  <p className="text-xs uppercase tracking-wide text-subtle">Question {i + 1}</p>
+                  <p className="mt-1 font-medium text-fg">{qq.questionText}</p>
                   <div className="mt-3 grid gap-2 text-sm sm:grid-cols-2">
                     <div className={cx(
                       "rounded-lg border px-3 py-2",
                       r.correct ? "border-emerald-500/20 bg-emerald-500/5" : "border-red-500/20 bg-red-500/5"
                     )}>
-                      <p className="text-xs text-slate-500">Your answer</p>
+                      <p className="text-xs text-subtle">Your answer</p>
                       <p className={cx("mt-0.5 font-medium", r.correct ? "text-emerald-300" : "text-red-300")}>{r.userText}</p>
                     </div>
-                    <div className="rounded-lg border border-white/10 bg-white/[0.02] px-3 py-2">
-                      <p className="text-xs text-slate-500">Correct answer</p>
-                      <p className="mt-0.5 font-medium text-white">{r.correctText}</p>
+                    <div className="rounded-lg border border-line bg-surface2 px-3 py-2">
+                      <p className="text-xs text-subtle">Correct answer</p>
+                      <p className="mt-0.5 font-medium text-fg">{r.correctText}</p>
                     </div>
                   </div>
                 </div>

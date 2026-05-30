@@ -22,13 +22,13 @@ const StatCard = ({ icon: Icon, value, label, points }) => (
         <Icon className="h-6 w-6" />
       </span>
       <div className="text-right">
-        <p className="font-display text-4xl font-bold text-white">{value}</p>
+        <p className="font-display text-4xl font-bold text-fg">{value}</p>
         <p className="text-sm font-medium text-brand">{label}</p>
       </div>
     </div>
     <ul className="mt-6 space-y-3">
       {points.map(({ icon: PointIcon, text }) => (
-        <li key={text} className="flex items-center gap-3 text-sm text-slate-300">
+        <li key={text} className="flex items-center gap-3 text-sm text-muted">
           <PointIcon className="h-4 w-4 shrink-0 text-brand" />
           {text}
         </li>
@@ -59,15 +59,15 @@ const About = () => {
               <span className="grid h-12 w-12 place-items-center rounded-xl bg-brand/10 text-brand">
                 <Target className="h-6 w-6" />
               </span>
-              <h3 className="mt-5 text-xl font-bold text-white">Our vision</h3>
-              <p className="mt-3 leading-relaxed text-slate-400">{VISION}</p>
+              <h3 className="mt-5 text-xl font-bold text-fg">Our vision</h3>
+              <p className="mt-3 leading-relaxed text-muted">{VISION}</p>
             </Card>
             <Card className="p-8">
               <span className="grid h-12 w-12 place-items-center rounded-xl bg-brand/10 text-brand">
                 <Globe className="h-6 w-6" />
               </span>
-              <h3 className="mt-5 text-xl font-bold text-white">Our mission</h3>
-              <p className="mt-3 leading-relaxed text-slate-400">{MISSION}</p>
+              <h3 className="mt-5 text-xl font-bold text-fg">Our mission</h3>
+              <p className="mt-3 leading-relaxed text-muted">{MISSION}</p>
             </Card>
           </div>
         </section>
@@ -108,9 +108,9 @@ const About = () => {
                 <span className="grid h-11 w-11 place-items-center rounded-xl bg-brand/10 text-brand">
                   <MapPin className="h-5 w-5" />
                 </span>
-                <h3 className="text-lg font-bold text-white">Headquarters</h3>
+                <h3 className="text-lg font-bold text-fg">Headquarters</h3>
               </div>
-              <p className="mt-4 leading-relaxed text-slate-400">
+              <p className="mt-4 leading-relaxed text-muted">
                 DAIICT-campus, near Reliance Cross Rd, Gandhinagar, Gujarat 382007
               </p>
               <Button
@@ -126,18 +126,18 @@ const About = () => {
                 <span className="grid h-11 w-11 place-items-center rounded-xl bg-brand/10 text-brand">
                   <Phone className="h-5 w-5" />
                 </span>
-                <h3 className="text-lg font-bold text-white">Contact info</h3>
+                <h3 className="text-lg font-bold text-fg">Contact info</h3>
               </div>
               <div className="mt-4 space-y-3">
                 <a
                   href="mailto:support@quizmaster.com"
-                  className="flex items-center gap-3 rounded-xl border border-white/10 px-4 py-3 text-slate-300 transition-colors hover:border-brand/40 hover:text-white"
+                  className="flex items-center gap-3 rounded-xl border border-line px-4 py-3 text-muted transition-colors hover:border-brand/40 hover:text-fg"
                 >
                   <Mail className="h-4 w-4 text-brand" /> support@quizmaster.com
                 </a>
                 <a
                   href="tel:+917990377408"
-                  className="flex items-center gap-3 rounded-xl border border-white/10 px-4 py-3 text-slate-300 transition-colors hover:border-brand/40 hover:text-white"
+                  className="flex items-center gap-3 rounded-xl border border-line px-4 py-3 text-muted transition-colors hover:border-brand/40 hover:text-fg"
                 >
                   <Phone className="h-4 w-4 text-brand" /> (+91) 7990377408
                 </a>

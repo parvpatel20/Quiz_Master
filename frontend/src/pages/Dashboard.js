@@ -13,6 +13,7 @@ import {
   Reveal, Skeleton, EmptyState,
 } from "../components/ui";
 import { useProfile, useQuizzes } from "../hooks/queries";
+import useTheme from "../hooks/useTheme";
 
 const dayKey = (d) => new Date(d).toISOString().slice(0, 10);
 
@@ -33,15 +34,20 @@ function computeStreak(dates) {
 const ChartTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
   return (
-    <div className="rounded-lg border border-white/10 bg-ink-800 px-3 py-2 text-xs shadow-card">
-      <p className="text-slate-400">{label}</p>
-      <p className="font-semibold text-white">{payload[0].value}%</p>
+    <div className="rounded-lg border border-line bg-surface px-3 py-2 text-xs shadow-card">
+      <p className="text-muted">{label}</p>
+      <p className="font-semibold text-fg">{payload[0].value}%</p>
     </div>
   );
 };
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const { theme } = useTheme();
+  const accent = theme === "dark" ? "#818cf8" : "#4f46e5";
+  const accentSoft = theme === "dark" ? "rgba(129,140,248,0.45)" : "rgba(79,70,229,0.5)";
+  const axisColor = "#64748b";
+  const gridColor = theme === "dark" ? "rgba(148,163,184,0.14)" : "rgba(15,23,42,0.07)";
   const { data: user, isLoading } = useProfile();
   const { data: quizData } = useQuizzes("auth");
 
@@ -106,29 +112,29 @@ const Dashboard = () => {
       {/* Greeting / hero */}
         <Reveal>
           <Card className="relative overflow-hidden p-6 sm:p-8">
-            <div className="pointer-events-none absolute -right-10 -top-16 h-56 w-56 rounded-full bg-brand/10 blur-3xl" />
+            <div className="pointer-events-none absolute -right-10 -top-16 h-56 w-56 rounded-full hidden" />
             <div className="relative flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
               <div className="flex items-center gap-4">
                 <img
                   src={user?.profilePicture || "/assets/logo.png"}
                   alt=""
-                  className="h-16 w-16 rounded-2xl border border-white/10 object-cover"
+                  className="h-16 w-16 rounded-2xl border border-line object-cover"
                 />
                 <div>
-                  <p className="text-sm text-slate-400">Welcome back,</p>
-                  <h1 className="font-display text-2xl font-bold text-white sm:text-3xl">
+                  <p className="text-sm text-muted">Welcome back,</p>
+                  <h1 className="font-display text-2xl font-bold text-fg sm:text-3xl">
                     {user?.username || "Learner"}
                   </h1>
-                  <p className="mt-1 text-sm text-slate-500">{user?.classname}</p>
+                  <p className="mt-1 text-sm text-subtle">{user?.classname}</p>
                 </div>
               </div>
               <div className="flex items-center gap-5">
                 <ProgressRing value={accuracy} size={104} stroke={9}>
                   <div>
-                    <p className="font-display text-2xl font-bold text-white">
+                    <p className="font-display text-2xl font-bold text-fg">
                       <AnimatedNumber value={accuracy} suffix="%" />
                     </p>
-                    <p className="text-[10px] uppercase tracking-wide text-slate-500">Accuracy</p>
+                    <p className="text-[10px] uppercase tracking-wide text-subtle">Accuracy</p>
                   </div>
                 </ProgressRing>
                 <Button onClick={() => navigate("/quiz-search")}>
@@ -168,15 +174,15 @@ const Dashboard = () => {
                       <LineChart data={timeline} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
                         <defs>
                           <linearGradient id="lineFill" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="#FF9100" stopOpacity={0.4} />
-                            <stop offset="100%" stopColor="#FF9100" stopOpacity={0} />
+                            <stop offset="0%" stopColor={accent} stopOpacity={0.4} />
+                            <stop offset="100%" stopColor={accent} stopOpacity={0} />
                           </linearGradient>
                         </defs>
-                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
-                        <XAxis dataKey="date" stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} />
-                        <YAxis domain={[0, 100]} stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} />
-                        <Tooltip content={<ChartTooltip />} cursor={{ stroke: "rgba(255,145,0,0.3)" }} />
-                        <Line type="monotone" dataKey="score" stroke="#FF9100" strokeWidth={2.5} dot={{ r: 3, fill: "#FF9100" }} activeDot={{ r: 5 }} />
+                        <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
+                        <XAxis dataKey="date" stroke={axisColor} fontSize={12} tickLine={false} axisLine={false} />
+                        <YAxis domain={[0, 100]} stroke={axisColor} fontSize={12} tickLine={false} axisLine={false} />
+                        <Tooltip content={<ChartTooltip />} cursor={{ stroke: accent, strokeOpacity: 0.3 }} />
+                        <Line type="monotone" dataKey="score" stroke={accent} strokeWidth={2.5} dot={{ r: 3, fill: accent }} activeDot={{ r: 5 }} />
                       </LineChart>
                     </ResponsiveContainer>
                   </div>
@@ -189,13 +195,13 @@ const Dashboard = () => {
                   <div className="mt-6 h-72 w-full">
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart data={bySubject.slice(0, 6)} layout="vertical" margin={{ top: 0, right: 10, left: 0, bottom: 0 }}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" horizontal={false} />
+                        <CartesianGrid strokeDasharray="3 3" stroke={gridColor} horizontal={false} />
                         <XAxis type="number" domain={[0, 100]} hide />
-                        <YAxis type="category" dataKey="subject" stroke="#94a3b8" fontSize={12} width={90} tickLine={false} axisLine={false} />
+                        <YAxis type="category" dataKey="subject" stroke={axisColor} fontSize={12} width={90} tickLine={false} axisLine={false} />
                         <Tooltip content={<ChartTooltip />} cursor={{ fill: "rgba(255,255,255,0.04)" }} />
                         <Bar dataKey="accuracy" radius={[0, 6, 6, 0]} barSize={16}>
                           {bySubject.slice(0, 6).map((_, i) => (
-                            <Cell key={i} fill={i === 0 ? "#FF9100" : "rgba(255,145,0,0.55)"} />
+                            <Cell key={i} fill={i === 0 ? accent : accentSoft} />
                           ))}
                         </Bar>
                       </BarChart>
@@ -209,15 +215,15 @@ const Dashboard = () => {
             <Reveal className="mt-6">
               <Card className="p-6">
                 <SectionHeading icon={Activity} title="Recent activity" />
-                <ul className="mt-5 divide-y divide-white/5">
+                <ul className="mt-5 divide-y divide-line">
                   {recent.map((q, i) => (
                     <li key={i} className="flex items-center justify-between gap-3 py-3">
                       <div className="min-w-0">
-                        <p className="truncate font-medium text-white">{q.quiz?.subject}</p>
-                        <p className="truncate text-xs text-slate-500">{q.quiz?.topic}</p>
+                        <p className="truncate font-medium text-fg">{q.quiz?.subject}</p>
+                        <p className="truncate text-xs text-subtle">{q.quiz?.topic}</p>
                       </div>
                       <div className="flex items-center gap-3">
-                        <span className="text-xs text-slate-500">
+                        <span className="text-xs text-subtle">
                           {new Date(q.quizDate).toLocaleDateString("en-GB", { day: "2-digit", month: "short" })}
                         </span>
                         <Badge tone={q.score >= 80 ? "green" : q.score >= 50 ? "amber" : "red"}>{q.score}%</Badge>
@@ -253,8 +259,8 @@ const Dashboard = () => {
                         {quiz.difficulty}
                       </Badge>
                     </div>
-                    <p className="mt-3 font-semibold text-white">{quiz.quizName}</p>
-                    <p className="text-xs text-slate-500">{quiz.topic}</p>
+                    <p className="mt-3 font-semibold text-fg">{quiz.quizName}</p>
+                    <p className="text-xs text-subtle">{quiz.topic}</p>
                     <span className="mt-auto inline-flex items-center gap-1 pt-4 text-sm font-medium text-brand">
                       Start <ArrowRight className="h-4 w-4" />
                     </span>

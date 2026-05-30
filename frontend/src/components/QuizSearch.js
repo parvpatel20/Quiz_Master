@@ -102,7 +102,7 @@ const QuizSearch = ({ mode = "auth" }) => {
                   onChange={(e) => setQ(e.target.value)}
                   placeholder="Search quizzes by name, subject, or topic"
                   rightSlot={q ? (
-                    <button onClick={() => setQ("")} className="grid h-8 w-8 place-items-center rounded-lg text-slate-400 hover:text-white" aria-label="Clear search">
+                    <button onClick={() => setQ("")} className="grid h-8 w-8 place-items-center rounded-lg text-muted hover:text-fg" aria-label="Clear search">
                       <X className="h-4 w-4" />
                     </button>
                   ) : null}
@@ -125,16 +125,16 @@ const QuizSearch = ({ mode = "auth" }) => {
 
             {/* Difficulty + format chips */}
             <div className="mt-3 flex flex-wrap items-center gap-2">
-              <span className="text-xs uppercase tracking-wide text-slate-500">Difficulty</span>
+              <span className="text-xs uppercase tracking-wide text-subtle">Difficulty</span>
               {DIFFICULTY_OPTIONS.map((d) => (
                 <Chip key={d.value} active={difficulty === d.value} onClick={() => setDifficulty(difficulty === d.value ? "" : d.value)}>{d.label}</Chip>
               ))}
-              <span className="ml-2 text-xs uppercase tracking-wide text-slate-500">Format</span>
+              <span className="ml-2 text-xs uppercase tracking-wide text-subtle">Format</span>
               {FORMAT_OPTIONS.map((f) => (
                 <Chip key={f.value} active={format === f.value} onClick={() => setFormat(format === f.value ? "" : f.value)}>{f.label}</Chip>
               ))}
               {activeFilters > 0 && (
-                <button onClick={clearAll} className="ml-auto inline-flex items-center gap-1 text-sm text-slate-400 hover:text-white">
+                <button onClick={clearAll} className="ml-auto inline-flex items-center gap-1 text-sm text-muted hover:text-fg">
                   <X className="h-3.5 w-3.5" /> Clear
                 </button>
               )}
@@ -144,7 +144,7 @@ const QuizSearch = ({ mode = "auth" }) => {
 
         {/* Results */}
         <div className="mt-8 flex items-center justify-between">
-          <p className="text-sm text-slate-400">
+          <p className="text-sm text-muted">
             {isLoading ? "Loading…" : `${results.length} quiz${results.length === 1 ? "" : "zes"} found`}
           </p>
         </div>

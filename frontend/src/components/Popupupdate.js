@@ -111,7 +111,7 @@ const Popupupdate = ({ isOpen, closePopup, fieldType, updateUser }) => {
     <button
       type="button"
       onClick={() => set((v) => !v)}
-      className="grid h-8 w-8 place-items-center rounded-lg text-slate-400 hover:text-white"
+      className="grid h-8 w-8 place-items-center rounded-lg text-muted hover:text-fg"
       aria-label={shown ? "Hide password" : "Show password"}
     >
       {shown ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -174,7 +174,7 @@ const Popupupdate = ({ isOpen, closePopup, fieldType, updateUser }) => {
                 placeholder="Enter new password"
                 rightSlot={pwToggle(showNew, setShowNew)}
               />
-              <p className="mt-2 text-xs leading-relaxed text-slate-500">{PASSWORD_HINT}</p>
+              <p className="mt-2 text-xs leading-relaxed text-subtle">{PASSWORD_HINT}</p>
             </div>
           </>
         )}
@@ -182,12 +182,12 @@ const Popupupdate = ({ isOpen, closePopup, fieldType, updateUser }) => {
         {fieldType === "profilePicture" && (
           <div>
             <FieldLabel icon={Camera}>New profile picture</FieldLabel>
-            <label className="flex cursor-pointer flex-col items-center gap-2 rounded-xl border border-dashed border-white/15 bg-white/[0.03] px-6 py-8 text-center transition-colors hover:border-brand/50">
+            <label className="flex cursor-pointer flex-col items-center gap-2 rounded-xl border border-dashed border-line bg-surface2 px-6 py-8 text-center transition-colors hover:border-brand/50">
               <Camera className="h-8 w-8 text-brand" />
-              <span className="text-sm font-medium text-white">
+              <span className="text-sm font-medium text-fg">
                 {file ? file.name : "Click to upload an image"}
               </span>
-              <span className="text-xs text-slate-500">PNG or JPG, up to 10MB</span>
+              <span className="text-xs text-subtle">PNG or JPG, up to 10MB</span>
               <input
                 type="file"
                 accept="image/*"
@@ -201,10 +201,10 @@ const Popupupdate = ({ isOpen, closePopup, fieldType, updateUser }) => {
 
       {(error || success) && (
         <div
-          className={`mt-4 flex items-center gap-2.5 rounded-xl border px-4 py-3 text-sm ${
+          className={`mt-4 flex items-center gap-2.5 rounded-lg border px-4 py-3 text-sm ${
             error
-              ? "border-red-500/20 bg-red-500/10 text-red-300"
-              : "border-emerald-500/20 bg-emerald-500/10 text-emerald-300"
+              ? "border-error/20 bg-error/10 text-error"
+              : "border-success/20 bg-success/10 text-success"
           }`}
         >
           {error ? <AlertCircle className="h-4 w-4 shrink-0" /> : <CheckCircle2 className="h-4 w-4 shrink-0" />}
