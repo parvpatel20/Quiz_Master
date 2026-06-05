@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   Eye, EyeOff, Lock, User, Mail, GraduationCap, Camera, FileText, ArrowRight,
+  ShieldCheck, UserCircle2,
 } from "lucide-react";
 import { Button, Input, Textarea, Select, FieldLabel, cx } from "../components/ui";
 import Popup from "../components/Popup";
@@ -39,6 +40,20 @@ const STRENGTH = [
   { label: "Good", tone: "bg-info" },
   { label: "Strong", tone: "bg-success" },
 ];
+
+function SectionTitle({ icon: Icon, title, subtitle }) {
+  return (
+    <div className="flex items-center gap-2.5">
+      <span className="grid h-7 w-7 place-items-center rounded-md bg-primary/10 text-primary">
+        <Icon className="h-3.5 w-3.5" />
+      </span>
+      <div>
+        <p className="text-sm font-semibold text-fg">{title}</p>
+        {subtitle && <p className="text-[11px] text-subtle">{subtitle}</p>}
+      </div>
+    </div>
+  );
+}
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -85,17 +100,21 @@ const RegisterPage = () => {
   };
 
   return (
-    <AuthLayout>
+    <AuthLayout maxWidth="max-w-2xl">
       <motion.div
         initial={{ opacity: 0, y: 16, scale: 0.99 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.55, ease: EASE }}
-        className="gradient-border relative p-7 sm:p-8"
+        className="gradient-border relative p-7 sm:p-9"
       >
-        <div className="pointer-events-none absolute -top-px left-1/2 h-px w-32 -translate-x-1/2 bg-gradient-to-r from-transparent via-primary to-transparent" />
+        <div className="pointer-events-none absolute -top-px left-1/2 h-px w-40 -translate-x-1/2 bg-gradient-to-r from-transparent via-primary to-transparent" />
 
-        <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, ease: EASE }}>
-          <Link to="/" className="mb-5 inline-flex items-center gap-2.5">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, ease: EASE }}
+          className="flex flex-col items-center text-center"
+        >
+          <Link to="/" className="inline-flex items-center gap-2.5">
             <span className="grid h-10 w-10 place-items-center rounded-xl bg-primary/10 ring-1 ring-primary/20">
               <img src="/assets/logo.png" alt="" className="h-7 w-7 object-contain" />
             </span>
@@ -103,11 +122,11 @@ const RegisterPage = () => {
               Quiz<span className="text-primary">Master</span>
             </span>
           </Link>
-          <h1 className="font-display text-2xl font-bold text-fg sm:text-[28px]">
-            Join Quiz Master
+          <h1 className="mt-4 font-display text-2xl font-bold text-fg sm:text-[28px]">
+            Create your account
           </h1>
           <p className="mt-1 text-sm text-muted">
-            It takes less than a minute to get started.
+            Join thousands of learners — it takes less than a minute.
           </p>
         </motion.div>
 
@@ -116,55 +135,68 @@ const RegisterPage = () => {
           variants={container}
           initial="hidden"
           animate="show"
-          className="mt-6 space-y-4"
+          className="mt-7 space-y-6"
         >
-          <motion.div variants={field}>
-            <FieldLabel icon={User} htmlFor="reg-username">Username</FieldLabel>
-            <Input
-              id="reg-username" icon={User}
-              value={form.username}
-              onChange={(e) => setField("username", e.target.value)}
-              placeholder="Choose a username" required autoComplete="username"
-            />
-          </motion.div>
+          {/* Account section */}
+          <motion.section variants={field} className="space-y-3.5">
+            <SectionTitle icon={UserCircle2} title="Account" subtitle="How others will see you" />
+            <div className="grid gap-3.5 sm:grid-cols-2">
+              <div>
+                <FieldLabel icon={User} htmlFor="reg-username">Username</FieldLabel>
+                <Input
+                  id="reg-username" icon={User}
+                  value={form.username}
+                  onChange={(e) => setField("username", e.target.value)}
+                  placeholder="e.g. alex_kumar" required autoComplete="username"
+                />
+              </div>
+              <div>
+                <FieldLabel icon={Mail} htmlFor="reg-email">Email</FieldLabel>
+                <Input
+                  id="reg-email" icon={Mail} type="email"
+                  value={form.email}
+                  onChange={(e) => setField("email", e.target.value)}
+                  placeholder="you@example.com" required autoComplete="email"
+                />
+              </div>
+            </div>
+          </motion.section>
 
-          <motion.div variants={field}>
-            <FieldLabel icon={Mail} htmlFor="reg-email">Email</FieldLabel>
-            <Input
-              id="reg-email" icon={Mail} type="email"
-              value={form.email}
-              onChange={(e) => setField("email", e.target.value)}
-              placeholder="you@example.com" required autoComplete="email"
-            />
-          </motion.div>
+          <div className="h-px w-full bg-line" />
 
-          <motion.div variants={field}>
-            <Select
-              id="reg-class" label="Class" icon={GraduationCap}
-              value={form.classname}
-              onChange={(v) => setField("classname", v)}
-              options={CLASS_OPTIONS} placeholder="Select your class"
-            />
-          </motion.div>
+          {/* Class & security section */}
+          <motion.section variants={field} className="space-y-3.5">
+            <SectionTitle icon={ShieldCheck} title="Class & security" />
+            <div className="grid gap-3.5 sm:grid-cols-2">
+              <div>
+                <Select
+                  id="reg-class" label="Class" icon={GraduationCap}
+                  value={form.classname}
+                  onChange={(v) => setField("classname", v)}
+                  options={CLASS_OPTIONS} placeholder="Select your class"
+                />
+              </div>
+              <div>
+                <FieldLabel icon={Lock} htmlFor="reg-password">Password</FieldLabel>
+                <Input
+                  id="reg-password" icon={Lock}
+                  type={showPassword ? "text" : "password"}
+                  value={form.password}
+                  onChange={(e) => setField("password", e.target.value)}
+                  placeholder="Create a password" required autoComplete="new-password"
+                  rightSlot={
+                    <button type="button" onClick={() => setShowPassword((v) => !v)}
+                      className="grid h-8 w-8 place-items-center rounded-lg text-muted transition-colors hover:bg-surface2 hover:text-fg"
+                      aria-label={showPassword ? "Hide password" : "Show password"}>
+                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  }
+                />
+              </div>
+            </div>
 
-          <motion.div variants={field}>
-            <FieldLabel icon={Lock} htmlFor="reg-password">Password</FieldLabel>
-            <Input
-              id="reg-password" icon={Lock}
-              type={showPassword ? "text" : "password"}
-              value={form.password}
-              onChange={(e) => setField("password", e.target.value)}
-              placeholder="Create a password" required autoComplete="new-password"
-              rightSlot={
-                <button type="button" onClick={() => setShowPassword((v) => !v)}
-                  className="grid h-8 w-8 place-items-center rounded-lg text-muted transition-colors hover:bg-surface2 hover:text-fg"
-                  aria-label={showPassword ? "Hide password" : "Show password"}>
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                </button>
-              }
-            />
-
-            <div className="mt-2.5">
+            {/* Strength meter — full-width row under both fields */}
+            <div className="rounded-lg border border-line bg-surface2/40 p-3">
               <div className="flex gap-1.5">
                 {[0, 1, 2, 3].map((i) => (
                   <div
@@ -176,7 +208,7 @@ const RegisterPage = () => {
                   />
                 ))}
               </div>
-              <div className="mt-1.5 flex items-center justify-between text-[11px]">
+              <div className="mt-2 flex flex-wrap items-center justify-between gap-x-3 gap-y-1 text-[11px]">
                 <span className="text-subtle">{PASSWORD_HINT}</span>
                 {form.password && (
                   <span
@@ -193,30 +225,33 @@ const RegisterPage = () => {
                 )}
               </div>
             </div>
-          </motion.div>
+          </motion.section>
 
-          <motion.div variants={field}>
-            <FieldLabel icon={Camera} htmlFor="reg-pic">
-              Profile picture <span className="font-normal text-subtle">(optional)</span>
-            </FieldLabel>
-            <input
-              id="reg-pic" type="file" accept="image/*"
-              onChange={(e) => setField("profilePicture", e.target.files[0])}
-              className="block w-full rounded-lg border border-line bg-surface px-3 py-2.5 text-sm text-muted transition-colors file:mr-3 file:rounded-md file:border-0 file:bg-primary/15 file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-primary hover:file:bg-primary/25 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
-            />
-          </motion.div>
+          <div className="h-px w-full bg-line" />
 
-          <motion.div variants={field}>
-            <FieldLabel icon={FileText} htmlFor="reg-bio">
-              Bio <span className="font-normal text-subtle">(optional)</span>
-            </FieldLabel>
-            <Textarea
-              id="reg-bio" rows={3}
-              value={form.bio}
-              onChange={(e) => setField("bio", e.target.value)}
-              placeholder="Tell us about yourself"
-            />
-          </motion.div>
+          {/* Profile section */}
+          <motion.section variants={field} className="space-y-3.5">
+            <SectionTitle icon={Camera} title="Profile" subtitle="Optional — personalize your space" />
+            <div className="grid gap-3.5 sm:grid-cols-5">
+              <div className="sm:col-span-2">
+                <FieldLabel icon={Camera} htmlFor="reg-pic">Picture</FieldLabel>
+                <input
+                  id="reg-pic" type="file" accept="image/*"
+                  onChange={(e) => setField("profilePicture", e.target.files[0])}
+                  className="block w-full rounded-lg border border-line bg-surface px-3 py-2.5 text-sm text-muted transition-colors file:mr-3 file:rounded-md file:border-0 file:bg-primary/15 file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-primary hover:file:bg-primary/25 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
+                />
+              </div>
+              <div className="sm:col-span-3">
+                <FieldLabel icon={FileText} htmlFor="reg-bio">Bio</FieldLabel>
+                <Textarea
+                  id="reg-bio" rows={2}
+                  value={form.bio}
+                  onChange={(e) => setField("bio", e.target.value)}
+                  placeholder="A short intro about you"
+                />
+              </div>
+            </div>
+          </motion.section>
 
           <motion.div variants={field} className="pt-1">
             <Button
@@ -225,7 +260,7 @@ const RegisterPage = () => {
               className="btn-shine w-full shadow-md hover:shadow-lg"
               disabled={busy}
             >
-              {busy ? "Creating…" : (<>Create account <ArrowRight className="h-4 w-4" /></>)}
+              {busy ? "Creating account…" : (<>Create account <ArrowRight className="h-4 w-4" /></>)}
             </Button>
           </motion.div>
         </motion.form>

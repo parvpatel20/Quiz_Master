@@ -8,7 +8,7 @@ import React from "react";
 /* gradient blobs plus a subtle grid texture.                          */
 /* ------------------------------------------------------------------ */
 
-export default function AuthLayout({ children }) {
+export default function AuthLayout({ children, maxWidth = "max-w-md" }) {
   return (
     <div className="app-bg relative flex min-h-screen items-center justify-center overflow-hidden px-5 py-10 sm:px-8">
       {/* Animated background blobs — soft, slow, primary-tinted */}
@@ -18,7 +18,7 @@ export default function AuthLayout({ children }) {
         <div className="absolute inset-0 opacity-[0.35] [background-image:linear-gradient(rgb(var(--line))/0.5_1px,transparent_1px),linear-gradient(90deg,rgb(var(--line))/0.5_1px,transparent_1px)] [background-size:48px_48px] [mask-image:radial-gradient(ellipse_at_center,black_30%,transparent_75%)]" />
       </div>
 
-      <div className="w-full max-w-md">{children}</div>
+      <div className={`w-full ${maxWidth}`}>{children}</div>
     </div>
   );
 }
