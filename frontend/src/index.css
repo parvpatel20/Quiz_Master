@@ -111,4 +111,55 @@
   .section-gap {
     @apply mt-12 sm:mt-16;
   }
+
+  /* Animated gradient border — used for the auth form card. */
+  .gradient-border {
+    position: relative;
+    background: rgb(var(--surface));
+    border-radius: 1.125rem;
+  }
+  .gradient-border::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    z-index: -1;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      120deg,
+      rgb(var(--primary) / 0.55),
+      rgb(var(--primary) / 0.05) 35%,
+      rgb(var(--primary) / 0.4) 70%,
+      rgb(var(--primary) / 0.55)
+    );
+    background-size: 200% 200%;
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    animation: border-spin 6s linear infinite;
+    opacity: 0.85;
+  }
+
+  /* Shine that sweeps across a button on hover. */
+  .btn-shine {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .btn-shine::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      100deg,
+      transparent 30%,
+      rgba(255, 255, 255, 0.35) 50%,
+      transparent 70%
+    );
+    transform: translateX(-120%) skewX(-12deg);
+    pointer-events: none;
+  }
+  .btn-shine:hover::after {
+    animation: shine 1.1s ease-out;
+  }
 }

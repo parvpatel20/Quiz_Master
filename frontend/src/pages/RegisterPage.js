@@ -1,15 +1,67 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Eye, EyeOff, Lock, User, Mail, GraduationCap, Camera, FileText, ArrowRight, CheckCircle2 } from "lucide-react";
-import { Button, Input, Textarea, Select, FieldLabel } from "../components/ui";
+import { motion } from "framer-motion";
+import {
+  Eye, EyeOff, Lock, User, Mail, GraduationCap, Camera, FileText, ArrowRight,
+  Sparkles, Trophy, BarChart3, Target,
+} from "lucide-react";
+import { Button, Input, Textarea, Select, FieldLabel, cx } from "../components/ui";
 import Popup from "../components/Popup";
+import AuthLayout from "../components/AuthLayout";
 import { apiFetch } from "../config/api";
 import { CLASS_OPTIONS, EMAIL_PATTERN, PASSWORD_PATTERN, PASSWORD_HINT } from "../config/constants";
 
-const PERKS = [
-  "Take quizzes across every subject and class",
-  "Track your scores, accuracy, and history",
-  "Climb the global leaderboard",
+const EASE = [0.22, 1, 0.36, 1];
+
+const FEATURE_PROPS = {
+  eyebrow: "Start learning smarter",
+  title: (
+    <>
+      Learn faster,<br />
+      <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">one quiz</span> at a time.
+    </>
+  ),
+  subtitle:
+    "Create your free account to unlock quizzes across every subject, track your growth, and climb the global leaderboard.",
+  perks: [
+    { icon: Trophy, text: "Take quizzes across every subject and class." },
+    { icon: Target, text: "Track your scores, accuracy, and history over time." },
+    { icon: BarChart3, text: "Climb the global leaderboard and earn your spot." },
+  ],
+  icons: [
+    { icon: Sparkles, className: "left-6 top-8", duration: 7, delay: 0 },
+    { icon: Trophy,   className: "right-10 top-20", duration: 8, delay: 0.6 },
+    { icon: BarChart3,className: "left-12 bottom-24", duration: 9, delay: 1.2 },
+    { icon: Target,   className: "right-8 bottom-10", duration: 7.5, delay: 0.3 },
+  ],
+};
+
+const container = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.05, delayChildren: 0.1 } },
+};
+const field = {
+  hidden: { opacity: 0, y: 10 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: EASE } },
+};
+
+function passwordScore(pw) {
+  let s = 0;
+  if (!pw) return 0;
+  if (pw.length >= 8) s++;
+  if (/[a-z]/.test(pw) && /[A-Z]/.test(pw)) s++;
+  if (/\d/.test(pw)) s++;
+  if (/[@#$_]/.test(pw)) s++;
+  if (pw.length >= 12) s++;
+  return Math.min(s, 4);
+}
+
+const STRENGTH = [
+  { label: "Too weak", tone: "bg-error" },
+  { label: "Weak", tone: "bg-error/80" },
+  { label: "Fair", tone: "bg-warning" },
+  { label: "Good", tone: "bg-info" },
+  { label: "Strong", tone: "bg-success" },
 ];
 
 const RegisterPage = () => {
@@ -22,6 +74,8 @@ const RegisterPage = () => {
   const [popup, setPopup] = useState(null);
 
   const setField = (name, value) => setForm((f) => ({ ...f, [name]: value }));
+  const score = useMemo(() => passwordScore(form.password), [form.password]);
+  const strength = STRENGTH[score];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -55,97 +109,158 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="app-bg min-h-screen px-5 py-12">
-      <div className="mx-auto grid max-w-5xl items-center gap-10 lg:grid-cols-2">
-        {/* Brand / perks */}
-        <div className="hidden lg:block">
-          <Link to="/" className="flex items-center gap-2.5">
-            <img src="/assets/logo.png" alt="" className="h-10 w-10 object-contain" />
-            <span className="font-display text-xl font-bold text-fg">
-              Quiz<span className="text-brand">Master</span>
-            </span>
-          </Link>
-          <h2 className="mt-8 font-display text-4xl font-bold leading-tight text-fg">
-            Learn faster,<br />one quiz at a time.
-          </h2>
-          <p className="mt-4 max-w-md text-muted">
-            Join a community of learners and turn practice into measurable progress.
+    <AuthLayout featureProps={FEATURE_PROPS}>
+      <motion.div
+        initial={{ opacity: 0, y: 16, scale: 0.99 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.55, ease: EASE }}
+        className="gradient-border relative p-7 sm:p-8"
+      >
+        <div className="pointer-events-none absolute -top-px left-1/2 h-px w-32 -translate-x-1/2 bg-gradient-to-r from-transparent via-primary to-transparent" />
+
+        <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, ease: EASE }}>
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface2 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-muted">
+            <span className="h-1.5 w-1.5 animate-pulse-soft rounded-full bg-primary" />
+            Create account
+          </span>
+          <h1 className="mt-3 font-display text-2xl font-bold text-fg sm:text-[28px]">
+            Join Quiz Master
+          </h1>
+          <p className="mt-1 text-sm text-muted">
+            It takes less than a minute to get started.
           </p>
-          <ul className="mt-8 space-y-3">
-            {PERKS.map((p) => (
-              <li key={p} className="flex items-center gap-3 text-muted">
-                <CheckCircle2 className="h-5 w-5 shrink-0 text-brand" />
-                {p}
-              </li>
-            ))}
-          </ul>
-        </div>
+        </motion.div>
 
-        {/* Form */}
-        <div className="card p-8">
-          <h1 className="text-2xl font-bold text-fg">Create account</h1>
-          <p className="mt-1 text-sm text-muted">It takes less than a minute.</p>
+        <motion.form
+          onSubmit={handleSubmit}
+          variants={container}
+          initial="hidden"
+          animate="show"
+          className="mt-6 space-y-4"
+        >
+          <motion.div variants={field}>
+            <FieldLabel icon={User} htmlFor="reg-username">Username</FieldLabel>
+            <Input
+              id="reg-username" icon={User}
+              value={form.username}
+              onChange={(e) => setField("username", e.target.value)}
+              placeholder="Choose a username" required autoComplete="username"
+            />
+          </motion.div>
 
-          <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-            <div>
-              <FieldLabel icon={User}>Username</FieldLabel>
-              <Input icon={User} value={form.username}
-                onChange={(e) => setField("username", e.target.value)}
-                placeholder="Choose a username" required />
-            </div>
-            <div>
-              <FieldLabel icon={Mail}>Email</FieldLabel>
-              <Input icon={Mail} type="email" value={form.email}
-                onChange={(e) => setField("email", e.target.value)}
-                placeholder="you@example.com" required />
-            </div>
+          <motion.div variants={field}>
+            <FieldLabel icon={Mail} htmlFor="reg-email">Email</FieldLabel>
+            <Input
+              id="reg-email" icon={Mail} type="email"
+              value={form.email}
+              onChange={(e) => setField("email", e.target.value)}
+              placeholder="you@example.com" required autoComplete="email"
+            />
+          </motion.div>
+
+          <motion.div variants={field}>
             <Select
-              label="Class" icon={GraduationCap} value={form.classname}
+              id="reg-class" label="Class" icon={GraduationCap}
+              value={form.classname}
               onChange={(v) => setField("classname", v)}
               options={CLASS_OPTIONS} placeholder="Select your class"
             />
-            <div>
-              <FieldLabel icon={Lock}>Password</FieldLabel>
-              <Input icon={Lock} type={showPassword ? "text" : "password"}
-                value={form.password} onChange={(e) => setField("password", e.target.value)}
-                placeholder="Create a password" required
-                rightSlot={
-                  <button type="button" onClick={() => setShowPassword((v) => !v)}
-                    className="grid h-8 w-8 place-items-center rounded-lg text-muted hover:text-fg"
-                    aria-label={showPassword ? "Hide password" : "Show password"}>
-                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </button>
-                } />
-              <p className="mt-2 text-xs leading-relaxed text-subtle">{PASSWORD_HINT}</p>
-            </div>
-            <div>
-              <FieldLabel icon={Camera}>Profile picture <span className="text-subtle">(optional)</span></FieldLabel>
-              <input
-                type="file" accept="image/*"
-                onChange={(e) => setField("profilePicture", e.target.files[0])}
-                className="block w-full rounded-xl border border-line bg-surface2 px-3 py-2.5 text-sm text-muted file:mr-3 file:rounded-lg file:border-0 file:bg-brand/15 file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-brand hover:file:bg-brand/25"
-              />
-            </div>
-            <div>
-              <FieldLabel icon={FileText}>Bio <span className="text-subtle">(optional)</span></FieldLabel>
-              <Textarea rows={3} value={form.bio}
-                onChange={(e) => setField("bio", e.target.value)}
-                placeholder="Tell us about yourself" />
-            </div>
+          </motion.div>
 
-            <Button type="submit" size="lg" className="w-full" disabled={busy}>
-              {busy ? "Creating…" : <>Create account <ArrowRight className="h-4 w-4" /></>}
+          <motion.div variants={field}>
+            <FieldLabel icon={Lock} htmlFor="reg-password">Password</FieldLabel>
+            <Input
+              id="reg-password" icon={Lock}
+              type={showPassword ? "text" : "password"}
+              value={form.password}
+              onChange={(e) => setField("password", e.target.value)}
+              placeholder="Create a password" required autoComplete="new-password"
+              rightSlot={
+                <button type="button" onClick={() => setShowPassword((v) => !v)}
+                  className="grid h-8 w-8 place-items-center rounded-lg text-muted transition-colors hover:bg-surface2 hover:text-fg"
+                  aria-label={showPassword ? "Hide password" : "Show password"}>
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              }
+            />
+
+            {/* Strength meter */}
+            <div className="mt-2.5">
+              <div className="flex gap-1.5">
+                {[0, 1, 2, 3].map((i) => (
+                  <div
+                    key={i}
+                    className={cx(
+                      "h-1.5 flex-1 rounded-full bg-line transition-colors duration-300",
+                      i < score && strength.tone
+                    )}
+                  />
+                ))}
+              </div>
+              <div className="mt-1.5 flex items-center justify-between text-[11px]">
+                <span className="text-subtle">{PASSWORD_HINT}</span>
+                {form.password && (
+                  <span
+                    className={cx(
+                      "font-semibold",
+                      score <= 1 && "text-error",
+                      score === 2 && "text-warning",
+                      score === 3 && "text-info",
+                      score === 4 && "text-success"
+                    )}
+                  >
+                    {strength.label}
+                  </span>
+                )}
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.div variants={field}>
+            <FieldLabel icon={Camera} htmlFor="reg-pic">
+              Profile picture <span className="font-normal text-subtle">(optional)</span>
+            </FieldLabel>
+            <input
+              id="reg-pic" type="file" accept="image/*"
+              onChange={(e) => setField("profilePicture", e.target.files[0])}
+              className="block w-full rounded-lg border border-line bg-surface px-3 py-2.5 text-sm text-muted transition-colors file:mr-3 file:rounded-md file:border-0 file:bg-primary/15 file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-primary hover:file:bg-primary/25 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
+            />
+          </motion.div>
+
+          <motion.div variants={field}>
+            <FieldLabel icon={FileText} htmlFor="reg-bio">
+              Bio <span className="font-normal text-subtle">(optional)</span>
+            </FieldLabel>
+            <Textarea
+              id="reg-bio" rows={3}
+              value={form.bio}
+              onChange={(e) => setField("bio", e.target.value)}
+              placeholder="Tell us about yourself"
+            />
+          </motion.div>
+
+          <motion.div variants={field} className="pt-1">
+            <Button
+              type="submit"
+              size="lg"
+              className="btn-shine w-full shadow-md hover:shadow-lg"
+              disabled={busy}
+            >
+              {busy ? "Creating…" : (<>Create account <ArrowRight className="h-4 w-4" /></>)}
             </Button>
-          </form>
+          </motion.div>
+        </motion.form>
 
-          <p className="mt-6 text-center text-sm text-muted">
-            Already have an account?{" "}
-            <Link to="/login" className="font-semibold text-brand hover:underline">
-              Sign in
-            </Link>
-          </p>
-        </div>
-      </div>
+        <motion.p
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5, duration: 0.5 }}
+          className="mt-6 text-center text-sm text-muted"
+        >
+          Already have an account?{" "}
+          <Link to="/login" className="font-semibold text-primary transition-colors hover:text-primary/80 hover:underline underline-offset-4">
+            Sign in
+          </Link>
+        </motion.p>
+      </motion.div>
 
       {popup && (
         <Popup
@@ -154,7 +269,7 @@ const RegisterPage = () => {
           onClose={() => setPopup(null)} onAction={() => navigate("/login")}
         />
       )}
-    </div>
+    </AuthLayout>
   );
 };
 

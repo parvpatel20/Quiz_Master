@@ -1,9 +1,47 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Eye, EyeOff, Lock, User, ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
+import {
+  Eye, EyeOff, Lock, User, ArrowRight, Sparkles, Trophy, BarChart3, Zap,
+} from "lucide-react";
 import { Button, Input, FieldLabel } from "../components/ui";
 import Popup from "../components/Popup";
+import AuthLayout from "../components/AuthLayout";
 import { apiFetch } from "../config/api";
+
+const EASE = [0.22, 1, 0.36, 1];
+
+const FEATURE_PROPS = {
+  eyebrow: "Welcome back",
+  title: (
+    <>
+      Pick up right where<br />
+      you <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">left off</span>.
+    </>
+  ),
+  subtitle:
+    "Sign in to continue tracking your progress, climbing the leaderboard, and sharpening your skills one quiz at a time.",
+  perks: [
+    { icon: Trophy, text: "Resume your streak and recent quizzes instantly." },
+    { icon: BarChart3, text: "Watch your accuracy and history grow in real time." },
+    { icon: Zap, text: "Jump into a quiz in under 10 seconds." },
+  ],
+  icons: [
+    { icon: Sparkles, className: "left-6 top-8", duration: 7, delay: 0 },
+    { icon: Trophy,   className: "right-10 top-20", duration: 8, delay: 0.6 },
+    { icon: BarChart3,className: "left-12 bottom-24", duration: 9, delay: 1.2 },
+    { icon: Zap,      className: "right-8 bottom-10", duration: 7.5, delay: 0.3 },
+  ],
+};
+
+const container = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.07, delayChildren: 0.1 } },
+};
+const field = {
+  hidden: { opacity: 0, y: 10 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.45, ease: EASE } },
+};
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -37,63 +75,86 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="app-bg flex min-h-screen items-center justify-center p-5">
-      <div className="w-full max-w-md">
-        <Link to="/" className="mb-8 flex items-center justify-center gap-2.5">
-          <img src="/assets/logo.png" alt="" className="h-10 w-10 object-contain" />
-          <span className="font-display text-xl font-bold text-fg">
-            Quiz<span className="text-brand">Master</span>
+    <AuthLayout featureProps={FEATURE_PROPS}>
+      <motion.div
+        initial={{ opacity: 0, y: 16, scale: 0.99 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.55, ease: EASE }}
+        className="gradient-border relative p-7 sm:p-8"
+      >
+        <div className="pointer-events-none absolute -top-px left-1/2 h-px w-32 -translate-x-1/2 bg-gradient-to-r from-transparent via-primary to-transparent" />
+
+        <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, ease: EASE }}>
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface2 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-muted">
+            <span className="h-1.5 w-1.5 animate-pulse-soft rounded-full bg-primary" />
+            Sign in
           </span>
-        </Link>
-
-        <div className="card p-8">
-          <h1 className="text-2xl font-bold text-fg">Sign in</h1>
+          <h1 className="mt-3 font-display text-2xl font-bold text-fg sm:text-[28px]">
+            Welcome back
+          </h1>
           <p className="mt-1 text-sm text-muted">
-            Welcome back — enter your details to continue.
+            Enter your details to continue your learning streak.
           </p>
+        </motion.div>
 
-          <form onSubmit={handleSubmit} className="mt-7 space-y-5">
-            <div>
-              <FieldLabel icon={User} htmlFor="username">Username</FieldLabel>
-              <Input
-                id="username" name="username" icon={User}
-                value={form.username} onChange={handleChange}
-                placeholder="Your username" required
-              />
-            </div>
-            <div>
-              <FieldLabel icon={Lock} htmlFor="password">Password</FieldLabel>
-              <Input
-                id="password" name="password" icon={Lock}
-                type={showPassword ? "text" : "password"}
-                value={form.password} onChange={handleChange}
-                placeholder="Your password" required
-                rightSlot={
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword((v) => !v)}
-                    className="grid h-8 w-8 place-items-center rounded-lg text-muted hover:text-fg"
-                    aria-label={showPassword ? "Hide password" : "Show password"}
-                  >
-                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </button>
-                }
-              />
-            </div>
+        <motion.form
+          onSubmit={handleSubmit}
+          variants={container}
+          initial="hidden"
+          animate="show"
+          className="mt-7 space-y-5"
+        >
+          <motion.div variants={field}>
+            <FieldLabel icon={User} htmlFor="username">Username</FieldLabel>
+            <Input
+              id="username" name="username" icon={User}
+              value={form.username} onChange={handleChange}
+              placeholder="Your username" required autoComplete="username"
+            />
+          </motion.div>
 
-            <Button type="submit" size="lg" className="w-full" disabled={busy}>
-              {busy ? "Signing in…" : <>Sign in <ArrowRight className="h-4 w-4" /></>}
+          <motion.div variants={field}>
+            <FieldLabel icon={Lock} htmlFor="password">Password</FieldLabel>
+            <Input
+              id="password" name="password" icon={Lock}
+              type={showPassword ? "text" : "password"}
+              value={form.password} onChange={handleChange}
+              placeholder="Your password" required autoComplete="current-password"
+              rightSlot={
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((v) => !v)}
+                  className="grid h-8 w-8 place-items-center rounded-lg text-muted transition-colors hover:bg-surface2 hover:text-fg"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              }
+            />
+          </motion.div>
+
+          <motion.div variants={field} className="pt-1">
+            <Button
+              type="submit"
+              size="lg"
+              className="btn-shine w-full shadow-md hover:shadow-lg"
+              disabled={busy}
+            >
+              {busy ? "Signing in…" : (<>Sign in <ArrowRight className="h-4 w-4" /></>)}
             </Button>
-          </form>
+          </motion.div>
+        </motion.form>
 
-          <p className="mt-6 text-center text-sm text-muted">
-            Don't have an account?{" "}
-            <Link to="/register" className="font-semibold text-brand hover:underline">
-              Create one
-            </Link>
-          </p>
-        </div>
-      </div>
+        <motion.p
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5, duration: 0.5 }}
+          className="mt-6 text-center text-sm text-muted"
+        >
+          Don't have an account?{" "}
+          <Link to="/register" className="font-semibold text-primary transition-colors hover:text-primary/80 hover:underline underline-offset-4">
+            Create one
+          </Link>
+        </motion.p>
+      </motion.div>
 
       {popup && (
         <Popup
@@ -105,7 +166,7 @@ const LoginPage = () => {
           onAction={() => navigate("/")}
         />
       )}
-    </div>
+    </AuthLayout>
   );
 };
 
