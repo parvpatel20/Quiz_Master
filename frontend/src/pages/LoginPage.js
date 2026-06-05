@@ -1,38 +1,13 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import {
-  Eye, EyeOff, Lock, User, ArrowRight, Sparkles, Trophy, BarChart3, Zap,
-} from "lucide-react";
+import { Eye, EyeOff, Lock, User, ArrowRight } from "lucide-react";
 import { Button, Input, FieldLabel } from "../components/ui";
 import Popup from "../components/Popup";
 import AuthLayout from "../components/AuthLayout";
 import { apiFetch } from "../config/api";
 
 const EASE = [0.22, 1, 0.36, 1];
-
-const FEATURE_PROPS = {
-  eyebrow: "Welcome back",
-  title: (
-    <>
-      Pick up right where<br />
-      you <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">left off</span>.
-    </>
-  ),
-  subtitle:
-    "Sign in to continue tracking your progress, climbing the leaderboard, and sharpening your skills one quiz at a time.",
-  perks: [
-    { icon: Trophy, text: "Resume your streak and recent quizzes instantly." },
-    { icon: BarChart3, text: "Watch your accuracy and history grow in real time." },
-    { icon: Zap, text: "Jump into a quiz in under 10 seconds." },
-  ],
-  icons: [
-    { icon: Sparkles, className: "left-6 top-8", duration: 7, delay: 0 },
-    { icon: Trophy,   className: "right-10 top-20", duration: 8, delay: 0.6 },
-    { icon: BarChart3,className: "left-12 bottom-24", duration: 9, delay: 1.2 },
-    { icon: Zap,      className: "right-8 bottom-10", duration: 7.5, delay: 0.3 },
-  ],
-};
 
 const container = {
   hidden: {},
@@ -75,7 +50,7 @@ const LoginPage = () => {
   };
 
   return (
-    <AuthLayout featureProps={FEATURE_PROPS}>
+    <AuthLayout>
       <motion.div
         initial={{ opacity: 0, y: 16, scale: 0.99 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -85,6 +60,14 @@ const LoginPage = () => {
         <div className="pointer-events-none absolute -top-px left-1/2 h-px w-32 -translate-x-1/2 bg-gradient-to-r from-transparent via-primary to-transparent" />
 
         <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, ease: EASE }}>
+          <Link to="/" className="mb-5 inline-flex items-center gap-2.5">
+            <span className="grid h-10 w-10 place-items-center rounded-xl bg-primary/10 ring-1 ring-primary/20">
+              <img src="/assets/logo.png" alt="" className="h-7 w-7 object-contain" />
+            </span>
+            <span className="font-display text-xl font-bold text-fg">
+              Quiz<span className="text-primary">Master</span>
+            </span>
+          </Link>
           <span className="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface2 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-muted">
             <span className="h-1.5 w-1.5 animate-pulse-soft rounded-full bg-primary" />
             Sign in

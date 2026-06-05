@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   Eye, EyeOff, Lock, User, Mail, GraduationCap, Camera, FileText, ArrowRight,
-  Sparkles, Trophy, BarChart3, Target,
 } from "lucide-react";
 import { Button, Input, Textarea, Select, FieldLabel, cx } from "../components/ui";
 import Popup from "../components/Popup";
@@ -12,29 +11,6 @@ import { apiFetch } from "../config/api";
 import { CLASS_OPTIONS, EMAIL_PATTERN, PASSWORD_PATTERN, PASSWORD_HINT } from "../config/constants";
 
 const EASE = [0.22, 1, 0.36, 1];
-
-const FEATURE_PROPS = {
-  eyebrow: "Start learning smarter",
-  title: (
-    <>
-      Learn faster,<br />
-      <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">one quiz</span> at a time.
-    </>
-  ),
-  subtitle:
-    "Create your free account to unlock quizzes across every subject, track your growth, and climb the global leaderboard.",
-  perks: [
-    { icon: Trophy, text: "Take quizzes across every subject and class." },
-    { icon: Target, text: "Track your scores, accuracy, and history over time." },
-    { icon: BarChart3, text: "Climb the global leaderboard and earn your spot." },
-  ],
-  icons: [
-    { icon: Sparkles, className: "left-6 top-8", duration: 7, delay: 0 },
-    { icon: Trophy,   className: "right-10 top-20", duration: 8, delay: 0.6 },
-    { icon: BarChart3,className: "left-12 bottom-24", duration: 9, delay: 1.2 },
-    { icon: Target,   className: "right-8 bottom-10", duration: 7.5, delay: 0.3 },
-  ],
-};
 
 const container = {
   hidden: {},
@@ -109,7 +85,7 @@ const RegisterPage = () => {
   };
 
   return (
-    <AuthLayout featureProps={FEATURE_PROPS}>
+    <AuthLayout>
       <motion.div
         initial={{ opacity: 0, y: 16, scale: 0.99 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -119,6 +95,14 @@ const RegisterPage = () => {
         <div className="pointer-events-none absolute -top-px left-1/2 h-px w-32 -translate-x-1/2 bg-gradient-to-r from-transparent via-primary to-transparent" />
 
         <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, ease: EASE }}>
+          <Link to="/" className="mb-5 inline-flex items-center gap-2.5">
+            <span className="grid h-10 w-10 place-items-center rounded-xl bg-primary/10 ring-1 ring-primary/20">
+              <img src="/assets/logo.png" alt="" className="h-7 w-7 object-contain" />
+            </span>
+            <span className="font-display text-xl font-bold text-fg">
+              Quiz<span className="text-primary">Master</span>
+            </span>
+          </Link>
           <span className="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface2 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-muted">
             <span className="h-1.5 w-1.5 animate-pulse-soft rounded-full bg-primary" />
             Create account
@@ -184,7 +168,6 @@ const RegisterPage = () => {
               }
             />
 
-            {/* Strength meter */}
             <div className="mt-2.5">
               <div className="flex gap-1.5">
                 {[0, 1, 2, 3].map((i) => (
